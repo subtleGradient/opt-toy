@@ -549,6 +549,10 @@ function App() {
   return (
     <div className="App">
       <h1>Objective Personality OPT 9 Coin System exploration toy</h1>
+      <div>
+        <TypeThing storageID="optype1" />
+        <TypeThing storageID="optype2" />
+      </div>
       <small>{`
         WARNING (especially to ExxJs): I don't want your help with this. No hard
         feelings. This is a fun side project for my masculine Ti. Thanks.
@@ -588,10 +592,6 @@ function App() {
         </li>
         <li>TODO: </li>
       </ul>
-      <div>
-        <TypeThing storageID="optype1" />
-        <TypeThing storageID="optype2" />
-      </div>
     </div>
   )
 }
