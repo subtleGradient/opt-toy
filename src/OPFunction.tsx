@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PropertyControls, ControlType } from "framer";
-import AllTheThings from "./OPBubbles4";
+import { Bubble } from "./OPBubbles4";
 
 const style: React.CSSProperties = {
   height: "100%",
@@ -10,7 +10,7 @@ const style: React.CSSProperties = {
   textAlign: "center",
   color: "#8855FF",
   background: "rgba(136, 85, 255, 0.1)",
-  overflow: "hidden"
+  overflow: "hidden",
 };
 
 // Define type of property
@@ -21,18 +21,18 @@ interface Props {
 export class OPFunction extends React.Component<Props> {
   // Set default properties
   static defaultProps = {
-    text: "Hello World!"
+    text: "Hello World!",
   };
 
   // Items shown in property panel
   static propertyControls: PropertyControls = {
-    text: { type: ControlType.String, title: "Text" }
+    text: { type: ControlType.String, title: "Text" },
   };
 
   render() {
     return (
       <>
-        <AllTheThings color="blue" />
+        <Bubble color="blue" />
       </>
     );
 

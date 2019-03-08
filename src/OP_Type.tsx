@@ -1,25 +1,24 @@
-import * as React from "react"
+import * as React from "react";
 // import { PropertyControls, ControlType } from "framer";
-import { Defs } from "./OPBubbles4"
-import { SVG_OP_Bubble } from "./SVG_OP_Bubble"
+import { Defs } from "./OPBubbles4";
+import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
 
 // Define type of property
 interface Props {
-  width: number
-  height: number
-  text: string
+  width?: number;
+  height?: number;
 }
 
-export const intrinsicWidth = 128
-export const intrinsicHeight = 128
+export const intrinsicWidth = 128;
+export const intrinsicHeight = 128;
 
-const Gold = 0.61803398875
+const Gold = 0.61803398875;
 
 export class OP_Type extends React.Component<Props> {
   // Set default properties
   static defaultProps = {
     text: "Hello World!",
-  }
+  };
 
   // Items shown in property panel
   // static propertyControls: PropertyControls = {
@@ -27,11 +26,11 @@ export class OP_Type extends React.Component<Props> {
   // };
 
   render() {
-    const { width = 256, height = 256 } = this.props
+    const { width = 256, height = width } = this.props;
     return (
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width, height }}>
         <filter id="grayscale">
-          <feColorMatrix type="saturate" values={1} />
+          <feColorMatrix type="saturate" values={`${1}`} />
         </filter>
         <g
           transform={`scale(${width / intrinsicWidth} ${height /
@@ -72,6 +71,6 @@ export class OP_Type extends React.Component<Props> {
         <Defs color="yellow" />
         <Defs color="red" />
       </svg>
-    )
+    );
   }
 }

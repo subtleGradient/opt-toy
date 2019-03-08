@@ -1,20 +1,24 @@
 {
   "name": "objective-personality-opt-9-coin-system-exploration-toy",
+  "license": "MIT",
+  "authors": [
+    "Thomas Aylott <oblivious@subtlegradient.com>"
+  ],
   "version": "1.0.0",
   "description": "OPT 9 Coin System exploration toy",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
-    "@types/react": "16.8.6",
-    "@types/react-dom": "16.8.2",
-    "react": "16.8.3",
-    "react-dom": "16.8.3",
-    "react-scripts": "2.1.5",
+    "framer": "^1.0.0-alpha.7",
+    "react": "16.8.4",
+    "react-dom": "16.8.4",
+    "react-scripts": "2.1.8",
     "use-undo": "1.0.0"
   },
   "devDependencies": {
-    "@types/react": "16.7.22",
-    "@types/react-dom": "16.0.11"
+    "@types/react": "16.8.7",
+    "@types/react-dom": "16.8.2",
+    "typescript": "^3.3.3333"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,5 +31,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subtleGradient/opt-toy.git"
+  }
 }

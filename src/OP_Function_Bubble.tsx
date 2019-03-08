@@ -1,5 +1,5 @@
 import * as React from "react";
-// import { PropertyControls, ControlType } from "framer";
+import { PropertyControls, ControlType } from "framer";
 import { Bubble, Defs } from "./OPBubbles4";
 import { BubbleText } from "./SVG_OP_BubbleText";
 
@@ -23,30 +23,26 @@ export const bubbleTextStyle = {
   textShadow: "1px 2px 2px rgba(0,0,0,0.25)",
   fontSize: 64,
   transform: "translateY(3px)",
-  letterSpacing: -2.5
+  letterSpacing: -2.5,
 };
 export class OP_Function_Bubble extends React.Component<Props> {
   static defaultProps = {
-    color: Object.keys(colors)[0]
+    color: Object.keys(colors)[0],
   };
-  // static propertyControls: PropertyControls = {
-  //   color: {
-  //     title: "Color",
-  //     type: ControlType.SegmentedEnum,
-  //     options: Object.keys(colors),
-  //     optionTitles: Object.keys(colors).map(key => colors[key])
-  //   },
-  //   saturate: {
-  //     type: ControlType.Number,
-  //     min: 0,
-  //     max: 1,
-  //     step: 0.1
-  //   },
-  //   text: {
-  //     type: ControlType.Enum,
-  //     options: opFunctionNames
-  //   }
-  // };
+  static propertyControls: PropertyControls = {
+    color: {
+      title: "Color",
+      type: ControlType.SegmentedEnum,
+      options: Object.keys(colors),
+      optionTitles: Object.keys(colors).map(key => colors[key]),
+    },
+    saturate: {
+      type: ControlType.Number,
+      min: 0,
+      max: 1,
+      step: 0.1,
+    },
+  };
   render() {
     const { width, height, saturate = 1, text } = this.props;
     return (
