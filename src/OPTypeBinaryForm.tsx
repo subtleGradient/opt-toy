@@ -72,7 +72,7 @@ export function OPTypeBinaryForm({
           </tr>
         </tbody>
       </table>
-      <OP_Type width={128} />
+      <OP_Type opType={opType} />
     </div>
     // <SVG_OP_Bubble color="red" width={128} children="Fe" />
   );

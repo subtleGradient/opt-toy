@@ -8,6 +8,11 @@ import {
 
 export class OPT512 {
   type: OPT512Maybe;
+  f = new OPFeeling(this, "F");
+  t = new OPThinking(this, "T");
+  n = new OPIntuition(this, "N");
+  s = new OPSensing(this, "S");
+
   constructor(type: OPT512Maybe) {
     this.type = type.slice(0) as OPT512Maybe;
   }
@@ -146,6 +151,19 @@ export class OPT512 {
     }[this.A4];
   }
 }
+
+class OPFn {
+  opType: OPT512;
+  constructor(opType, letter: "F" | "T" | "N" | "S") {
+    this.opType = opType;
+  }
+}
+class OPDecider extends OPFn {}
+class OPObserver extends OPFn {}
+class OPFeeling extends OPDecider {}
+class OPThinking extends OPDecider {}
+class OPIntuition extends OPObserver {}
+class OPSensing extends OPObserver {}
 
 const maybeBoolToIndex = (value: BoolMaybe) =>
   !isBool(value) ? 2 : value ? 1 : 0;
