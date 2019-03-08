@@ -18,13 +18,6 @@ interface Props {
   text: string;
 }
 
-export const bubbleTextStyle = {
-  fontFamily: `Roboto, "HelveticaNeue", "Helvetica Neue", Helvetica, sans-serif`,
-  textShadow: "1px 2px 2px rgba(0,0,0,0.25)",
-  fontSize: 64,
-  transform: "translateY(3px)",
-  letterSpacing: -2.5,
-};
 export class OP_Function_Bubble extends React.Component<Props> {
   static defaultProps = {
     color: Object.keys(colors)[0],

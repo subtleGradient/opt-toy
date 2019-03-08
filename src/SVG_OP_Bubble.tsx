@@ -11,7 +11,8 @@ export const SVG_OP_Bubble: SFC<{
   color: string;
   width: number;
   height?: number;
-}> = ({ color, width, height = width, children }) => (
+  prefix?: string;
+}> = ({ prefix, color, width, height = width, children }) => (
   <g
     transform={fromCenter(
       intrinsicWidth,
@@ -20,6 +21,6 @@ export const SVG_OP_Bubble: SFC<{
     )}
   >
     <Bubble color={color} />
-    <BubbleText>{children}</BubbleText>
+    <BubbleText prefix={prefix}>{children}</BubbleText>
   </g>
 );

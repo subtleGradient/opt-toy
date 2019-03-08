@@ -3,7 +3,7 @@ import * as React from "react";
 import { Defs } from "./OPBubbles4";
 import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
 import { OPT512 } from "./OPT512";
-import { SvgComponent } from "./opt128-svgr";
+import { OPTGraph } from "./opt128-svgr";
 
 // Define type of property
 interface Props {
@@ -30,7 +30,7 @@ export class OP_Type extends React.Component<Props> {
 
   render() {
     const { height = 256, width = height * 4, opType } = this.props;
-    return <SvgComponent />;
+    return <OPTGraph />;
     return (
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width, height }}>
         <filter id="grayscale">
