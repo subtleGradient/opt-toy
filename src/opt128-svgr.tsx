@@ -6,16 +6,39 @@ import { bubbleTextStyle } from "./SVG_OP_BubbleText";
 export const OPTGraph = ({ opType, ...props }) => {
   const { opFunctions } = opType;
   const opAnimals = {
-    eSavior: { strength: 0, text: "Play" },
-    blast: { strength: 1, text: "Blast" },
-    consume: { strength: 2, text: "Consume" },
-    eDemon: { strength: 3, text: "Sleep" }
+    Play: { strength: opType.PlayIndex, text: "Play" },
+    Blast: { strength: opType.BlastIndex, text: "Blast" },
+    Consume: { strength: opType.ConsumeIndex, text: "Consume" },
+    Sleep: { strength: opType.SleepIndex, text: "Sleep" }
   };
 
   const shouldFlipH = opFunctions[0].focus === "i";
+  const shouldFlipV = {
+    O: shouldFlipH,
+    N: shouldFlipH,
+    S: shouldFlipH,
+    D: !shouldFlipH,
+    F: !shouldFlipH,
+    T: !shouldFlipH
+  }[opFunctions[0].letter];
+
+  const bottomAnimal = shouldFlipV ? opAnimals.Consume : opAnimals.Blast;
+  const topAnimal = shouldFlipV ? opAnimals.Blast : opAnimals.Consume;
+  const leftAnimal = shouldFlipH ? opAnimals.Play : opAnimals.Sleep;
+  const rightAnimal = shouldFlipH ? opAnimals.Sleep : opAnimals.Play;
 
   return (
-    <OPTGraphInnards {...props} {...{ opFunctions, opAnimals, shouldFlipH }} />
+    <OPTGraphInnards
+      {...props}
+      {...{
+        opFunctions,
+        shouldFlipH,
+        bottomAnimal,
+        topAnimal,
+        leftAnimal,
+        rightAnimal
+      }}
+    />
   );
 };
 
@@ -23,9 +46,12 @@ const AnimalStrengthToFontSize = [30.778, 24.772, 19.518, 13.512];
 
 export const OPTGraphInnards = ({
   opFunctions,
-  opAnimals,
   shouldFlipH,
-  style,
+  bottomAnimal,
+  topAnimal,
+  leftAnimal,
+  rightAnimal,
+  style = null,
   ...props
 }) => {
   return (
@@ -62,7 +88,7 @@ export const OPTGraphInnards = ({
         </g>
         <g id="consume">
           <path
-            {...AnimalStrokes[opAnimals.consume.strength]}
+            {...AnimalStrokes[bottomAnimal.strength]}
             d="M170.116 9.576s-6.137 17.235-34.988 29.616C106.277 51.572 54.713 59.098 0 33.049c24.049 2.581 63.283-2.111 63.283-41.611"
             fill="none"
             transform="matrix(-1.71693 .02997 .02994 1.7153 615.803 448.003)"
@@ -70,20 +96,20 @@ export const OPTGraphInnards = ({
           <g transform="translate(-199.029 -160.442) scale(2.289) translate(364.302 295.991)">
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[opAnimals.consume.strength]}
+              fontSize={AnimalStrengthToFontSize[bottomAnimal.strength]}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "end" }
                   : null
               }
             >
-              {opAnimals.consume.text}
+              {bottomAnimal.text}
             </text>
           </g>
         </g>
         <g id="play">
           <path
-            {...AnimalStrokes[opAnimals.eSavior.strength]}
+            {...AnimalStrokes[rightAnimal.strength]}
             d="M132.591-2.45S69.148 67.665 0 28.882C15.681 24.056 39.268 12.41 39.268-27.09"
             fill="none"
             transform="matrix(-1.49282 .86188 .86345 1.49554 679.45 325.746)"
@@ -91,20 +117,20 @@ export const OPTGraphInnards = ({
           <g transform="translate(-199.029 -160.442) scale(2.289) translate(402.586 239.69)">
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[opAnimals.eSavior.strength]}
+              fontSize={AnimalStrengthToFontSize[rightAnimal.strength]}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "end" }
                   : null
               }
             >
-              {opAnimals.eSavior.text}
+              {rightAnimal.text}
             </text>
           </g>
         </g>
         <g id="blast">
           <path
-            {...AnimalStrokes[opAnimals.blast.strength]}
+            {...AnimalStrokes[topAnimal.strength]}
             d="M139 30.496s-62 27.5-139 18c14 1.5 38.5-16.5 38.5-56"
             fill="none"
             transform="matrix(1.7183 0 0 -1.71876 210.442 177.733)"
@@ -113,20 +139,20 @@ export const OPTGraphInnards = ({
             {" "}
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[opAnimals.blast.strength]}
+              fontSize={AnimalStrengthToFontSize[topAnimal.strength]}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "start" }
                   : { textAnchor: "end" }
               }
             >
-              {opAnimals.blast.text}
+              {topAnimal.text}
             </text>
           </g>
         </g>
         <g id="sleep">
           <path
-            {...AnimalStrokes[opAnimals.eDemon.strength]}
+            {...AnimalStrokes[leftAnimal.strength]}
             xmlns="http://www.w3.org/2000/svg"
             d="M104.703 26.043S67.539 53.766 0 28.882c15.681-4.826 49.823-15.017 55.856-53.825"
             fill="none"
@@ -136,14 +162,14 @@ export const OPTGraphInnards = ({
             {" "}
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[opAnimals.eDemon.strength]}
+              fontSize={AnimalStrengthToFontSize[leftAnimal.strength]}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "start" }
                   : { textAnchor: "end" }
               }
             >
-              {opAnimals.eDemon.text}
+              {leftAnimal.text}
             </text>
           </g>
         </g>

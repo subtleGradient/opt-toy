@@ -176,6 +176,22 @@ export class OPT512 {
     };
   }
 
+  get animals() {
+    return [this.A1, this.A2, this.A3, this.A4];
+  }
+  get PlayIndex() {
+    return this.animals.indexOf("P");
+  }
+  get BlastIndex() {
+    return this.animals.indexOf("B");
+  }
+  get ConsumeIndex() {
+    return this.animals.indexOf("C");
+  }
+  get SleepIndex() {
+    return this.animals.indexOf("S");
+  }
+
   get A1Code() {
     return `O${this.oFocus}D${this.dFocus}`;
   }
