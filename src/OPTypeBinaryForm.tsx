@@ -5,7 +5,7 @@ import { OPT512Maybe, COINS, BLANK_TYPE } from "./Coin";
 import { CoinSideVirtual } from "./CoinSideVirtual";
 export function OPTypeBinaryForm({
   type = BLANK_TYPE,
-  onChange
+  onChange,
 }: {
   type: OPT512Maybe;
   onChange: (type: OPT512Maybe) => void;
@@ -39,10 +39,10 @@ export function OPTypeBinaryForm({
           </tr>
 
           <tr>
-            <td style={{ textAlign: "right" }} colSpan={3}>
-              {Math.pow(2, opType.nullCount)}
+            <td style={{ textAlign: "center" }} colSpan={3}>
+              {Math.pow(2, opType.nullCount)} / 512
             </td>
-            <th>matching type count</th>
+            <th>matching types</th>
           </tr>
 
           <tr>
@@ -59,9 +59,7 @@ export function OPTypeBinaryForm({
             coin={{
               heads: "Info",
               tails: "Energy",
-              description: `${opType.A4} ${opType.sideOfEnergyInfo} ${
-                opType.a2Focus
-              } ${opType.a3Focus}`
+              description: ``,
             }}
             onFlip={side => {
               opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
@@ -69,11 +67,10 @@ export function OPTypeBinaryForm({
             }}
           />
           <tr>
-            <th colSpan={4}>TODO: MM activation vs FF activation</th>
+            {/* <th colSpan={4}>TODO: MM activation vs FF activation</th> */}
           </tr>
         </tbody>
       </table>
-      <OP_Type opType={opType} />
     </div>
     // <SVG_OP_Bubble color="red" width={128} children="Fe" />
   );
