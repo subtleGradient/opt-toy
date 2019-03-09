@@ -3,7 +3,8 @@ import {
   NamedCOINS,
   BoolMaybe,
   isBool,
-  cleanCoinText
+  cleanCoinText,
+  BLANK_TYPE
 } from "./Coin";
 
 export class OPT512 {
@@ -14,7 +15,7 @@ export class OPT512 {
   s = new OPSensing(this, "S");
 
   constructor(type: OPT512Maybe) {
-    this.type = type.slice(0) as OPT512Maybe;
+    this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe;
   }
   get typeNumber() {
     return parseInt(this.type.map(Number).join(""), 2);

@@ -20,7 +20,25 @@ function App() {
   return (
     <div className="App">
       <h1>Objective Personality OPT 9 Coin System exploration toy</h1>
-      <button onClick={e => setCount(count + 1)}>More!</button>
+      <button
+        onClick={e => {
+          e.preventDefault();
+          setCount(count - 1);
+        }}
+        disabled={count === 1}
+      >
+        Less!
+      </button>
+      <button
+        onClick={e => {
+          e.preventDefault();
+          setCount(count + 1);
+        }}
+        disabled={count >= 8}
+      >
+        More!
+      </button>
+      <hr />
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
         {Array(count)
           .join()

@@ -1,15 +1,16 @@
 import * as React from "react";
 import { OP_Type } from "./OP_Type";
 import { OPT512 } from "./OPT512";
-import { OPT512Maybe, COINS } from "./Coin";
+import { OPT512Maybe, COINS, BLANK_TYPE } from "./Coin";
 import { CoinSideVirtual } from "./CoinSideVirtual";
 export function OPTypeBinaryForm({
-  type,
-  onChange,
+  type = BLANK_TYPE,
+  onChange
 }: {
   type: OPT512Maybe;
   onChange: (type: OPT512Maybe) => void;
 }) {
+  if (!type) type = BLANK_TYPE;
   const opType = new OPT512(type);
   return (
     <div>
@@ -60,7 +61,7 @@ export function OPTypeBinaryForm({
               tails: "Energy",
               description: `${opType.A4} ${opType.sideOfEnergyInfo} ${
                 opType.a2Focus
-              } ${opType.a3Focus}`,
+              } ${opType.a3Focus}`
             }}
             onFlip={side => {
               opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
