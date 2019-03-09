@@ -21,7 +21,7 @@ export function OPCodeInput({ type, onParsed }) {
       <input
         style={{ border: isEditing ? `1px solid lime` : `1px solid red` }}
         placeholder={inputTypeText}
-        onChange={isEditing ? handleChange : null}
+        onChange={handleChange}
         value={isEditing ? value : inputTypeText}
         onFocus={e => {
           setValue(cleanCoinText(inputTypeText));

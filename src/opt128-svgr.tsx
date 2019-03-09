@@ -180,6 +180,7 @@ export const OPTGraphInnards = ({
 
         <g id="bubbles">
           <Bub
+            key={opFunctions[0].key}
             shouldFlipH={shouldFlipH}
             opFunction={opFunctions[0]}
             x={463}
@@ -187,6 +188,7 @@ export const OPTGraphInnards = ({
             size={256}
           />
           <Bub
+            key={opFunctions[1].key}
             shouldFlipH={shouldFlipH}
             opFunction={opFunctions[1]}
             x={211}
@@ -194,6 +196,7 @@ export const OPTGraphInnards = ({
             size={193}
           />
           <Bub
+            key={opFunctions[2].key}
             shouldFlipH={shouldFlipH}
             opFunction={opFunctions[2]}
             x={401}
@@ -201,6 +204,7 @@ export const OPTGraphInnards = ({
             size={122}
           />
           <Bub
+            key={opFunctions[3].key}
             shouldFlipH={shouldFlipH}
             opFunction={opFunctions[3]}
             x={246}
@@ -210,6 +214,7 @@ export const OPTGraphInnards = ({
         </g>
       </g>
 
+      <Defs color="gray" />
       <Defs color="green" />
       <Defs color="blue" />
       <Defs color="yellow" />
@@ -219,19 +224,19 @@ export const OPTGraphInnards = ({
 };
 
 function Bub({ shouldFlipH, opFunction, x, y, size }) {
+  // <BubbleBorder size={opFunction.index} black={opFunction.sex === "m"} />
   return (
     <g>
-      <BubbleBorder size={opFunction.index} black={opFunction.sex === "m"} />
       <g
-        transform={`translate(${x}, ${y}) ${
-          shouldFlipH ? `scale(-1,1) translate(${-128}, 0)` : ""
-        }`}
         style={{
-          filter: opFunction.savior ? undefined : "url(#grayscale)"
+          transform: `translate(${x}px, ${y}px) ${
+            shouldFlipH ? `scale(-1,1) translate(${-128}px, 0px)` : ""
+          }`
+          //filter: opFunction.savior ? undefined : "url(#grayscale)"
         }}
       >
         <SVG_OP_Bubble
-          color={LetterToColor[opFunction.letter]}
+          color={opFunction.savior ? LetterToColor[opFunction.letter] : "gray"}
           width={size}
           prefix={opFunction.sex}
           children={`${opFunction.letter}${opFunction.focus}`}

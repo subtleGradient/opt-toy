@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SFC } from "react";
 
-type Colors = "green" | "yellow" | "red" | "blue";
+type Colors = "gray" | "green" | "yellow" | "red" | "blue";
 
 export const AllTheThings: SFC<{
   color?: Colors;
@@ -14,7 +14,48 @@ export const AllTheThings: SFC<{
 
 export function Defs({ color }: { color: Colors }) {
   return (
-    <>
+    <React.Fragment>
+      {color === "gray" && (
+        <defs>
+          <radialGradient
+            id="gray1"
+            cx={0}
+            cy={0}
+            r={1}
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="matrix(84.5895 -.58973 -.60427 -87.2114 63.933 45.585)"
+          >
+            <stop offset={0} stopColor="#e3e3e3" stopOpacity={0} />
+            <stop offset={1} stopColor="#dadada" />
+          </radialGradient>
+          <radialGradient
+            id="gray2"
+            cx={0}
+            cy={0}
+            r={1}
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="matrix(70.7996 -.0897 -.1027 -81.5697 63.933 45.585)"
+          >
+            <stop offset={0} stopColor="#e3e3e3" stopOpacity={0} />
+            <stop offset={0.73} stopColor="#bfbfbf" />
+            <stop offset={0.88} stopColor="#a6a6a6" />
+            <stop offset={1} stopColor="#424242" />
+          </radialGradient>
+          <radialGradient
+            id="gray3"
+            cx={0}
+            cy={0}
+            r={1}
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="matrix(-74.9668 1.32545 1.43934 60.8214 63.763 66.28)"
+          >
+            <stop offset={0} stopColor="#e3e3e3" stopOpacity={0} />
+            <stop offset={0.6} stopColor="#e5e5e5" stopOpacity={0.18} />
+            <stop offset={0.81} stopColor="#eaeaea" stopOpacity={0.588} />
+            <stop offset={1} stopColor="#efefef" />
+          </radialGradient>
+        </defs>
+      )}
       {color === "green" && (
         <defs>
           <radialGradient
@@ -182,13 +223,13 @@ export function Defs({ color }: { color: Colors }) {
           </radialGradient>
         </defs>
       )}
-    </>
+    </React.Fragment>
   );
 }
 
-export function Bubble({ color }: { color: string }) {
+export function Bubble({ color = "gray" }: { color: string }) {
   return (
-    <>
+    <React.Fragment>
       <circle cx={64} cy={64} r={64} fill="#fff" />
       <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
       <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
@@ -196,6 +237,6 @@ export function Bubble({ color }: { color: string }) {
         d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
         fill={`url(#${color}3)`}
       />
-    </>
+    </React.Fragment>
   );
 }

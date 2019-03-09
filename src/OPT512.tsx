@@ -130,6 +130,7 @@ export class OPT512 {
     const fns = [
       {
         index: 0,
+        key: this.S1[0],
         letter: this.S1[0],
         focus: this.S1[1],
         sex: sex[this.S1],
@@ -137,6 +138,7 @@ export class OPT512 {
       },
       {
         index: 1,
+        key: this.S2[0],
         letter: this.S2[0],
         focus: this.S2[1],
         sex: sex[this.S2],
@@ -144,6 +146,7 @@ export class OPT512 {
       },
       {
         index: 2,
+        key: this.D1[0],
         letter: this.D1[0],
         focus: this.D1[1],
         sex: sex[this.D1],
@@ -151,12 +154,16 @@ export class OPT512 {
       },
       {
         index: 3,
+        key: this.D2[0],
         letter: this.D2[0],
         focus: this.D2[1],
         sex: sex[this.D2],
         savior: false
       }
-    ];
+    ].map(it => {
+      if (it.key === "O" || it.key === "D") it.key = it.index;
+      return it;
+    });
     if (this.jumper === true) {
       const [s1, s2, d1, d2] = fns;
       fns[1] = d1;
@@ -165,15 +172,6 @@ export class OPT512 {
       s2.index = 2;
     }
     return fns;
-  }
-
-  get opAnimals() {
-    return {
-      eSavior: { strength: 0, text: "Play" },
-      blast: { strength: 1, text: "Blast" },
-      consume: { strength: 2, text: "Consume" },
-      eDemon: { strength: 3, text: "Sleep" }
-    };
   }
 
   get animals() {
