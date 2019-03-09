@@ -12,15 +12,21 @@ export const SVG_OP_Bubble: SFC<{
   width: number;
   height?: number;
   prefix?: string;
-}> = ({ prefix, color, width, height = width, children }) => (
+  text?: string;
+  gray?: boolean;
+}> = ({ prefix, color, width, height = width, text, gray }) => (
   <g
-    transform={fromCenter(
-      intrinsicWidth,
-      intrinsicHeight,
-      `scale(${width / intrinsicWidth} ${height / intrinsicHeight})`
-    )}
+    className={`SVG_OP_Bubble ${prefix || "?"}${text}`}
+    style={{
+      transform: fromCenter(
+        intrinsicWidth,
+        intrinsicHeight,
+        `scale(${width / intrinsicWidth}, ${height / intrinsicHeight})`,
+      ),
+    }}
   >
     <Bubble color={color} />
-    <BubbleText prefix={prefix}>{children}</BubbleText>
+    <Bubble color="gray" style={{ opacity: gray ? 1 : 0 }} />
+    <BubbleText prefix={prefix}>{text}</BubbleText>
   </g>
 );

@@ -227,9 +227,15 @@ export function Defs({ color }: { color: Colors }) {
   );
 }
 
-export function Bubble({ color = "gray" }: { color: string }) {
+export function Bubble({
+  color = "gray",
+  ...props
+}: {
+  color: string;
+  style?: any;
+}) {
   return (
-    <React.Fragment>
+    <g {...props}>
       <circle cx={64} cy={64} r={64} fill="#fff" />
       <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
       <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
@@ -237,6 +243,6 @@ export function Bubble({ color = "gray" }: { color: string }) {
         d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
         fill={`url(#${color}3)`}
       />
-    </React.Fragment>
+    </g>
   );
 }

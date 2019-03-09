@@ -2,14 +2,18 @@ import * as React from "react";
 import { Defs } from "./OPBubbles4";
 import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
 import { bubbleTextStyle } from "./SVG_OP_BubbleText";
+import { OPT512 } from "./OPT512";
 
-export const OPTGraph = ({ opType, ...props }) => {
+export const OPTGraph: React.SFC<{
+  opType: OPT512;
+  style: any;
+}> = ({ opType, ...props }) => {
   const { opFunctions } = opType;
   const opAnimals = {
     Play: { strength: opType.PlayIndex, text: "Play" },
     Blast: { strength: opType.BlastIndex, text: "Blast" },
     Consume: { strength: opType.ConsumeIndex, text: "Consume" },
-    Sleep: { strength: opType.SleepIndex, text: "Sleep" }
+    Sleep: { strength: opType.SleepIndex, text: "Sleep" },
   };
 
   const shouldFlipH = opFunctions[0].focus === "i";
@@ -19,7 +23,7 @@ export const OPTGraph = ({ opType, ...props }) => {
     S: shouldFlipH,
     D: !shouldFlipH,
     F: !shouldFlipH,
-    T: !shouldFlipH
+    T: !shouldFlipH,
   }[opFunctions[0].letter];
 
   const bottomAnimal = shouldFlipV ? opAnimals.Consume : opAnimals.Blast;
@@ -36,7 +40,7 @@ export const OPTGraph = ({ opType, ...props }) => {
         bottomAnimal,
         topAnimal,
         leftAnimal,
-        rightAnimal
+        rightAnimal,
       }}
     />
   );
@@ -54,18 +58,38 @@ export const OPTGraphInnards = ({
   style = null,
   ...props
 }) => {
+  const opFnByLetter = {
+    S:
+      opFunctions.filter(fn => fn.letter === "S")[0] ||
+      opFunctions.filter(fn => fn.letter === "O")[0],
+    F:
+      opFunctions.filter(fn => fn.letter === "F")[0] ||
+      opFunctions.filter(fn => fn.letter === "D")[0],
+    N:
+      opFunctions.filter(fn => fn.letter === "N")[0] ||
+      opFunctions.filter(fn => fn.letter === "O")[1],
+    T:
+      opFunctions.filter(fn => fn.letter === "T")[0] ||
+      opFunctions.filter(fn => fn.letter === "D")[1],
+  };
+
   return (
     <svg
-      viewBox="0 0 1015 610"
+      viewBox="0 0 1115 610"
       fillRule="evenodd"
       clipRule="evenodd"
       {...props}
       style={{
         ...style,
-        transform: `scale(${shouldFlipH ? -1 : 1},1) translate(73px)`
+        transform: `scale(${shouldFlipH ? -1 : 1},1)`,
       }}
     >
-      <g>
+      <g
+        style={{
+          ...style,
+          transform: `translate(123px)`,
+        }}
+      >
         <g id="lines">
           <path
             d="M-13.855 37.75h116.71"
@@ -86,7 +110,7 @@ export const OPTGraphInnards = ({
             transform="matrix(-1.19402 1.23567 -1.23566 -1.19401 492.035 359.857)"
           />
         </g>
-        <g id="consume">
+        <g id="bottom">
           <path
             {...AnimalStrokes[bottomAnimal.strength]}
             d="M170.116 9.576s-6.137 17.235-34.988 29.616C106.277 51.572 54.713 59.098 0 33.049c24.049 2.581 63.283-2.111 63.283-41.611"
@@ -107,7 +131,7 @@ export const OPTGraphInnards = ({
             </text>
           </g>
         </g>
-        <g id="play">
+        <g id="right">
           <path
             {...AnimalStrokes[rightAnimal.strength]}
             d="M132.591-2.45S69.148 67.665 0 28.882C15.681 24.056 39.268 12.41 39.268-27.09"
@@ -128,7 +152,7 @@ export const OPTGraphInnards = ({
             </text>
           </g>
         </g>
-        <g id="blast">
+        <g id="top">
           <path
             {...AnimalStrokes[topAnimal.strength]}
             d="M139 30.496s-62 27.5-139 18c14 1.5 38.5-16.5 38.5-56"
@@ -150,10 +174,9 @@ export const OPTGraphInnards = ({
             </text>
           </g>
         </g>
-        <g id="sleep">
+        <g id="left">
           <path
             {...AnimalStrokes[leftAnimal.strength]}
-            xmlns="http://www.w3.org/2000/svg"
             d="M104.703 26.043S67.539 53.766 0 28.882c15.681-4.826 49.823-15.017 55.856-53.825"
             fill="none"
             transform="matrix(1.72358 -.02525 .0253 1.72671 126.697 384.861)"
@@ -174,43 +197,11 @@ export const OPTGraphInnards = ({
           </g>
         </g>
 
-        <filter id="grayscale">
-          <feColorMatrix type="saturate" values={`${0}`} />
-        </filter>
-
         <g id="bubbles">
-          <Bub
-            key={opFunctions[0].key}
-            shouldFlipH={shouldFlipH}
-            opFunction={opFunctions[0]}
-            x={463}
-            y={157}
-            size={256}
-          />
-          <Bub
-            key={opFunctions[1].key}
-            shouldFlipH={shouldFlipH}
-            opFunction={opFunctions[1]}
-            x={211}
-            y={213}
-            size={193}
-          />
-          <Bub
-            key={opFunctions[2].key}
-            shouldFlipH={shouldFlipH}
-            opFunction={opFunctions[2]}
-            x={401}
-            y={371}
-            size={122}
-          />
-          <Bub
-            key={opFunctions[3].key}
-            shouldFlipH={shouldFlipH}
-            opFunction={opFunctions[3]}
-            x={246}
-            y={376}
-            size={92}
-          />
+          <Bub key="S" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.S} />
+          <Bub key="F" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.F} />
+          <Bub key="N" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.N} />
+          <Bub key="T" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.T} />
         </g>
       </g>
 
@@ -223,25 +214,35 @@ export const OPTGraphInnards = ({
   );
 };
 
-function Bub({ shouldFlipH, opFunction, x, y, size }) {
-  // <BubbleBorder size={opFunction.index} black={opFunction.sex === "m"} />
+function Bub({ shouldFlipH, opFunction, ...props }) {
+  const { x, y, size } = [
+    { x: 463, y: 157, size: 256 },
+    { x: 211, y: 213, size: 193 },
+    { x: 401, y: 371, size: 122 },
+    { x: 246, y: 376, size: 92 },
+  ][opFunction.index];
   return (
-    <g>
-      <g
-        style={{
-          transform: `translate(${x}px, ${y}px) ${
-            shouldFlipH ? `scale(-1,1) translate(${-128}px, 0px)` : ""
-          }`
-          //filter: opFunction.savior ? undefined : "url(#grayscale)"
-        }}
-      >
-        <SVG_OP_Bubble
-          color={opFunction.savior ? LetterToColor[opFunction.letter] : "gray"}
-          width={size}
-          prefix={opFunction.sex}
-          children={`${opFunction.letter}${opFunction.focus}`}
-        />
-      </g>
+    <g
+      {...props}
+      className={`Bub ${opFunction.sex || "?"}${opFunction.letter}${
+        opFunction.focus
+      }`}
+      style={{
+        transform: `translate(${x}px, ${y}px) ${
+          shouldFlipH ? `scale(-1,1) translate(${-128}px, 0px)` : ""
+        }`,
+        // filter: opFunction.savior ? undefined : ,
+        filter: `grayscale(${opFunction.savior ? 100 : 0}%)`,
+      }}
+    >
+      <SVG_OP_Bubble
+        // color={opFunction.savior ? LetterToColor[opFunction.letter] : "gray"}
+        color={LetterToColor[opFunction.letter] || "gray"}
+        width={size}
+        prefix={opFunction.sex}
+        text={`${opFunction.letter}${opFunction.focus}`}
+        gray={!opFunction.savior}
+      />
     </g>
   );
 }
@@ -250,7 +251,7 @@ const LetterToColor = {
   S: "green",
   T: "blue",
   N: "yellow",
-  F: "red"
+  F: "red",
 };
 
 const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
@@ -263,13 +264,13 @@ const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
     strokeLinejoin: "round",
     strokeMiterlimit: 6,
     strokeDasharray: "6.96 6.96 0 0",
-    strokeDashoffset: 11.59
-  }
+    strokeDashoffset: 11.59,
+  },
 ];
 
 function BubbleBorder({
   black,
-  size = 0
+  size = 0,
 }: {
   black?: boolean;
   size: 0 | 1 | 2 | 3;
@@ -278,7 +279,7 @@ function BubbleBorder({
     "translate(-825.987 -15.64) scale(1.04627)",
     "translate(-744.14 99.286) scale(.78883)",
     "translate(-182.408 322.039) scale(.50068)",
-    "matrix(.37684 0 0 .37684 -176.406 355.175) translate(0 -2)"
+    "matrix(.37684 0 0 .37684 -176.406 355.175) translate(0 -2)",
   ][size];
   const stroke = [15, 21, 29.96, 39.8][size];
   return (
