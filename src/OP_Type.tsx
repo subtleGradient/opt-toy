@@ -20,7 +20,7 @@ const Gold = 0.61803398875;
 export class OP_Type extends React.Component<Props> {
   // Set default properties
   static defaultProps = {
-    text: "Hello World!",
+    text: "Hello World!"
   };
 
   // Items shown in property panel
@@ -30,43 +30,6 @@ export class OP_Type extends React.Component<Props> {
 
   render() {
     const { height = 256, width = height * 4, opType } = this.props;
-    return <OPTGraph />;
-    return (
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width, height }}>
-        <filter id="grayscale">
-          <feColorMatrix type="saturate" values={`${1}`} />
-        </filter>
-        <g
-          transform={`scale(${height / intrinsicWidth} ${height /
-            intrinsicHeight})`}
-          style={{ filter: "url(#grayscale)" }}
-        >
-          <g transform={`translate(${intrinsicWidth * 0}, ${0})`}>
-            <SVG_OP_Bubble color="red" width={128} children="Fe" />
-          </g>
-          <g transform={`translate(${intrinsicWidth * 1}, ${0})`}>
-            <SVG_OP_Bubble color="green" width={128 * Gold} children="Se" />
-          </g>
-          <g transform={`translate(${intrinsicWidth * 2}, ${0})`}>
-            <SVG_OP_Bubble
-              color="yellow"
-              width={128 * Gold * Gold}
-              children="Ni"
-            />
-          </g>
-          <g transform={`translate(${intrinsicWidth * 3}, ${0})`}>
-            <SVG_OP_Bubble
-              color="blue"
-              width={128 * Gold * Gold * Gold}
-              children="Ti"
-            />
-          </g>
-        </g>
-        <Defs color="green" />
-        <Defs color="blue" />
-        <Defs color="yellow" />
-        <Defs color="red" />
-      </svg>
-    );
+    return <OPTGraph style={{ maxWidth: 500 }} opType={opType} />;
   }
 }

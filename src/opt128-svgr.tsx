@@ -3,18 +3,13 @@ import { Defs } from "./OPBubbles4";
 import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
 import { bubbleTextStyle } from "./SVG_OP_BubbleText";
 
-export const OPTGraph = ({ ...props }) => {
-  const opFunctions = [
-    { strength: 0, letter: "F", focus: "e", sex: "m", savior: true },
-    { strength: 1, letter: "N", focus: "i", sex: "m", savior: false },
-    { strength: 2, letter: "S", focus: "e", sex: "f", savior: true },
-    { strength: 3, letter: "T", focus: "i", sex: "f", savior: false },
-  ];
+export const OPTGraph = ({ opType, ...props }) => {
+  const { opFunctions } = opType;
   const opAnimals = {
     eSavior: { strength: 0, text: "Play" },
     blast: { strength: 1, text: "Blast" },
     consume: { strength: 2, text: "Consume" },
-    eDemon: { strength: 3, text: "Sleep" },
+    eDemon: { strength: 3, text: "Sleep" }
   };
 
   const shouldFlipH = opFunctions[0].focus === "i";
@@ -30,6 +25,7 @@ export const OPTGraphInnards = ({
   opFunctions,
   opAnimals,
   shouldFlipH,
+  style,
   ...props
 }) => {
   return (
@@ -37,12 +33,13 @@ export const OPTGraphInnards = ({
       viewBox="0 0 1015 610"
       fillRule="evenodd"
       clipRule="evenodd"
-      style={
-        shouldFlipH ? { transform: `scale(-1,1)`, textAnchor: "end" } : null
-      }
       {...props}
+      style={{
+        ...style,
+        transform: `scale(${shouldFlipH ? -1 : 1},1) translate(73px)`
+      }}
     >
-      <g transform="translate(73)">
+      <g>
         <g id="lines">
           <path
             d="M-13.855 37.75h116.71"
@@ -198,13 +195,13 @@ export const OPTGraphInnards = ({
 function Bub({ shouldFlipH, opFunction, x, y, size }) {
   return (
     <g>
-      <BubbleBorder size={opFunction.strength} black={opFunction.sex === "m"} />
+      <BubbleBorder size={opFunction.index} black={opFunction.sex === "m"} />
       <g
         transform={`translate(${x}, ${y}) ${
           shouldFlipH ? `scale(-1,1) translate(${-128}, 0)` : ""
         }`}
         style={{
-          filter: opFunction.savior ? undefined : "url(#grayscale)",
+          filter: opFunction.savior ? undefined : "url(#grayscale)"
         }}
       >
         <SVG_OP_Bubble
@@ -222,7 +219,7 @@ const LetterToColor = {
   S: "green",
   T: "blue",
   N: "yellow",
-  F: "red",
+  F: "red"
 };
 
 const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
@@ -235,13 +232,13 @@ const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
     strokeLinejoin: "round",
     strokeMiterlimit: 6,
     strokeDasharray: "6.96 6.96 0 0",
-    strokeDashoffset: 11.59,
-  },
+    strokeDashoffset: 11.59
+  }
 ];
 
 function BubbleBorder({
   black,
-  size = 0,
+  size = 0
 }: {
   black?: boolean;
   size: 0 | 1 | 2 | 3;
@@ -250,7 +247,7 @@ function BubbleBorder({
     "translate(-825.987 -15.64) scale(1.04627)",
     "translate(-744.14 99.286) scale(.78883)",
     "translate(-182.408 322.039) scale(.50068)",
-    "matrix(.37684 0 0 .37684 -176.406 355.175) translate(0 -2)",
+    "matrix(.37684 0 0 .37684 -176.406 355.175) translate(0 -2)"
   ][size];
   const stroke = [15, 21, 29.96, 39.8][size];
   return (

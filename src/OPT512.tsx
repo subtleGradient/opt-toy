@@ -3,7 +3,7 @@ import {
   NamedCOINS,
   BoolMaybe,
   isBool,
-  cleanCoinText,
+  cleanCoinText
 } from "./Coin";
 
 export class OPT512 {
@@ -35,12 +35,12 @@ export class OPT512 {
     return this.nullCount === 0;
   }
   get fmS() {
-    return ["F", "M", "?"][
+    return ["f", "m", "?"][
       maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])
     ];
   }
   get fmDe() {
-    return ["F", "M", "?"][
+    return ["f", "m", "?"][
       maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
     ];
   }
@@ -102,6 +102,80 @@ export class OPT512 {
       maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
     ];
   }
+  get D1() {
+    return Flipped[this.S2] || this.S2;
+  }
+  get D2() {
+    return Flipped[this.S1] || this.S1;
+  }
+  get De() {
+    return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus];
+  }
+  get Di() {
+    return Flipped[this.De];
+  }
+  get jumper() {
+    return this.dFocus === "x" ? null : this.dFocus === this.oFocus;
+  }
+  get opFunctions() {
+    const sex = {
+      Si: this.fmS,
+      Se: this.fmS,
+      Ni: Flipped[this.fmS],
+      Ne: Flipped[this.fmS],
+      [this.De]: this.fmDe,
+      [this.Di]: Flipped[this.fmDe]
+    };
+
+    const fns = [
+      {
+        index: 0,
+        letter: this.S1[0],
+        focus: this.S1[1],
+        sex: sex[this.S1],
+        savior: true
+      },
+      {
+        index: 1,
+        letter: this.S2[0],
+        focus: this.S2[1],
+        sex: sex[this.S2],
+        savior: true
+      },
+      {
+        index: 2,
+        letter: this.D1[0],
+        focus: this.D1[1],
+        sex: sex[this.D1],
+        savior: false
+      },
+      {
+        index: 3,
+        letter: this.D2[0],
+        focus: this.D2[1],
+        sex: sex[this.D2],
+        savior: false
+      }
+    ];
+    if (this.jumper === true) {
+      const [s1, s2, d1, d2] = fns;
+      fns[1] = d1;
+      d1.index = 1;
+      fns[2] = s2;
+      s2.index = 2;
+    }
+    return fns;
+  }
+
+  get opAnimals() {
+    return {
+      eSavior: { strength: 0, text: "Play" },
+      blast: { strength: 1, text: "Blast" },
+      consume: { strength: 2, text: "Consume" },
+      eDemon: { strength: 3, text: "Sleep" }
+    };
+  }
+
   get A1Code() {
     return `O${this.oFocus}D${this.dFocus}`;
   }
@@ -126,7 +200,7 @@ export class OPT512 {
         BCP: "S",
         BPS: "C",
         CPS: "B",
-        BCS: "P",
+        BCS: "P"
       }[[this.A1, this.A2, this.A3].sort().join("")] || "?"
     );
   }
@@ -147,10 +221,51 @@ export class OPT512 {
       S: true,
       C: false,
       B: false,
-      P: true,
+      P: true
     }[this.A4];
   }
 }
+
+const Flipped = {
+  f: "m",
+  m: "f",
+
+  S: "N",
+  F: "T",
+  N: "S",
+  T: "F",
+
+  Sx: "Nx",
+  Fx: "Tx",
+  Nx: "Sx",
+  Tx: "Fx",
+
+  Se: "Ni",
+  Fe: "Ti",
+  Ne: "Si",
+  Te: "Fi",
+
+  Si: "Ne",
+  Fi: "Te",
+  Ni: "Se",
+  Ti: "Fe",
+
+  i: "e",
+  e: "i",
+  x: "x",
+  I: "E",
+  E: "I",
+  X: "X",
+
+  O: "D",
+  D: "O",
+  Ox: "Ox",
+  Dx: "Dx",
+  Oi: "Oe",
+  Di: "De",
+  Oe: "Oi",
+  De: "Di"
+};
 
 class OPFn {
   opType: OPT512;
@@ -172,7 +287,7 @@ const AnimalCodeToAnimalLetter = {
   OiDi: "S",
   OiDe: "B",
   OeDi: "C",
-  OeDe: "P",
+  OeDe: "P"
 };
 
 const AnimalLetterFocusCodeToAnimalLetters = {
@@ -199,5 +314,5 @@ const AnimalLetterFocusCodeToAnimalLetters = {
   PCe: "B",
   CPe: "B",
   BPe: "C",
-  PBe: "C",
+  PBe: "C"
 };
