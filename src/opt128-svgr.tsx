@@ -120,12 +120,13 @@ export const OPTGraphInnards = ({
           <g transform="translate(-199.029 -160.442) scale(2.289) translate(364.302 295.991)">
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[bottomAnimal.strength]}
-              style={
-                shouldFlipH
+              fontSize={AnimalStrengthToFontSize[bottomAnimal.strength] || 0}
+              style={{
+                // opacity: bottomAnimal.strength > -1 ? 1 : 0,
+                ...(shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "end" }
-                  : null
-              }
+                  : null),
+              }}
             >
               {bottomAnimal.text}
             </text>
@@ -141,7 +142,7 @@ export const OPTGraphInnards = ({
           <g transform="translate(-199.029 -160.442) scale(2.289) translate(402.586 239.69)">
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[rightAnimal.strength]}
+              fontSize={AnimalStrengthToFontSize[rightAnimal.strength] || 0}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "end" }
@@ -163,7 +164,7 @@ export const OPTGraphInnards = ({
             {" "}
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[topAnimal.strength]}
+              fontSize={AnimalStrengthToFontSize[topAnimal.strength] || 0}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "start" }
@@ -185,7 +186,7 @@ export const OPTGraphInnards = ({
             {" "}
             <text
               fontFamily={bubbleTextStyle.fontFamily}
-              fontSize={AnimalStrengthToFontSize[leftAnimal.strength]}
+              fontSize={AnimalStrengthToFontSize[leftAnimal.strength] || 0}
               style={
                 shouldFlipH
                   ? { transform: `scale(-1,1)`, textAnchor: "start" }
@@ -231,8 +232,6 @@ function Bub({ shouldFlipH, opFunction, ...props }) {
         transform: `translate(${x}px, ${y}px) ${
           shouldFlipH ? `scale(-1,1) translate(${-128}px, 0px)` : ""
         }`,
-        // filter: opFunction.savior ? undefined : ,
-        filter: `grayscale(${opFunction.savior ? 100 : 0}%)`,
       }}
     >
       <SVG_OP_Bubble
@@ -248,6 +247,8 @@ function Bub({ shouldFlipH, opFunction, ...props }) {
 }
 
 const LetterToColor = {
+  O: "white",
+  D: "white",
   S: "green",
   T: "blue",
   N: "yellow",

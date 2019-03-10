@@ -6,3 +6,8 @@ svg,
 svg * {
   transition: all 1s ease-in-out;
 }
+
+td > label,
+th > label {
+  display: block;
+}

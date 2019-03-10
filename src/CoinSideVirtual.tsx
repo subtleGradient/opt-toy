@@ -18,7 +18,11 @@ export function CoinSideVirtual({
       <td style={{ textAlign: "right" }}>
         <label>
           <span
-            style={{ fontWeight: isBool(side) && !side ? "bold" : undefined }}
+            style={
+              (isBool(side) &&
+                (!side ? { fontWeight: "bold" } : { opacity: 0.5 })) ||
+              null
+            }
           >
             {tails}
           </span>
@@ -45,7 +49,11 @@ export function CoinSideVirtual({
             onChange={e => onFlip(e.currentTarget.checked)}
           />
           <span
-            style={{ fontWeight: isBool(side) && side ? "bold" : undefined }}
+            style={
+              (isBool(side) &&
+                (side ? { fontWeight: "bold" } : { opacity: 0.5 })) ||
+              null
+            }
           >
             {heads}
           </span>

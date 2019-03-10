@@ -20,7 +20,14 @@ export function TypeThing({ storageID = null }) {
       localStorage.setItem(storageID, JSON.stringify(opType.present));
   }, [storageID, opType.present]);
   return (
-    <div>
+    <div style={{ minWidth: 555 }}>
+      <div style={{ textAlign: "center", fontSize: 24, marginTop: "1ex" }}>
+        <div>
+          <OPTypeBinaryText type={opType.present} />
+        </div>
+        <OP_Type opType={new OPT512(opType.present)} />
+      </div>
+
       <div>
         <button
           key="undo"
@@ -28,14 +35,14 @@ export function TypeThing({ storageID = null }) {
           disabled={!opTypeActions.canUndo}
         >
           undo
-        </button>{" "}
+        </button>
         <button
           key="redo"
           onClick={opTypeActions.redo}
           disabled={!opTypeActions.canRedo}
         >
           redo
-        </button>{" "}
+        </button>
         <button
           key="reset"
           onClick={() =>
@@ -44,23 +51,19 @@ export function TypeThing({ storageID = null }) {
         >
           reset
         </button>
+        <OPCodeInput
+          type={opType.present}
+          onParsed={newType => {
+            opTypeActions.set(newType);
+          }}
+        />
       </div>
-      <OPCodeInput
-        type={opType.present}
-        onParsed={newType => {
-          opTypeActions.set(newType);
-        }}
-      />
       <OPTypeBinaryForm
         type={opType.present}
         onChange={newType => {
           opTypeActions.set(newType);
         }}
       />
-      <div style={{ textAlign: "center", fontSize: 24, marginTop: "1ex" }}>
-        <OPTypeBinaryText type={opType.present} />
-        <OP_Type opType={new OPT512(opType.present)} />
-      </div>
     </div>
   );
 }

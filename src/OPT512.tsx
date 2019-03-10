@@ -4,7 +4,7 @@ import {
   BoolMaybe,
   isBool,
   cleanCoinText,
-  BLANK_TYPE
+  BLANK_TYPE,
 } from "./Coin";
 
 export class OPT512 {
@@ -48,22 +48,82 @@ export class OPT512 {
   get dLetter() {
     return ["F", "T", "D"][
       maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
-    ];
+    ] as any;
   }
-  get oLetter() {
+  set dLetter(letter: "F" | "T" | "D") {
+    switch (letter) {
+      case "F":
+        this.type[NamedCOINS.coinFT.index] = false;
+        break;
+
+      case "T":
+        this.type[NamedCOINS.coinFT.index] = true;
+        break;
+
+      case "D":
+      default:
+        this.type[NamedCOINS.coinFT.index] = null;
+    }
+  }
+  get oLetter(): "N" | "S" | "O" {
     return ["N", "S", "O"][
       maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])
-    ];
+    ] as any;
+  }
+  set oLetter(letter: "N" | "S" | "O") {
+    switch (letter) {
+      case "N":
+        this.type[NamedCOINS.coinNS.index] = false;
+        break;
+
+      case "S":
+        this.type[NamedCOINS.coinNS.index] = true;
+        break;
+
+      case "O":
+      default:
+        this.type[NamedCOINS.coinNS.index] = null;
+    }
   }
   get dFocus() {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])
-    ];
+    ] as any;
   }
   get oFocus() {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])
-    ];
+    ] as any;
+  }
+  set dFocus(letter: "i" | "e" | "x") {
+    switch (letter) {
+      case "i":
+        this.type[NamedCOINS.coinDiDe.index] = false;
+        break;
+
+      case "e":
+        this.type[NamedCOINS.coinDiDe.index] = true;
+        break;
+
+      case "x":
+      default:
+        this.type[NamedCOINS.coinDiDe.index] = null;
+    }
+  }
+  set oFocus(letter: "i" | "e" | "x") {
+    switch (letter) {
+      case "i":
+        this.type[NamedCOINS.coinOiOe.index] = false;
+        break;
+
+      case "e":
+        this.type[NamedCOINS.coinOiOe.index] = true;
+        break;
+
+      case "x":
+      default:
+        this.type[NamedCOINS.coinOiOe.index] = null;
+    }
   }
   get a2Focus() {
     return ["i", "e", "x"][
@@ -125,7 +185,7 @@ export class OPT512 {
       Ni: Flipped[this.fmS],
       Ne: Flipped[this.fmS],
       [this.De]: this.fmDe,
-      [this.Di]: Flipped[this.fmDe]
+      [this.Di]: Flipped[this.fmDe],
     };
 
     const fns = [
@@ -135,7 +195,7 @@ export class OPT512 {
         letter: this.S1[0],
         focus: this.S1[1],
         sex: sex[this.S1],
-        savior: true
+        savior: true,
       },
       {
         index: 1,
@@ -143,7 +203,7 @@ export class OPT512 {
         letter: this.S2[0],
         focus: this.S2[1],
         sex: sex[this.S2],
-        savior: true
+        savior: true,
       },
       {
         index: 2,
@@ -151,7 +211,7 @@ export class OPT512 {
         letter: this.D1[0],
         focus: this.D1[1],
         sex: sex[this.D1],
-        savior: false
+        savior: false,
       },
       {
         index: 3,
@@ -159,8 +219,8 @@ export class OPT512 {
         letter: this.D2[0],
         focus: this.D2[1],
         sex: sex[this.D2],
-        savior: false
-      }
+        savior: false,
+      },
     ].map(it => {
       if (it.key === "O" || it.key === "D") it.key = it.index;
       return it;
@@ -215,7 +275,7 @@ export class OPT512 {
         BCP: "S",
         BPS: "C",
         CPS: "B",
-        BCS: "P"
+        BCS: "P",
       }[[this.A1, this.A2, this.A3].sort().join("")] || "?"
     );
   }
@@ -236,8 +296,38 @@ export class OPT512 {
       S: true,
       C: false,
       B: false,
-      P: true
+      P: true,
     }[this.A4];
+  }
+  get sideOfSiNe(): BoolMaybe {
+    if (this.oLetter === "S" && this.oFocus === "i") return false;
+    if (this.oLetter === "N" && this.oFocus === "e") return true;
+    return null;
+  }
+  get sideOfNiSe(): BoolMaybe {
+    if (this.oLetter === "N" && this.oFocus === "i") return false;
+    if (this.oLetter === "S" && this.oFocus === "e") return true;
+    return null;
+  }
+  get sideOfFiTe(): BoolMaybe {
+    if (this.dLetter === "F" && this.dFocus === "i") return false;
+    if (this.dLetter === "T" && this.dFocus === "e") return true;
+    return null;
+  }
+  get sideOfTiFe(): BoolMaybe {
+    if (this.dLetter === "T" && this.dFocus === "i") return false;
+    if (this.dLetter === "F" && this.dFocus === "e") return true;
+    return null;
+  }
+  get sideOfSFNT(): BoolMaybe {
+    if (this.oLetter === "S" && this.dLetter === "F") return false;
+    if (this.oLetter === "N" && this.dLetter === "T") return true;
+    return null;
+  }
+  get sideOfNFST(): BoolMaybe {
+    if (this.oLetter === "N" && this.dLetter === "F") return false;
+    if (this.oLetter === "S" && this.dLetter === "T") return true;
+    return null;
   }
 }
 
@@ -279,7 +369,7 @@ const Flipped = {
   Oi: "Oe",
   Di: "De",
   Oe: "Oi",
-  De: "Di"
+  De: "Di",
 };
 
 class OPFn {
@@ -302,7 +392,7 @@ const AnimalCodeToAnimalLetter = {
   OiDi: "S",
   OiDe: "B",
   OeDi: "C",
-  OeDe: "P"
+  OeDe: "P",
 };
 
 const AnimalLetterFocusCodeToAnimalLetters = {
@@ -329,5 +419,5 @@ const AnimalLetterFocusCodeToAnimalLetters = {
   PCe: "B",
   CPe: "B",
   BPe: "C",
-  PBe: "C"
+  PBe: "C",
 };
