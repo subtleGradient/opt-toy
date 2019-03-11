@@ -1,11 +1,11 @@
 import * as React from "react";
 import { SFC } from "react";
 
-type Colors = "gray" | "green" | "yellow" | "red" | "blue";
+type Colors = "white" | "gray" | "green" | "yellow" | "red" | "blue";
 
 export const AllTheThings: SFC<{
   color?: Colors;
-}> = ({ color = "green" }) => (
+}> = ({ color }) => (
   <svg>
     <Bubble color={color} />
     <Defs color={color} />
@@ -234,15 +234,20 @@ export function Bubble({
   color: string;
   style?: any;
 }) {
+  const white = color === "white";
   return (
     <g {...props}>
       <circle cx={64} cy={64} r={64} fill="#fff" />
-      <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
-      <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
-      <path
-        d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
-        fill={`url(#${color}3)`}
-      />
+      {!white && (
+        <React.Fragment>
+          <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
+          <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
+          <path
+            d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
+            fill={`url(#${color}3)`}
+          />
+        </React.Fragment>
+      )}
     </g>
   );
 }
