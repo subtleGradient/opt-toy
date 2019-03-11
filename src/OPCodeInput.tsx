@@ -19,7 +19,7 @@ export function OPCodeInput({ type, onParsed }) {
   return (
     <React.Fragment>
       <input
-        style={{ border: isEditing ? `1px solid lime` : `1px solid red` }}
+        style={{ opacity: isEditing ? 1 : 0.8 }}
         placeholder={inputTypeText}
         onChange={handleChange}
         value={isEditing ? value : inputTypeText}
