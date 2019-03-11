@@ -52,7 +52,7 @@ export const NamedCOINS = {
     short: "coinSfm",
     description: "Sensory Modality",
     heads: "S masculine",
-    tails: "femanine S",
+    tails: "feminine S",
     clean: type =>
       type
         .replace(/\?\?-/, "")
@@ -70,7 +70,7 @@ export const NamedCOINS = {
     short: "coinDefm",
     description: "Extroverted Decider Modality",
     heads: "De masculine",
-    tails: "femanine De",
+    tails: "feminine De",
     clean: type =>
       type.replace(
         /([fm])([DTFOSN][xei])/i,
