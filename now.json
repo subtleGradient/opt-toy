@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "opt-toy",
+  "alias": "opt-toy.now.sh",
   "builds": [
     {
       "src": "package.json",
