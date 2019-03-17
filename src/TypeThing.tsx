@@ -2,10 +2,15 @@ import * as React from "react";
 import useUndo from "use-undo";
 import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin";
 import { OPTypeBinaryForm } from "./OPTypeBinaryForm";
-import { OPTypeBinaryText } from "./index";
 import { OPCodeInput } from "./OPCodeInput";
 import { OP_Type } from "./OP_Type";
 import { OPT512 } from "./OPT512";
+
+function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
+  const opt = new OPT512(type);
+  return <span>{opt.OP512}</span>;
+}
+
 export function TypeThing({
   selected = false,
   defaultType,
