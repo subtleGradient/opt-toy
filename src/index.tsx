@@ -50,6 +50,3 @@ function App() {
 
 const rootElement = document.getElementById("root");
 render(<App />, rootElement);
-
-const fetchSheetData = async () =>
-  await fetch("https://api.sheety.co/18a68d25-be81-4ce2-be81-5e410644e216");
