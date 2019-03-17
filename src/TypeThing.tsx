@@ -13,18 +13,22 @@ export function TypeThing({
   onChangeText = null,
 }) {
   const [isOpen, setIsOpen] = React.useState(selected);
-  const [opType, opTypeActions] = useUndo(BLANK_TYPE.slice(0) as OPT512Maybe);
+  const [opType, opTypeActions] = useUndo(
+    parseCoinText(cleanCoinText(defaultType)),
+  );
   const opTypeInstance = new OPT512(opType.present);
   const typeText = opTypeInstance.OP512;
 
   React.useEffect(() => {
     if (onChangeText) onChangeText(typeText);
-  }, [onChangeText, opType.present]);
-  React.useEffect(() => {
-    if (defaultType) {
-      opTypeActions.set(parseCoinText(cleanCoinText(defaultType)));
-    }
-  }, [defaultType]);
+  }, [opType.present]);
+  // React.useEffect(() => {
+  //   if (defaultType) {
+  //     const type = parseCoinText(cleanCoinText(defaultType));
+  //     console.log("defaultType", defaultType, type);
+  //     opTypeActions.set(type);
+  //   }
+  // }, [defaultType]);
 
   return (
     <div

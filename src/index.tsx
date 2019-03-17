@@ -3,10 +3,13 @@ import { render } from "react-dom";
 
 import "./styles.css";
 import { OPT512 } from "./OPT512";
-import { OPT512Maybe } from "./Coin";
+import { OPT512Maybe, parseCoinText } from "./Coin";
 import { TypeThing } from "./TypeThing";
 // import useUndo from "use-undo";
 // import { createBrowserHistory } from "history";
+import createPersistedState from "use-persisted-state";
+import { SetStateAction, Dispatch } from "react";
+const useSavedItems = createPersistedState("OPT-TOY:saved");
 
 interface KnownType {
   index: number;
@@ -40,7 +43,7 @@ export function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
 }
 
 interface ParsedQuery {
-  [key: string]: string | string[];
+  [key: string]: string[];
 }
 
 function encodeAsQueryString(data: ParsedQuery): string {
@@ -52,6 +55,7 @@ function encodeAsQueryString(data: ParsedQuery): string {
     if (!value) continue;
     if (Array.isArray(value)) {
       for (const item of value) {
+        if (item == null) continue;
         params.push(
           `${encodeURIComponent(key) + "[]"}=${encodeURIComponent(item).replace(
             /%2F/g,
@@ -82,112 +86,142 @@ function parseQueryString(query: string): ParsedQuery {
       const [key, value]: string[] = param
         .split("=")
         .map(it => decodeURIComponent(it));
-      if (key.endsWith("[]")) {
-        const simpleKey = key.replace("[]", "");
-        data[simpleKey] = [...(data[simpleKey] || []), value].filter(Boolean);
-      } else {
-        data[key] = value;
-      }
+      const simpleKey = key.replace("[]", "");
+      data[simpleKey] = [...(data[simpleKey] || []), value].filter(Boolean);
       return data;
     }, {});
 }
 
-const STORAGE_ID = "OPT-TOY";
-
 function useLocationHash(window) {
-  const [query, setQuery] = React.useState(
-    () => window.location.hash || localStorage.getItem(STORAGE_ID),
-  );
+  const [query, setQuery] = React.useState(() => window.location.hash);
+
+  // React.useEffect(() => {
+  //   if (!window) return;
+  //   const handler = () => setQuery(window.location.hash);
+  //   window.addEventListener("hashchange", handler);
+  //   return () => window.removeEventListener("hashchange", handler);
+  // }, [window]);
 
   React.useEffect(() => {
-    if (!window) return;
-    const handler = () => setQuery(window.location.hash);
-    window.addEventListener("hashchange", handler);
-    return () => window.removeEventListener("hashchange", handler);
-  }, [window]);
-
-  React.useEffect(() => {
-    localStorage.setItem(STORAGE_ID, query);
+    window.location.hash = query;
   }, [query]);
 
-  return [
-    query,
-    query => {
-      console.log("set hash", query);
-      window.location.hash = query;
-    },
-  ];
+  return [query, setQuery];
 }
 
-function useQueryData(): [ParsedQuery, (data: ParsedQuery) => void] {
+function useQueryData(): [ParsedQuery, Dispatch<SetStateAction<ParsedQuery>>] {
   const [query, setQuery] = useLocationHash(window);
   const [queryData, setQueryData] = React.useState(() =>
     parseQueryString(query),
   );
-  React.useEffect(() => setQueryData(parseQueryString(query)), [query]);
   const encodedQuery = encodeAsQueryString(queryData);
   React.useEffect(() => setQuery(encodedQuery), [encodedQuery]);
-
   return [queryData, setQueryData];
 }
 
-function App() {
+function useQueryDataKey(
+  dataKey: string,
+  defaultValues: string[] = [],
+): [string[], Dispatch<SetStateAction<string[]>>] {
   const [queryData, setQueryData] = useQueryData();
-  const types = [
-    ...(Array.isArray(queryData.type)
-      ? queryData.type.filter(Boolean)
-      : [queryData.type] || ["Dx/Ox"]),
+  return [
+    queryData[dataKey] || defaultValues,
+    newValue => {
+      setQueryData(state => ({
+        ...state,
+        [dataKey]:
+          typeof newValue === "function"
+            ? newValue(state[dataKey] || defaultValues)
+            : newValue,
+      }));
+    },
   ];
-  const setTypes = setter =>
-    setQueryData({
-      ...queryData,
-      type: setter(types),
+}
+
+// const useTypes: typeof React.useState = () => {
+//   // const [instanceState, setInstanceState] = React.useState([]);
+//   // const types = [
+//   //   ...(Array.isArray(instanceState)
+//   //     ? instanceState.filter(Boolean)
+//   //     : [instanceState] || ["Dx/Ox"]),
+//   // ];
+//   // const setTypes = setter =>
+//   //   setInstanceState({
+//   //     ...instanceState,
+//   //     type: setter(types),
+//   //   });
+//   return [types, setTypes];
+// };
+
+class OptToyItem {
+  persist: boolean;
+  bookmarked: boolean;
+  label: string;
+  opType: OPT512;
+  constructor(opTypeText: string) {
+    this.opType = new OPT512(parseCoinText(opTypeText));
+  }
+}
+
+function useOptToyItems() {
+  const [items, setItems] = React.useState([]);
+
+  const [bookmarkedTypes, setBookmarkedTypes] = useQueryDataKey("type");
+  React.useEffect(() => {
+    bookmarkedTypes.map(opText => {
+      const item = new OptToyItem(opText);
+      item.bookmarked = true;
+      return item;
     });
+  }, []);
+
+  const [savedItems, setSavedItems] = useSavedItems();
+  return [items, () => {}];
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+function App() {
+  // const [optToyState, setOptToyState] = useOptToyGlobalState({});
+  // const [bookmarkedTypes, setBookmarkedTypes] = useQueryDataKey("type");
+  const [types, setTypes] = useQueryDataKey("type");
   const setOPTypeTextAtIndex = (index, opTypeText) => {
-    setTypes(types => {
-      types[index] = opTypeText;
-      return types;
-    });
+    console.log("setOPTypeTextAtIndex", index, opTypeText);
+    const newTypes = types.slice();
+    newTypes[index] = opTypeText;
+    setTypes(newTypes);
   };
-  // const [opTypes, opTypesActions] = useUndo(queryData);
 
   let [showKnown, setShowKnown] = React.useState(false);
 
   return (
     <div className="App">
-      {/* <pre>{JSON.stringify(queryData, null, 2)}</pre> */}
-      {/* <button
-        onClick={e => {
-          e.preventDefault();
-          setCount(count - 1);
-        }}
-        disabled={count === 1}
-      >
-        Less!
-      </button>
-      <button
-        onClick={e => {
-          e.preventDefault();
-          setCount(count + 1);
-        }}
-        disabled={count >= 8}
-      >
-        More!
-      </button> */}
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-        {types.map((type, index) => (
-          <TypeThing
-            key={index}
-            selected={index === 0}
-            defaultType={type}
-            onClose={() => {
-              setTypes(types => types.filter((_, iii) => iii !== index));
-            }}
-            onChangeText={opTypeText => {
-              setOPTypeTextAtIndex(index, opTypeText);
-            }}
-          />
-        ))}
+        {types.map(
+          (type, index) =>
+            type && (
+              <TypeThing
+                key={index}
+                selected={index === 0}
+                defaultType={type}
+                onClose={() => {
+                  setOPTypeTextAtIndex(index, null);
+                }}
+                onChangeText={opTypeText => {
+                  setOPTypeTextAtIndex(index, opTypeText);
+                }}
+              />
+            ),
+        )}
         <button
           onClick={e => {
             setOPTypeTextAtIndex(types.length, "Dx/Ox");
@@ -223,7 +257,7 @@ function App() {
           KNOWN_TYPES.map((kType, index) => {
             const kTypePrev = KNOWN_TYPES[index - 1] || { ...kType };
             return (
-              <React.Fragment>
+              <React.Fragment key={kType.index}>
                 {kType["m/F"] !== kTypePrev["m/F"] && <br />}
                 {kType.saviors !== kTypePrev.saviors && <br />}
                 <a

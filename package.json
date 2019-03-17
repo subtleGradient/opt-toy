@@ -9,11 +9,13 @@
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
+    "@types/use-persisted-state": "^0.3.0",
     "framer": "^1.0.0-alpha.7",
     "history": "^4.7.2",
     "react": "16.8.4",
     "react-dom": "16.8.4",
     "react-scripts": "2.1.8",
+    "use-persisted-state": "^0.3.0",
     "use-undo": "1.0.0"
   },
   "devDependencies": {
