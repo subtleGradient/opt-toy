@@ -9,30 +9,23 @@ import { OPT512 } from "./OPT512";
 export function TypeThing({
   selected = false,
   defaultType,
-  storageID = null,
   onClose = null,
+  onChangeText = null,
 }) {
   const [isOpen, setIsOpen] = React.useState(selected);
   const [opType, opTypeActions] = useUndo(BLANK_TYPE.slice(0) as OPT512Maybe);
+  const opTypeInstance = new OPT512(opType.present);
+  const typeText = opTypeInstance.OP512;
+
   React.useEffect(() => {
-    if (storageID) {
-      try {
-        opTypeActions.set(JSON.parse(localStorage.getItem(storageID)));
-      } catch (e) {}
-    }
-  }, [storageID]);
+    if (onChangeText) onChangeText(typeText);
+  }, [onChangeText, opType.present]);
   React.useEffect(() => {
     if (defaultType) {
       opTypeActions.set(parseCoinText(cleanCoinText(defaultType)));
     }
   }, [defaultType]);
-  React.useEffect(() => {
-    if (storageID)
-      localStorage.setItem(storageID, JSON.stringify(opType.present));
-  }, [storageID, opType.present]);
 
-  const opTypeInstance = new OPT512(opType.present);
-  const typeText = opTypeInstance.OP512;
   return (
     <div
       style={{

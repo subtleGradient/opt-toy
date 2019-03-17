@@ -55,16 +55,16 @@ function encodeAsQueryString(data: ParsedQuery): string {
         params.push(
           `${encodeURIComponent(key) + "[]"}=${encodeURIComponent(item).replace(
             /%2F/g,
-            "/"
-          )}`
+            "/",
+          )}`,
         );
       }
     } else {
       params.push(
         `${encodeURIComponent(key)}=${encodeURIComponent(value).replace(
           /%2F/g,
-          "/"
-        )}`
+          "/",
+        )}`,
       );
     }
   }
@@ -84,7 +84,7 @@ function parseQueryString(query: string): ParsedQuery {
         .map(it => decodeURIComponent(it));
       if (key.endsWith("[]")) {
         const simpleKey = key.replace("[]", "");
-        data[simpleKey] = [...(data[simpleKey] || []), value];
+        data[simpleKey] = [...(data[simpleKey] || []), value].filter(Boolean);
       } else {
         data[key] = value;
       }
@@ -92,53 +92,66 @@ function parseQueryString(query: string): ParsedQuery {
     }, {});
 }
 
-function useQueryString(
-  object: any,
-  objectKey: string
-): [ParsedQuery, (data: ParsedQuery) => void] {
-  const [query, setQuery] = React.useState(object[objectKey]);
-  const queryData = parseQueryString(query);
-  const setQueryData = data => {
-    object[objectKey] = encodeAsQueryString(data);
-  };
+const STORAGE_ID = "OPT-TOY";
 
-  // React.useEffect(() => {}, [queryData]);
+function useLocationHash(window) {
+  const [query, setQuery] = React.useState(
+    () => window.location.hash || localStorage.getItem(STORAGE_ID),
+  );
+
   React.useEffect(() => {
-    const handler = () => {
-      setQuery(object[objectKey]);
-    };
+    if (!window) return;
+    const handler = () => setQuery(window.location.hash);
     window.addEventListener("hashchange", handler);
-    return () => {
-      window.removeEventListener("hashchange", handler);
-    };
-  }, [object, objectKey]);
+    return () => window.removeEventListener("hashchange", handler);
+  }, [window]);
+
+  React.useEffect(() => {
+    localStorage.setItem(STORAGE_ID, query);
+  }, [query]);
+
+  return [
+    query,
+    query => {
+      console.log("set hash", query);
+      window.location.hash = query;
+    },
+  ];
+}
+
+function useQueryData(): [ParsedQuery, (data: ParsedQuery) => void] {
+  const [query, setQuery] = useLocationHash(window);
+  const [queryData, setQueryData] = React.useState(() =>
+    parseQueryString(query),
+  );
+  React.useEffect(() => setQueryData(parseQueryString(query)), [query]);
+  const encodedQuery = encodeAsQueryString(queryData);
+  React.useEffect(() => setQuery(encodedQuery), [encodedQuery]);
 
   return [queryData, setQueryData];
 }
 
-// function useBrowserHistory() {
-//   React.useEffect(
-//     () => createBrowserHistory().listen((location, action) => {}),
-//     []
-//   );
-// }
-
 function App() {
-  const [queryData, setQueryData] = useQueryString(location, "hash");
+  const [queryData, setQueryData] = useQueryData();
+  const types = [
+    ...(Array.isArray(queryData.type)
+      ? queryData.type.filter(Boolean)
+      : [queryData.type] || ["Dx/Ox"]),
+  ];
   const setTypes = setter =>
     setQueryData({
       ...queryData,
       type: setter(types),
     });
+  const setOPTypeTextAtIndex = (index, opTypeText) => {
+    setTypes(types => {
+      types[index] = opTypeText;
+      return types;
+    });
+  };
   // const [opTypes, opTypesActions] = useUndo(queryData);
 
-  let [count, setCount] = React.useState(2);
   let [showKnown, setShowKnown] = React.useState(false);
-  const types = [
-    ...(Array.isArray(queryData.type)
-      ? queryData.type
-      : [queryData.type] || [""]),
-  ];
 
   return (
     <div className="App">
@@ -167,12 +180,21 @@ function App() {
             key={index}
             selected={index === 0}
             defaultType={type}
-            storageID={"optype" + index}
             onClose={() => {
               setTypes(types => types.filter((_, iii) => iii !== index));
             }}
+            onChangeText={opTypeText => {
+              setOPTypeTextAtIndex(index, opTypeText);
+            }}
           />
         ))}
+        <button
+          onClick={e => {
+            setOPTypeTextAtIndex(types.length, "Dx/Ox");
+          }}
+        >
+          Add
+        </button>
       </div>
       <hr />
       <div>
