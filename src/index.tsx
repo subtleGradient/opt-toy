@@ -25,7 +25,7 @@ function App() {
             type && (
               <TypeThing
                 key={index}
-                selected={index === 0}
+                selected={types.length === 1}
                 defaultType={type}
                 onClose={() => {
                   setOPTypeTextAtIndex(index, null);
@@ -53,6 +53,10 @@ function App() {
           </button>
         </div>
       </div>
+
+      {types.length > 1 && (
+        <blockquote>Click a graph to open details</blockquote>
+      )}
     </div>
   );
 }

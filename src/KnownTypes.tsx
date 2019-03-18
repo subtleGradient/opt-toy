@@ -31,15 +31,16 @@ interface KnownType {
 const KNOWN_TYPES: KnownType[] = require("./known-types.sheet.json");
 
 export function KnownTypes({ setTypes }) {
-  const [knownSearch, setKnownSearch] = useQueryDataKey("known", []);
-  let [showKnown, setShowKnown] = React.useState(true);
+  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", []);
+  const showKnown = showKnowns.length > 0;
+  // let [showKnown, setShowKnown] = React.useState(false);
   return (
     <div>
-      <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "left" }}>
         {showKnown || (
           <button
             onClick={() => {
-              setShowKnown(true);
+              setShowKnown(["1"]);
             }}
           >
             Show known types list
@@ -48,7 +49,7 @@ export function KnownTypes({ setTypes }) {
         {showKnown && (
           <button
             onClick={() => {
-              setShowKnown(false);
+              setShowKnown([]);
             }}
           >
             Hide known types list

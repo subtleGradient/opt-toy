@@ -68,7 +68,13 @@ function useQueryData(): [ParsedQuery, Dispatch<SetStateAction<ParsedQuery>>] {
   );
   const encodedQuery = encodeAsQueryString(queryData);
   React.useEffect(() => setQuery(encodedQuery), [encodedQuery]);
-  return [queryData, setQueryData];
+  return [
+    queryData,
+    newData => {
+      setQueryData(parseQueryString(window.location.hash));
+      setQueryData(newData);
+    },
+  ];
 }
 
 export function useQueryDataKey(
