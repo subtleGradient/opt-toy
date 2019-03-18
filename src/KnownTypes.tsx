@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useQueryDataKey } from "./ParsedQuery";
+import { OPT512 } from "./OPT512";
+import { parseCoinText } from "./Coin";
 
 interface KnownType {
   index: number;
@@ -28,11 +31,11 @@ interface KnownType {
 const KNOWN_TYPES: KnownType[] = require("./known-types.sheet.json");
 
 export function KnownTypes({ setTypes }) {
-  let [showKnown, setShowKnown] = React.useState(false);
+  const [knownSearch, setKnownSearch] = useQueryDataKey("known", []);
+  let [showKnown, setShowKnown] = React.useState(true);
   return (
     <div>
-      <h2>
-        Known Types{" "}
+      <div style={{ textAlign: "center" }}>
         {showKnown || (
           <button
             onClick={() => {
@@ -51,26 +54,44 @@ export function KnownTypes({ setTypes }) {
             Hide known types list
           </button>
         )}
-      </h2>
-      {showKnown &&
-        KNOWN_TYPES.map((kType, index) => {
-          const kTypePrev = KNOWN_TYPES[index - 1] || { ...kType };
-          return (
-            <React.Fragment key={kType.index}>
-              {kType["m/F"] !== kTypePrev["m/F"] && <br />}
-              {kType.saviors !== kTypePrev.saviors && <br />}
-              <a
-                href={`#?type[]=${encodeURIComponent(kType.typeCode)}`}
-                onClick={e => {
-                  e.preventDefault();
-                  setTypes((types: string[]) => [...types, kType.typeCode]);
-                }}
-              >
-                {kType.typeCode}
-              </a>{" "}
-            </React.Fragment>
-          );
-        })}
+      </div>
+      {showKnown && (
+        <div className="type-table">
+          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(0, 32)} />
+          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(32, 64)} />
+          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(64, 96)} />
+          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(96, 128)} />
+        </div>
+      )}{" "}
+    </div>
+  );
+}
+
+function TypeTable({ kTypes, setTypes }) {
+  return (
+    <div className="type-table with-cells">
+      <div>{kTypes[0].animals}</div>
+      <div>{kTypes[1].animals}</div>
+      <div>{kTypes[2].animals}</div>
+      <div>{kTypes[3].animals}</div>
+      {kTypes.map(kType => (
+        <a
+          key={kType.typeCode}
+          data-optype={kType.typeCode}
+          onClick={e => {
+            e.preventDefault();
+            setTypes(types => [
+              ...types,
+              kType.typeCode
+                .split("-")
+                .slice(1)
+                .join("-"),
+            ]);
+          }}
+        >
+          {kType.typeCode.split("-")[1]}
+        </a>
+      ))}
     </div>
   );
 }

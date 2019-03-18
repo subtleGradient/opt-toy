@@ -37,9 +37,12 @@ export function TypeThing({
 
   return (
     <div
+      className="TypeThing"
+      data-is-open={isOpen}
       style={{
         border: `1px solid`,
         borderColor: isOpen ? `#000` : `#eee`,
+        // minWidth: 256,
       }}
     >
       <div
@@ -47,7 +50,6 @@ export function TypeThing({
           textAlign: "center",
           fontSize: 24,
           marginTop: "1ex",
-          minWidth: 256,
         }}
         onClick={e => {
           setIsOpen(!isOpen);

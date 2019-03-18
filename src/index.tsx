@@ -17,6 +17,8 @@ function App() {
 
   return (
     <div className="App">
+      <KnownTypes setTypes={setTypes} />
+
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
         {types.map(
           (type, index) =>
@@ -34,16 +36,23 @@ function App() {
               />
             ),
         )}
-        <button
-          onClick={e => {
-            setOPTypeTextAtIndex(types.length, "Dx/Ox");
-          }}
-        >
-          Add
-        </button>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button
+            onClick={e => {
+              setOPTypeTextAtIndex(types.length, "Dx/Ox");
+            }}
+          >
+            Add
+          </button>
+          <button
+            onClick={e => {
+              setTypes(types => types.slice(0, types.length - 1));
+            }}
+          >
+            Remove
+          </button>
+        </div>
       </div>
-      <hr />
-      <KnownTypes setTypes={setTypes} />
     </div>
   );
 }

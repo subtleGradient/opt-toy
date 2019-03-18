@@ -1,5 +1,18 @@
-html,body {
+html,
+body {
   font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+body > footer {
+  background: #eee;
+  padding: 2rem;
+  border-top: 2px solid #aaa;
 }
 
 svg,
@@ -10,4 +23,93 @@ svg * {
 td > label,
 th > label {
   display: block;
+}
+
+.type-table {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.type-table > * {
+  width: 25%;
+  box-sizing: border-box;
+}
+
+.type-table > .type-table {
+  border-bottom: 2px solid #aaa;
+}
+
+@media screen and (min-width: 425px) and (max-width: 767px) {
+  .type-table > .type-table {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 424px) {
+  .type-table > .type-table {
+    width: 100%;
+  }
+}
+
+.type-table.with-cells > * {
+  text-align: center;
+  padding: 1ex 0;
+  font-size: 11px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.type-table.with-cells > [data-optype]:hover {
+  border-color: #000;
+}
+
+.type-table > [data-optype*="Ni/"],
+.type-table > [data-optype*="Si/"] {
+  background: #c9daf8;
+}
+.type-table > [data-optype*="Ne/"],
+.type-table > [data-optype*="Se/"] {
+  background: #d9ead3;
+}
+.type-table > [data-optype*="Fi/"],
+.type-table > [data-optype*="Ti/"] {
+  background: #efefef;
+}
+.type-table > [data-optype*="Fe/"],
+.type-table > [data-optype*="Te/"] {
+  background: #f4cccc;
+}
+
+.TypeThing {
+  transition: all 0.25s ease-in-out;
+  box-sizing: border-box;
+}
+
+.TypeThing[data-is-open="false"] {
+  width: 25%;
+}
+@media screen and (max-width: 767px) {
+  .TypeThing[data-is-open="false"] {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 424px) {
+  .TypeThing[data-is-open="false"] {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .TypeThing[data-is-open="true"] {
+    width: 25%;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .TypeThing[data-is-open="true"] {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .TypeThing[data-is-open="true"] {
+    width: 50%;
+  }
 }
