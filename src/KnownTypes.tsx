@@ -30,45 +30,18 @@ interface KnownType {
 
 const KNOWN_TYPES: KnownType[] = require("./known-types.sheet.json");
 
-export function KnownTypes({ setTypes }) {
-  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", []);
-  const showKnown = showKnowns.length > 0;
-  // let [showKnown, setShowKnown] = React.useState(false);
+export function KnownTypes({ addType }) {
   return (
-    <div>
-      <div style={{ textAlign: "left" }}>
-        {showKnown || (
-          <button
-            onClick={() => {
-              setShowKnown(["1"]);
-            }}
-          >
-            Show known types list
-          </button>
-        )}
-        {showKnown && (
-          <button
-            onClick={() => {
-              setShowKnown([]);
-            }}
-          >
-            Hide known types list
-          </button>
-        )}
-      </div>
-      {showKnown && (
-        <div className="type-table">
-          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(0, 32)} />
-          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(32, 64)} />
-          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(64, 96)} />
-          <TypeTable setTypes={setTypes} kTypes={KNOWN_TYPES.slice(96, 128)} />
-        </div>
-      )}{" "}
+    <div className="type-table">
+      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(0, 32)} />
+      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(32, 64)} />
+      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(64, 96)} />
+      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(96, 128)} />
     </div>
   );
 }
 
-function TypeTable({ kTypes, setTypes }) {
+function TypeTable({ kTypes, addType }) {
   return (
     <div className="type-table with-cells">
       <div>{kTypes[0].animals}</div>
@@ -81,13 +54,12 @@ function TypeTable({ kTypes, setTypes }) {
           data-optype={kType.typeCode}
           onClick={e => {
             e.preventDefault();
-            setTypes(types => [
-              ...types,
+            addType(
               kType.typeCode
                 .split("-")
                 .slice(1)
                 .join("-"),
-            ]);
+            );
           }}
         >
           {kType.typeCode.split("-")[1]}
