@@ -66,10 +66,12 @@ export function TypeThing({
         }}
       >
         <div>
-          <OPTypeBinaryText type={opTypeInstance.type} />
+          <h3>{opType.present.name}</h3>
+          <code>
+            <OPTypeBinaryText type={opTypeInstance.type} />
+          </code>
         </div>
         <OP_Type opType={opTypeInstance} />
-        <div>{opType.present.name}</div>
       </div>
       {isOpen && (
         <div style={{ minWidth: 500 }}>
@@ -116,12 +118,14 @@ export function TypeThing({
               value={opType.present.name}
               placeholder="Human Name"
             />
-            <OPCodeInput
-              type={opTypeInstance.type}
-              onParsed={type => {
-                opTypeActions.set({ name: opType.present.name, type });
-              }}
-            />
+            <code>
+              <OPCodeInput
+                type={opTypeInstance.type}
+                onParsed={type => {
+                  opTypeActions.set({ name: opType.present.name, type });
+                }}
+              />
+            </code>
             <a href={`#?type[]=${typeText}`} title={typeText} target="_blank">
               permalink
             </a>{" "}
