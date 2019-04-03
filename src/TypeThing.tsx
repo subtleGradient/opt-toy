@@ -11,6 +11,8 @@ function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   return <span>{opt.OP512}</span>;
 }
 
+const SEPARATOR = `!`;
+
 export function TypeThing({
   selected = false,
   defaultType,
@@ -18,15 +20,23 @@ export function TypeThing({
   onChangeText = null,
 }) {
   const [isOpen, setIsOpen] = React.useState(selected);
-  const [opType, opTypeActions] = useUndo(
-    parseCoinText(cleanCoinText(defaultType)),
-  );
-  const opTypeInstance = new OPT512(opType.present);
+  const [opType, opTypeActions] = useUndo({
+    name: String(defaultType.split(SEPARATOR)[1] || ""),
+    type: parseCoinText(cleanCoinText(defaultType.split(SEPARATOR)[0])),
+  });
+  const opTypeInstance = new OPT512(opType.present.type);
   const typeText = opTypeInstance.OP512;
+  const displayName = opType.present.name || typeText;
 
   React.useEffect(() => {
-    if (onChangeText) onChangeText(typeText);
-  }, [opType.present]);
+    if (onChangeText) {
+      onChangeText(
+        `${typeText}${
+          opType.present.name ? SEPARATOR + opType.present.name : ""
+        }`,
+      );
+    }
+  }, [opType.present.name, typeText]);
   // React.useEffect(() => {
   //   if (defaultType) {
   //     const type = parseCoinText(cleanCoinText(defaultType));
@@ -59,6 +69,7 @@ export function TypeThing({
           <OPTypeBinaryText type={opTypeInstance.type} />
         </div>
         <OP_Type opType={opTypeInstance} />
+        <div>{opType.present.name}</div>
       </div>
       {isOpen && (
         <div style={{ minWidth: 500 }}>
@@ -87,15 +98,28 @@ export function TypeThing({
             <button
               key="reset"
               onClick={() =>
-                opTypeActions.reset(BLANK_TYPE.slice(0) as OPT512Maybe)
+                opTypeActions.reset({
+                  name: "",
+                  type: BLANK_TYPE.slice(0) as OPT512Maybe,
+                })
               }
             >
               reset
             </button>
+            <input
+              onChange={e =>
+                opTypeActions.set({
+                  type: opType.present.type,
+                  name: e.currentTarget.value,
+                })
+              }
+              value={opType.present.name}
+              placeholder="Human Name"
+            />
             <OPCodeInput
               type={opTypeInstance.type}
-              onParsed={newType => {
-                opTypeActions.set(newType);
+              onParsed={type => {
+                opTypeActions.set({ name: opType.present.name, type });
               }}
             />
             <a href={`#?type[]=${typeText}`} title={typeText} target="_blank">
@@ -109,9 +133,9 @@ export function TypeThing({
             )}
           </div>
           <OPTypeBinaryForm
-            type={opType.present}
-            onChange={newType => {
-              opTypeActions.set(newType);
+            type={opType.present.type}
+            onChange={type => {
+              opTypeActions.set({ name: opType.present.name, type });
             }}
           />
         </div>
