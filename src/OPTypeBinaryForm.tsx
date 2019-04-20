@@ -20,7 +20,6 @@ export function OPTypeBinaryForm({
             <td style={{ textAlign: "right" }}>{opType.iCount}</td>
             <td style={{ textAlign: "center" }}>{opType.nullCount}</td>
             <td>{opType.eCount}</td>
-            <th />
           </tr>
         </tbody>
         <tbody>
@@ -43,31 +42,40 @@ export function OPTypeBinaryForm({
             <td style={{ textAlign: "center" }} colSpan={3}>
               {Math.pow(2, opType.nullCount)} / 512
             </td>
-            <th>matching types</th>
           </tr>
 
           <tr>
             <td style={{ textAlign: "right" }} />
             <td style={{ textAlign: "center" }} />
             <td />
-            <th />
           </tr>
 
           <tr>
             <td style={{ textAlign: "right" }} />
             <td style={{ textAlign: "center" }} />
             <td />
-            <th />
           </tr>
         </tbody>
 
+        <tbody style={{ background: "#bbb" }}>
+          <CoinSideVirtual
+            side={opType.sideOfEnergyInfo}
+            coin={{
+              heads: "Info",
+              tails: "Energy",
+            }}
+            onFlip={side => {
+              // opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
+              // onChange(opType.type);
+            }}
+          />
+        </tbody>
         <tbody style={{ background: "#eee" }}>
           <CoinSideVirtual
             side={opType.sideOfEnergyInfo}
             coin={{
               heads: "Info",
               tails: "Energy",
-              description: ``,
             }}
             onFlip={side => {
               opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
@@ -78,7 +86,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfNFST}
             tails="NF"
             heads="ST"
-            description=""
             edge={"OD"}
             onFlipWithXx={(OOO, DDD) => {
               opType.oLetter = OOO;
@@ -90,7 +97,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfSFNT}
             tails="SF"
             heads="NT"
-            description=""
             edge={"OD"}
             onFlipWithXx={(OOO, DDD) => {
               opType.oLetter = OOO;
@@ -102,7 +108,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfNiSe}
             tails="Ni"
             heads="Se"
-            description=""
             edge={"Ox"}
             onFlipWithXx={(letter, focus) => {
               opType.oLetter = letter;
@@ -114,7 +119,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfSiNe}
             tails="Si"
             heads="Ne"
-            description=""
             edge={"Ox"}
             onFlipWithXx={(letter, focus) => {
               opType.oLetter = letter;
@@ -126,7 +130,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfFiTe}
             tails="Fi"
             heads="Te"
-            description=""
             edge={"Dx"}
             onFlipWithXx={(letter, focus) => {
               opType.dLetter = letter;
@@ -138,7 +141,6 @@ export function OPTypeBinaryForm({
             side={opType.sideOfTiFe}
             tails="Ti"
             heads="Fe"
-            description=""
             edge={"Dx"}
             onFlipWithXx={(letter, focus) => {
               opType.dLetter = letter;
@@ -146,9 +148,7 @@ export function OPTypeBinaryForm({
               onChange(opType.type);
             }}
           />
-          <tr>
-            {/* <th colSpan={4}>TODO: MM activation vs FF activation</th> */}
-          </tr>
+          <tr />
         </tbody>
       </table>
     </div>
@@ -156,21 +156,13 @@ export function OPTypeBinaryForm({
   );
 }
 
-function CoinSideVirtual2({
-  side,
-  heads,
-  tails,
-  description,
-  edge,
-  onFlipWithXx,
-}) {
+function CoinSideVirtual2({ side, heads, tails, edge, onFlipWithXx }) {
   return (
     <CoinSideVirtual
       side={side}
       coin={{
         heads,
         tails,
-        description: ``,
       }}
       onFlip={side => {
         onFlipWithXx(

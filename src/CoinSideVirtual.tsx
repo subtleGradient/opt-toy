@@ -1,14 +1,13 @@
 import * as React from "react";
 import { BoolMaybe, isBool } from "./Coin";
 export function CoinSideVirtual({
-  coin: { heads, tails, description },
+  coin: { heads, tails },
   side,
   onFlip,
 }: {
   coin: {
     heads: string;
     tails: string;
-    description: string;
   };
   side: BoolMaybe;
   onFlip: (side: BoolMaybe) => void;
@@ -59,7 +58,6 @@ export function CoinSideVirtual({
           </span>
         </label>
       </td>
-      <th style={{ textAlign: "right" }}>{description}</th>
     </tr>
   );
 }
