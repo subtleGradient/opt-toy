@@ -5,9 +5,13 @@ import {
   isBool,
   cleanCoinText,
   BLANK_TYPE,
+  parseCoinText,
 } from "./Coin";
 
 export class OPT512 {
+  static fromCoinText(typeCode: string): OPT512 {
+    return new OPT512(parseCoinText(typeCode));
+  }
   type: OPT512Maybe;
   f = new OPFeeling(this, "F");
   t = new OPThinking(this, "T");

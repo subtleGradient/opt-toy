@@ -4,6 +4,7 @@ import { OPT512 } from "./OPT512";
 import { parseCoinText } from "./Coin";
 
 interface KnownType {
+  opType: OPT512;
   index: number;
   "oPT#": number;
   "oPT#+": string;
@@ -28,7 +29,12 @@ interface KnownType {
   people14: string | null;
 }
 
-const KNOWN_TYPES: KnownType[] = require("./known-types.sheet.json");
+export const KNOWN_TYPES: KnownType[] = require("./known-types.sheet.json").map(
+  knownType => ({
+    ...knownType,
+    opType: OPT512.fromCoinText(knownType.typeCode),
+  }),
+);
 
 export function KnownTypes({ addType }) {
   return (
