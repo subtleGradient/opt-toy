@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PropertyControls, ControlType } from "framer";
+import { PropertyControls } from "framer";
 import { Bubble } from "./OPBubbles4";
 
 const style: React.CSSProperties = {
@@ -26,7 +26,7 @@ export class OPFunction extends React.Component<Props> {
 
   // Items shown in property panel
   static propertyControls: PropertyControls = {
-    text: { type: ControlType.String, title: "Text" },
+    text: { type: "string" as any, title: "Text" },
   };
 
   render() {

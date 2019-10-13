@@ -48,10 +48,14 @@ function App() {
   const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff();
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", []);
   const showKnown = showKnowns.length > 0;
+  const [showRules, setShowRule] = useQueryDataKey("showRule", []);
+  const showRule = showRules.length > 0;
+  const [rules, setRules] = useQueryDataKey("rule", []);
 
   return (
     <div className="App">
-      <div>
+      <div style={{ display: "flex" }}>
+        <span style={{ flex: 1 }} />
         <button
           onClick={e => {
             setOPTypeTextAtIndex(types.length, "Dx/Ox");
@@ -66,8 +70,16 @@ function App() {
         >
           Remove
         </button>
-        {" -- "}
-        {showKnown || (
+        <span style={{ flex: 1 }} />
+        {(showKnown && (
+          <button
+            onClick={() => {
+              setShowKnown([]);
+            }}
+          >
+            Hide known types list
+          </button>
+        )) || (
           <button
             onClick={() => {
               setShowKnown(["1"]);
@@ -76,17 +88,27 @@ function App() {
             Show known types list
           </button>
         )}
-        {showKnown && (
+        {(showRule && (
           <button
             onClick={() => {
-              setShowKnown([]);
+              setShowRule([]);
             }}
           >
-            Hide known types list
+            Hide rules
+          </button>
+        )) || (
+          <button
+            onClick={() => {
+              setShowRule(["1"]);
+            }}
+          >
+            Show rules
           </button>
         )}
+        <span style={{ flex: 1 }} />
       </div>
       {showKnown && <KnownTypes addType={addType} />}
+      {showRule && <FollowTheRulesBro />}
 
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
         {types.map((type, index) => (
@@ -107,6 +129,27 @@ function App() {
       {types.length > 1 && (
         <blockquote>Click a graph to open details</blockquote>
       )}
+    </div>
+  );
+}
+
+function FollowTheRulesBro() {
+  return (
+    <div style={{ border: "4px dotted red" }}>
+      <i>WARNING: Work in progress. Ignore this for now maybe.</i>
+      <br />
+      not not Tony Robbins
+      <br />
+      has Te = Te or Fi
+      <br />
+      high Te = Savior Te, masculine Te, double-activated Te
+      <br />
+      high Blast = Consume 4th, Blast 1st, MM Blast, M Play + M Sleep; TODO:
+      Rank the intensity of maybe Blast of all types
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 }

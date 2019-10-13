@@ -52,6 +52,7 @@ function parseQueryString(query: string): ParsedQuery {
 }
 
 function useLocationHash(
+  // eslint-disable-next-line no-restricted-globals
   window: Window = top,
 ): [string, Dispatch<SetStateAction<string>>] {
   const [query, setQuery] = React.useState(() => window.location.hash);
