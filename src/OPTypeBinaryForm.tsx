@@ -14,7 +14,7 @@ export function OPTypeBinaryForm({
   const opType = new OPT512(type);
   return (
     <div>
-      <table>
+      <table style={{ margin: "auto" }}>
         <tbody style={{ background: "#ddd" }}>
           <tr>
             <td style={{ textAlign: "right" }}>{opType.iCount}</td>
