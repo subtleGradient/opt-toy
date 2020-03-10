@@ -60,15 +60,26 @@ function App() {
           // top: 0,
           // left: 0,
           // width: "100%",
-          }}
+        }}
+      >
+        <button onClick={e => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}>
+          Add
+        </button>
+        <button
+          onClick={e => void setOPTypeTextAtIndex(types.length - 1, null)}
         >
-        <button onClick={e => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}>Add</button>
-        <button onClick={e => void setOPTypeTextAtIndex(types.length - 1, null)}>Remove</button>
+          Remove
+        </button>
         <Spacer />
-        <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>known types</button>
+        <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>
+          known types
+        </button>
         <Spacer />
         <span>
-          AoP <b style={{ whiteSpace: "nowrap" }}>opt-toy.now.sh</b>
+          <a href="https://OPDEX.app" style={{ whiteSpace: "nowrap" }}>
+            OP<b>DEX</b>
+            <small>.app</small>
+          </a>
         </span>
       </div>
 
@@ -81,12 +92,16 @@ function App() {
             selected={types.length === 1}
             defaultType={type}
             onClose={() => void setOPTypeTextAtIndex(index, null)}
-            onChangeText={(opTypeText: any) => void setOPTypeTextAtIndex(index, opTypeText)}
+            onChangeText={(opTypeText: any) =>
+              void setOPTypeTextAtIndex(index, opTypeText)
+            }
           />
         ))}
       </div>
 
-      {types.length > 1 && <blockquote>Click a graph to open details</blockquote>}
+      {types.length > 1 && (
+        <blockquote>Click a graph to open details</blockquote>
+      )}
     </div>
   );
 }
