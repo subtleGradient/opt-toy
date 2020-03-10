@@ -9,20 +9,20 @@
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
-    "@types/use-persisted-state": "^0.3.0",
     "history": "^4.10.1",
-    "react": "16.10.2",
-    "react-dom": "16.10.2",
-    "react-scripts": "3.2.0",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "react-scripts": "3.4.0",
     "use-persisted-state": "^0.3.0",
     "use-undo": "1.0.3"
   },
   "devDependencies": {
-    "@types/facebook-pixel": "^0.0.19",
-    "@types/react": "16.9.5",
-    "@types/react-dom": "16.9.1",
-    "framer": "^1.1.4",
-    "typescript": "^3.6.4"
+    "@types/use-persisted-state": "^0.3.0",
+    "@types/facebook-pixel": "^0.0.20",
+    "@types/react": "16.9.23",
+    "@types/react-dom": "16.9.5",
+    "framer": "^1.1.7",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
