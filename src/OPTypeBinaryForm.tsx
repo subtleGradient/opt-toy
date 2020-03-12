@@ -14,7 +14,7 @@ export function OPTypeBinaryForm({
   const opType = new OPT512(type);
   return (
     <div>
-      <table>
+      <table style={{ margin: "auto" }}>
         <tbody style={{ background: "#ddd" }}>
           <tr>
             <td style={{ textAlign: "right" }}>{opType.iCount}</td>
@@ -57,19 +57,6 @@ export function OPTypeBinaryForm({
           </tr>
         </tbody>
 
-        <tbody style={{ background: "#bbb" }}>
-          <CoinSideVirtual
-            side={opType.sideOfEnergyInfo}
-            coin={{
-              heads: "Info",
-              tails: "Energy",
-            }}
-            onFlip={side => {
-              // opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
-              // onChange(opType.type);
-            }}
-          />
-        </tbody>
         <tbody style={{ background: "#eee" }}>
           <CoinSideVirtual
             side={opType.sideOfEnergyInfo}

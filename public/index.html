@@ -8,6 +8,46 @@ homescreen on Android. See https://developers.google.com/web/fundamentals/engage
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
 
+  <!-- Facebook Pixel Code -->
+  <script>
+    !(function(f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function() {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = "2.0";
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+    fbq("init", "2543503612548861");
+    fbq("track", "PageView");
+  </script>
+  <noscript
+    ><img
+      height="1"
+      width="1"
+      style="display:none"
+      src="https://www.facebook.com/tr?id=2543503612548861&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Facebook Pixel Code -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-150377253-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "UA-150377253-1", { optimize_id: "GTM-WV6HZ7V" });
+  </script>
+
   <!-- Notice the use of %PUBLIC_URL% in the tags above.
     It will be replaced with the URL of the `public` folder during the build.
     Only files inside the `public` folder can be referenced from the HTML.
@@ -15,10 +55,7 @@ homescreen on Android. See https://developers.google.com/web/fundamentals/engage
     Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
     work correctly both with client-side routing and a non-root public URL.
     Learn how to configure a non-root public URL by running `npm run build`. -->
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet" />
   <title>OPT 9 Coin System exploration toy</title>
 </head>
 
@@ -49,7 +86,5 @@ homescreen on Android. See https://developers.google.com/web/fundamentals/engage
   maker of
   <a href="https://thingsthatdostuff.com">Things That Do Stuff</a>
   --
-  <a href="https://github.com/subtleGradient/opt-toy/commits/master"
-    >What's new?</a
-  >
+  <a href="https://github.com/subtleGradient/opt-toy/commits/master">What's new?</a>
 </footer>

@@ -13,12 +13,7 @@ function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
 
 const SEPARATOR = `!`;
 
-export function TypeThing({
-  selected = false,
-  defaultType,
-  onClose = null,
-  onChangeText = null,
-}) {
+export function TypeThing({ selected = false, defaultType, onClose = null, onChangeText = null }) {
   const [isOpen, setIsOpen] = React.useState(selected);
   const [opType, opTypeActions] = useUndo({
     name: String(defaultType.split(SEPARATOR)[1] || ""),
@@ -30,20 +25,9 @@ export function TypeThing({
 
   React.useEffect(() => {
     if (onChangeText) {
-      onChangeText(
-        `${typeText}${
-          opType.present.name ? SEPARATOR + opType.present.name : ""
-        }`,
-      );
+      onChangeText(`${typeText}${opType.present.name ? SEPARATOR + opType.present.name : ""}`);
     }
   }, [opType.present.name, typeText]);
-  // React.useEffect(() => {
-  //   if (defaultType) {
-  //     const type = parseCoinText(cleanCoinText(defaultType));
-  //     console.log("defaultType", defaultType, type);
-  //     opTypeActions.set(type);
-  //   }
-  // }, [defaultType]);
 
   return (
     <div
@@ -74,27 +58,26 @@ export function TypeThing({
         <OP_Type opType={opTypeInstance} />
       </div>
       {isOpen && (
-        <div style={{ minWidth: 500 }}>
+        <div
+          style={
+            {
+              // minWidth: 500
+            }
+          }
+        >
           <div
             style={{
               display: "flex",
+              flexWrap: "wrap",
               flexDirection: "row",
               padding: `1ex`,
               background: "#eee",
             }}
           >
-            <button
-              key="undo"
-              onClick={opTypeActions.undo}
-              disabled={!opTypeActions.canUndo}
-            >
+            <button key="undo" onClick={opTypeActions.undo} disabled={!opTypeActions.canUndo}>
               undo
             </button>
-            <button
-              key="redo"
-              onClick={opTypeActions.redo}
-              disabled={!opTypeActions.canRedo}
-            >
+            <button key="redo" onClick={opTypeActions.redo} disabled={!opTypeActions.canRedo}>
               redo
             </button>
             <button
