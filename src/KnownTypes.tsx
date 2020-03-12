@@ -30,7 +30,7 @@ interface KnownType {
 
 export const KNOWN_TYPES: KnownType[] = knownTypes.map(knownType => ({
   ...knownType,
-  opType: OPT512.fromCoinText(knownType.typeCode),
+  opType: OPT512.fromCoinText(knownType.typeCode)
 }));
 
 export function KnownTypes({ addType }) {
@@ -101,6 +101,7 @@ function TypeTable({ kTypes, addType }) {
                 .split("-")
                 .slice(1)
                 .join("-"),
+              kType.typeCode
             );
           }}
         >
