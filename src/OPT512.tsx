@@ -13,10 +13,15 @@ export class OPT512 {
     return new OPT512(parseCoinText(typeCode));
   }
   type: OPT512Maybe;
-  f = new OPFeeling(this, "F");
-  t = new OPThinking(this, "T");
-  n = new OPIntuition(this, "N");
-  s = new OPSensing(this, "S");
+  feeling = new OPFeeling(this);
+  thinking = new OPThinking(this);
+  intuition = new OPIntuition(this);
+  sensing = new OPSensing(this);
+
+  play = new Play(this);
+  sleep = new Sleep(this);
+  blast = new Blast(this);
+  consume = new Consume(this);
 
   constructor(type: OPT512Maybe) {
     this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe;
@@ -376,12 +381,26 @@ const Flipped = {
   De: "Di",
 };
 
-class OPFn {
-  opType: OPT512;
-  constructor(opType, letter: "F" | "T" | "N" | "S") {
+class OPPart {
+  private opType: OPT512;
+  constructor(opType: OPT512) {
     this.opType = opType;
   }
 }
+
+class OPAnimal extends OPPart {
+  // constructor(opType: OPT512) {
+  //   super(opType);
+  // }
+}
+class Info extends OPAnimal {}
+class Energy extends OPAnimal {}
+class Blast extends Info {}
+class Consume extends Info {}
+class Play extends Energy {}
+class Sleep extends Energy {}
+
+class OPFn extends OPPart {}
 class OPDecider extends OPFn {}
 class OPObserver extends OPFn {}
 class OPFeeling extends OPDecider {}
