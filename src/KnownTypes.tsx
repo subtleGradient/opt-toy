@@ -2,7 +2,7 @@ import * as React from "react";
 import knownTypes from "./known-types.sheet.json";
 import { OPT512 } from "./OPT512";
 
-interface KnownType {
+export interface KnownType {
   opType: OPT512;
   index: number;
   "oPT#": number;
@@ -33,81 +33,86 @@ export const KNOWN_TYPES: KnownType[] = knownTypes.map(knownType => ({
   opType: OPT512.fromCoinText(knownType.typeCode)
 }));
 
-export function KnownTypes({ addType }) {
+export function KnownTypes({ addType, Cell = TypeTableCell }) {
   return (
     <div className="type-table">
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(0, 32)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(32, 64)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(64, 96)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(96, 128)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(0, 32)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(32, 64)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(64, 96)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(96, 128)} />
     </div>
   );
 }
 
-export function KnownTypesTable({ addType, filters }) {
+export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
   let o = 0;
   return (
     <div className="type-table">
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
       <TypeTable
-        addType={addType}
+        addType={addType} Cell={Cell}
         kTypes={KNOWN_TYPES.slice(o + 96, o + 128)}
       />
       {void (o += 128)}
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
       <TypeTable
-        addType={addType}
+        addType={addType} Cell={Cell}
         kTypes={KNOWN_TYPES.slice(o + 96, o + 128)}
       />
       {void (o += 128)}
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
       <TypeTable
-        addType={addType}
+        addType={addType} Cell={Cell}
         kTypes={KNOWN_TYPES.slice(o + 96, o + 128)}
       />
       {void (o += 128)}
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <TypeTable addType={addType} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+      <TypeTable addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
       <TypeTable
-        addType={addType}
+        addType={addType} Cell={Cell}
         kTypes={KNOWN_TYPES.slice(o + 96, o + 128)}
       />
     </div>
   );
 }
 
-function TypeTable({ kTypes, addType }) {
+function TypeTable({ kTypes, addType, Cell = TypeTableCell }) {
   return (
     <div className="type-table with-cells">
       <div>{kTypes[0].animals}</div>
       <div>{kTypes[1].animals}</div>
       <div>{kTypes[2].animals}</div>
       <div>{kTypes[3].animals}</div>
-      {kTypes.map(kType => (
-        <a
-          key={kType.typeCode}
-          data-optype={kType.typeCode}
-          onClick={e => {
-            e.preventDefault();
-            addType(
-              kType.typeCode
-                .split("-")
-                .slice(1)
-                .join("-"),
-              kType.typeCode
-            );
-          }}
-        >
-          {kType.typeCode.split("-")[1]}
-        </a>
+      {kTypes.map((kType: KnownType) => (
+        <Cell key={kType.typeCode} kType={kType} addType={addType} />
       ))}
     </div>
+  );
+}
+function TypeTableCell({ kType, addType }) {
+  return (
+    <a
+      key={kType.typeCode}
+      data-optype={kType.typeCode}
+      onClick={e => {
+        e.preventDefault();
+        addType(
+          kType.typeCode
+            .split("-")
+            .slice(1)
+            .join("-"),
+          kType.typeCode
+        );
+      }}
+    >
+      {kType.typeCode.split("-")[1]}
+    </a>
   );
 }
