@@ -5,6 +5,8 @@ import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
 import { OPCodeInput } from "./OPCodeInput"
 import { OP_Type } from "./OP_Type"
 import { OPT512 } from "./OPT512"
+import OPActivationTable from "./OPActivationTable"
+import { betweenX } from "./between"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   const opt = new OPT512(type)
@@ -12,6 +14,44 @@ function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
 }
 
 const SEPARATOR = `!`
+
+const Spacer = () => <span style={{ flex: "1 1 0%" }} />
+
+const History = props => (
+  <div>
+    <button
+      key="undo"
+      onClick={props.opTypeActions.undo}
+      disabled={!props.opTypeActions.canUndo}
+    >
+      undo
+    </button>
+    <button
+      key="redo"
+      onClick={props.opTypeActions.redo}
+      disabled={!props.opTypeActions.canRedo}
+    >
+      redo
+    </button>
+    <button
+      key="reset"
+      onClick={() =>
+        props.opTypeActions.reset({
+          name: "",
+          type: BLANK_TYPE.slice(0) as OPT512Maybe,
+        })
+      }
+    >
+      reset
+    </button>
+  </div>
+)
+
+const Permalink = props => (
+  <a href={`#?type[]=${props.typeText}`} title={props.typeText} target="_blank">
+    permalink
+  </a>
+)
 
 export function TypeThing({
   selected = false,
@@ -50,21 +90,53 @@ export function TypeThing({
     >
       <div
         style={{
+          fontSize: betweenX(16, 20),
           textAlign: "center",
-          fontSize: 24,
-          marginTop: "1ex",
+          marginTop: betweenX(8, 16),
         }}
         onClick={e => {
           setIsOpen(!isOpen)
         }}
       >
         <div>
-          <h3>{opType.present.name}</h3>
-          <code>
-            <OPTypeBinaryText type={opTypeInstance.type} />
-          </code>
+          <h3>
+            {isOpen ? (
+              <input
+                style={{ font: "inherit", textAlign: "center", color: '#333' }}
+                onClick={e => e.stopPropagation()}
+                onChange={e =>
+                  opTypeActions.set({
+                    type: opType.present.type,
+                    name: e.currentTarget.value,
+                  })
+                }
+                value={opType.present.name}
+                placeholder="Human Name"
+              />
+            ) : (
+              <div style={{padding:3}}>{opType.present.name}</div>
+            )}
+          </h3>
         </div>
         <OP_Type opType={opTypeInstance} />
+        <div>
+          <code>
+            {isOpen ? (
+              <OPCodeInput
+                style={{ font: "inherit", textAlign: "center",  }}
+                onClick={e => e.stopPropagation()}
+                coins={opTypeInstance.type}
+                onParsed={type => {
+                  opTypeActions.set({ name: opType.present.name, type })
+                }}
+              />
+            ) : (
+              <div style={{padding:3}}><OPTypeBinaryText type={opTypeInstance.type} /></div>
+            )}
+          </code>
+        </div>
+        <OPActivationTable op512={opTypeInstance} />
+        <div style={{ height: betweenX(8, 16) }}></div>
       </div>
       {isOpen && (
         <div
@@ -83,53 +155,10 @@ export function TypeThing({
               background: "#eee",
             }}
           >
-            <button
-              key="undo"
-              onClick={opTypeActions.undo}
-              disabled={!opTypeActions.canUndo}
-            >
-              undo
-            </button>
-            <button
-              key="redo"
-              onClick={opTypeActions.redo}
-              disabled={!opTypeActions.canRedo}
-            >
-              redo
-            </button>
-            <button
-              key="reset"
-              onClick={() =>
-                opTypeActions.reset({
-                  name: "",
-                  type: BLANK_TYPE.slice(0) as OPT512Maybe,
-                })
-              }
-            >
-              reset
-            </button>
-            <input
-              onChange={e =>
-                opTypeActions.set({
-                  type: opType.present.type,
-                  name: e.currentTarget.value,
-                })
-              }
-              value={opType.present.name}
-              placeholder="Human Name"
-            />
-            <code>
-              <OPCodeInput
-                type={opTypeInstance.type}
-                onParsed={type => {
-                  opTypeActions.set({ name: opType.present.name, type })
-                }}
-              />
-            </code>
-            <a href={`#?type[]=${typeText}`} title={typeText} target="_blank">
-              permalink
-            </a>{" "}
-            <span style={{ flex: "1 1 0%" }} />
+            <Permalink typeText={typeText}></Permalink>
+            <Spacer />
+            <History opTypeActions={opTypeActions}></History>
+            <Spacer />
             {onClose && (
               <button onClick={onClose}>
                 <b>X</b> Delete
