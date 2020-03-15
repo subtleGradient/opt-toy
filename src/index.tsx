@@ -5,6 +5,7 @@ import { KnownTypes } from "./KnownTypes";
 import { useQueryDataKey } from "./ParsedQuery";
 import "./styles.css";
 import { TypeThing } from "./TypeThing";
+import { BetweenRootStyles } from "./between";
 
 let UID = -1; // user as a unique key for each type
 const getNextUID = () => ++UID;
@@ -102,6 +103,8 @@ function App() {
       {types.length > 1 && (
         <blockquote>Click a graph to open details</blockquote>
       )}
+
+      <BetweenRootStyles className="App" />
     </div>
   );
 }
