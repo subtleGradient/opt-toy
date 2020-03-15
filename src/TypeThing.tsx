@@ -1,33 +1,42 @@
-import * as React from "react";
-import useUndo from "use-undo";
-import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin";
-import { OPTypeBinaryForm } from "./OPTypeBinaryForm";
-import { OPCodeInput } from "./OPCodeInput";
-import { OP_Type } from "./OP_Type";
-import { OPT512 } from "./OPT512";
+import * as React from "react"
+import useUndo from "use-undo"
+import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin"
+import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
+import { OPCodeInput } from "./OPCodeInput"
+import { OP_Type } from "./OP_Type"
+import { OPT512 } from "./OPT512"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
-  const opt = new OPT512(type);
-  return <span>{opt.OP512}</span>;
+  const opt = new OPT512(type)
+  return <span>{opt.OP512}</span>
 }
 
-const SEPARATOR = `!`;
+const SEPARATOR = `!`
 
-export function TypeThing({ selected = false, defaultType, onClose = null, onChangeText = null }) {
-  const [isOpen, setIsOpen] = React.useState(selected);
+export function TypeThing({
+  selected = false,
+  defaultType,
+  onClose = null,
+  onChangeText = null,
+}) {
+  const [isOpen, setIsOpen] = React.useState(selected)
   const [opType, opTypeActions] = useUndo({
     name: String(defaultType.split(SEPARATOR)[1] || ""),
     type: parseCoinText(cleanCoinText(defaultType.split(SEPARATOR)[0])),
-  });
-  const opTypeInstance = new OPT512(opType.present.type);
-  const typeText = opTypeInstance.OP512;
-  const displayName = opType.present.name || typeText;
+  })
+  const opTypeInstance = new OPT512(opType.present.type)
+  const typeText = opTypeInstance.OP512
+  const displayName = opType.present.name || typeText
 
   React.useEffect(() => {
     if (onChangeText) {
-      onChangeText(`${typeText}${opType.present.name ? SEPARATOR + opType.present.name : ""}`);
+      onChangeText(
+        `${typeText}${
+          opType.present.name ? SEPARATOR + opType.present.name : ""
+        }`,
+      )
     }
-  }, [opType.present.name, typeText]);
+  }, [opType.present.name, typeText])
 
   return (
     <div
@@ -46,7 +55,7 @@ export function TypeThing({ selected = false, defaultType, onClose = null, onCha
           marginTop: "1ex",
         }}
         onClick={e => {
-          setIsOpen(!isOpen);
+          setIsOpen(!isOpen)
         }}
       >
         <div>
@@ -74,10 +83,18 @@ export function TypeThing({ selected = false, defaultType, onClose = null, onCha
               background: "#eee",
             }}
           >
-            <button key="undo" onClick={opTypeActions.undo} disabled={!opTypeActions.canUndo}>
+            <button
+              key="undo"
+              onClick={opTypeActions.undo}
+              disabled={!opTypeActions.canUndo}
+            >
               undo
             </button>
-            <button key="redo" onClick={opTypeActions.redo} disabled={!opTypeActions.canRedo}>
+            <button
+              key="redo"
+              onClick={opTypeActions.redo}
+              disabled={!opTypeActions.canRedo}
+            >
               redo
             </button>
             <button
@@ -105,7 +122,7 @@ export function TypeThing({ selected = false, defaultType, onClose = null, onCha
               <OPCodeInput
                 type={opTypeInstance.type}
                 onParsed={type => {
-                  opTypeActions.set({ name: opType.present.name, type });
+                  opTypeActions.set({ name: opType.present.name, type })
                 }}
               />
             </code>
@@ -122,11 +139,11 @@ export function TypeThing({ selected = false, defaultType, onClose = null, onCha
           <OPTypeBinaryForm
             type={opType.present.type}
             onChange={type => {
-              opTypeActions.set({ name: opType.present.name, type });
+              opTypeActions.set({ name: opType.present.name, type })
             }}
           />
         </div>
       )}{" "}
     </div>
-  );
+  )
 }
