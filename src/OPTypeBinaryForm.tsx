@@ -1,8 +1,10 @@
 import * as React from "react";
-import { OP_Type } from "./OP_Type";
-import { OPT512 } from "./OPT512";
-import { OPT512Maybe, COINS, BLANK_TYPE, isBool } from "./Coin";
+import { betweenX } from "./between";
+import { BLANK_TYPE, COINS, isBool, OPT512Maybe } from "./Coin";
 import { CoinSideVirtual } from "./CoinSideVirtual";
+import { OPT512 } from "./OPT512";
+import "./OPTypeBinaryForm.css"
+
 export function OPTypeBinaryForm({
   type = BLANK_TYPE,
   onChange,
@@ -13,7 +15,10 @@ export function OPTypeBinaryForm({
   if (!type) type = BLANK_TYPE;
   const opType = new OPT512(type);
   return (
-    <div>
+    <div className="OPTypeBinaryForm" style={{
+      fontSize: betweenX(10, 12),
+
+    }}>
       <table style={{ margin: "auto" }}>
         <tbody style={{ background: "#ddd" }}>
           <tr>
