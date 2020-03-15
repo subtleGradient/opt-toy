@@ -1,22 +1,22 @@
-import * as React from "react";
-import { Defs } from "./OPBubbles4";
-import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
-import { bubbleTextStyle } from "./SVG_OP_BubbleText";
-import { OPT512 } from "./OPT512";
+import * as React from "react"
+import { Defs } from "./OPBubbles4"
+import { SVG_OP_Bubble, SVG_OP_Bubble_border } from "./SVG_OP_Bubble"
+import { bubbleTextStyle } from "./SVG_OP_BubbleText"
+import { OPFunctionType, OPT512 } from "./OPT512"
 
 export const OPTGraph: React.SFC<{
-  opType: OPT512;
-  style: any;
+  opType: OPT512
+  style: any
 }> = ({ opType, ...props }) => {
-  const { opFunctions } = opType;
+  const { opFunctions } = opType
   const opAnimals = {
     Play: { strength: opType.PlayIndex, text: "Play" },
     Blast: { strength: opType.BlastIndex, text: "Blast" },
     Consume: { strength: opType.ConsumeIndex, text: "Consume" },
     Sleep: { strength: opType.SleepIndex, text: "Sleep" },
-  };
+  }
 
-  const shouldFlipH = opFunctions[0].focus === "i";
+  const shouldFlipH = opFunctions[0].focus === "i"
   const shouldFlipV = {
     O: shouldFlipH,
     N: shouldFlipH,
@@ -24,12 +24,12 @@ export const OPTGraph: React.SFC<{
     D: !shouldFlipH,
     F: !shouldFlipH,
     T: !shouldFlipH,
-  }[opFunctions[0].letter];
+  }[opFunctions[0].letter]
 
-  const bottomAnimal = shouldFlipV ? opAnimals.Consume : opAnimals.Blast;
-  const topAnimal = shouldFlipV ? opAnimals.Blast : opAnimals.Consume;
-  const leftAnimal = shouldFlipH ? opAnimals.Play : opAnimals.Sleep;
-  const rightAnimal = shouldFlipH ? opAnimals.Sleep : opAnimals.Play;
+  const bottomAnimal = shouldFlipV ? opAnimals.Consume : opAnimals.Blast
+  const topAnimal = shouldFlipV ? opAnimals.Blast : opAnimals.Consume
+  const leftAnimal = shouldFlipH ? opAnimals.Play : opAnimals.Sleep
+  const rightAnimal = shouldFlipH ? opAnimals.Sleep : opAnimals.Play
 
   return (
     <OPTGraphInnards
@@ -43,10 +43,33 @@ export const OPTGraph: React.SFC<{
         rightAnimal,
       }}
     />
-  );
-};
+  )
+}
 
-const AnimalStrengthToFontSize = [30.778, 24.772, 19.518, 13.512];
+const AnimalStrengthToFontSize = [30.778, 24.772, 19.518, 13.512]
+
+const Lines = () => (
+  <g id="lines">
+    <path
+      d="M-18.881 44.5h123.762"
+      stroke="#888"
+      strokeWidth={3}
+      transform="matrix(-1.19402 1.23567 -1.23566 -1.19401 492.035 359.857)"
+    />
+    <path
+      d="M-13.855 37.75h116.71"
+      stroke="#fff"
+      strokeWidth={9}
+      transform="matrix(1.31032 1.11893 -1.11157 1.319 371.937 272.307)"
+    />
+    <path
+      d="M-13.855 37.75h116.71"
+      stroke="#333"
+      strokeWidth={3}
+      transform="matrix(1.31032 1.11893 -1.11157 1.319 371.937 272.307)"
+    />
+  </g>
+)
 
 export const OPTGraphInnards = ({
   opFunctions,
@@ -57,21 +80,28 @@ export const OPTGraphInnards = ({
   rightAnimal,
   style = null,
   ...props
+}: React.SVGProps<SVGSVGElement> & {
+  opFunctions: OPFunctionType[]
+  shouldFlipH: boolean
+  bottomAnimal: { strength: number; text: string }
+  topAnimal: { strength: number; text: string }
+  leftAnimal: { strength: number; text: string }
+  rightAnimal: { strength: number; text: string }
 }) => {
   const opFnByLetter = {
     S:
-      opFunctions.filter(fn => fn.letter === "S")[0] ||
-      opFunctions.filter(fn => fn.letter === "O")[0],
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "S")[0] ||
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[0],
     F:
-      opFunctions.filter(fn => fn.letter === "F")[0] ||
-      opFunctions.filter(fn => fn.letter === "D")[0],
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "F")[0] ||
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[0],
     N:
-      opFunctions.filter(fn => fn.letter === "N")[0] ||
-      opFunctions.filter(fn => fn.letter === "O")[1],
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "N")[0] ||
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[1],
     T:
-      opFunctions.filter(fn => fn.letter === "T")[0] ||
-      opFunctions.filter(fn => fn.letter === "D")[1],
-  };
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "T")[0] ||
+      opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[1],
+  }
 
   return (
     <svg
@@ -90,26 +120,6 @@ export const OPTGraphInnards = ({
           transform: `translate(123px)`,
         }}
       >
-        <g id="lines">
-          <path
-            d="M-13.855 37.75h116.71"
-            stroke="#888"
-            strokeWidth={3}
-            transform="matrix(1.31032 1.11893 -1.11157 1.319 371.937 272.307)"
-          />
-          <path
-            d="M-18.881 44.5h123.762"
-            stroke="#fff"
-            strokeWidth={5}
-            transform="matrix(-1.19402 1.23567 -1.23566 -1.19401 492.035 359.857)"
-          />
-          <path
-            d="M-18.881 44.5h123.762"
-            stroke="#333"
-            strokeWidth={3}
-            transform="matrix(-1.19402 1.23567 -1.23566 -1.19401 492.035 359.857)"
-          />
-        </g>
         <g id="bottom">
           <path
             {...AnimalStrokes[bottomAnimal.strength]}
@@ -208,6 +218,15 @@ export const OPTGraphInnards = ({
           </g>
         </g>
 
+        <g id="bubble-borders">
+          <BubBorder key="S" opFunction={opFnByLetter.S} />
+          <BubBorder key="F" opFunction={opFnByLetter.F} />
+          <BubBorder key="N" opFunction={opFnByLetter.N} />
+          <BubBorder key="T" opFunction={opFnByLetter.T} />
+        </g>
+
+        <Lines />
+
         <g id="bubbles">
           <Bub key="S" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.S} />
           <Bub key="F" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.F} />
@@ -222,16 +241,23 @@ export const OPTGraphInnards = ({
       <Defs color="yellow" />
       <Defs color="red" />
     </svg>
-  );
-};
+  )
+}
 
-function Bub({ shouldFlipH, opFunction, ...props }) {
+function Bub({
+  shouldFlipH = false,
+  opFunction,
+  ...props
+}: React.SVGProps<SVGGElement> & {
+  shouldFlipH?: boolean
+  opFunction: OPFunctionType
+}) {
   const { x, y, size } = [
     { x: 463, y: 157, size: 256 },
     { x: 211, y: 213, size: 193 },
     { x: 401, y: 371, size: 122 },
     { x: 246, y: 376, size: 92 },
-  ][opFunction.index];
+  ][opFunction.index]
   return (
     <g
       {...props}
@@ -245,7 +271,6 @@ function Bub({ shouldFlipH, opFunction, ...props }) {
       }}
     >
       <SVG_OP_Bubble
-        // color={opFunction.savior ? LetterToColor[opFunction.letter] : "gray"}
         color={LetterToColor[opFunction.letter] || "gray"}
         width={size}
         prefix={opFunction.sex}
@@ -253,7 +278,32 @@ function Bub({ shouldFlipH, opFunction, ...props }) {
         gray={!opFunction.savior}
       />
     </g>
-  );
+  )
+}
+
+function BubBorder({
+  opFunction,
+  ...props
+}: React.SVGProps<SVGGElement> & {
+  opFunction: OPFunctionType
+}) {
+  const { x, y, size } = [
+    { x: 463, y: 157, size: 256 },
+    { x: 211, y: 213, size: 193 },
+    { x: 401, y: 371, size: 122 },
+    { x: 246, y: 376, size: 92 },
+  ][opFunction.index]
+  return (
+    <g
+      {...props}
+      className={`Bub border`}
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+      }}
+    >
+      <SVG_OP_Bubble_border width={size} />
+    </g>
+  )
 }
 
 const LetterToColor = {
@@ -263,7 +313,7 @@ const LetterToColor = {
   T: "blue",
   N: "yellow",
   F: "red",
-};
+}
 
 const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
   { stroke: "#001aff", strokeWidth: 6, strokeLinejoin: "round" },
@@ -277,22 +327,22 @@ const AnimalStrokes: React.SVGProps<SVGPathElement>[] = [
     strokeDasharray: "6.96 6.96 0 0",
     strokeDashoffset: 11.59,
   },
-];
+]
 
 function BubbleBorder({
   black,
   size = 0,
 }: {
-  black?: boolean;
-  size: 0 | 1 | 2 | 3;
+  black?: boolean
+  size: 0 | 1 | 2 | 3
 }) {
   const transform = [
     "translate(-825.987 -15.64) scale(1.04627)",
     "translate(-744.14 99.286) scale(.78883)",
     "translate(-182.408 322.039) scale(.50068)",
     "matrix(.37684 0 0 .37684 -176.406 355.175) translate(0 -2)",
-  ][size];
-  const stroke = [15, 21, 29.96, 39.8][size];
+  ][size]
+  const stroke = [15, 21, 29.96, 39.8][size]
   return (
     <g transform={transform}>
       <circle
@@ -307,5 +357,5 @@ function BubbleBorder({
         strokeMiterlimit={1.5}
       />
     </g>
-  );
+  )
 }
