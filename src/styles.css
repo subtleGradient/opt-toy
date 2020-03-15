@@ -96,32 +96,26 @@ th > label {
   box-sizing: border-box;
 }
 
-.TypeThing[data-is-open="false"] {
+.TypeThing {
   width: 25%;
 }
-@media screen and (max-width: 767px) {
-  .TypeThing[data-is-open="false"] {
+@media screen and (max-width: 768px) {
+  .TypeThing {
     width: 50%;
   }
 }
 @media screen and (max-width: 424px) {
-  .TypeThing[data-is-open="false"] {
+  .TypeThing {
     width: 100%;
   }
 }
 
-@media screen and (max-width: 1023px) {
-  .TypeThing[data-is-open="true"] {
-    width: 25%;
-  }
+.TypeThing input[type="text"],
+.TypeThing input:not([type]) {
+  box-sizing: border-box;
+  width: 100%;
 }
-@media screen and (max-width: 1023px) {
-  .TypeThing[data-is-open="true"] {
-    width: 100%;
-  }
-}
-@media screen and (min-width: 1024px) {
-  .TypeThing[data-is-open="true"] {
-    width: 50%;
-  }
+.TypeThing:active input,
+.TypeThing:hover input {
+  background-color: #ffffdd;
 }
