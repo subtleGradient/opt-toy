@@ -6,193 +6,253 @@ import {
   cleanCoinText,
   BLANK_TYPE,
   parseCoinText,
-} from "./Coin";
+} from "./Coin"
+
+type OPODLetterType = "O" | "D" | "?"
+type OPDLetterType = "F" | "T" | "D"
+type OPOLetterType = "N" | "S" | "O"
+type OPLetterType = "N" | "S" | "F" | "T" | "X"
+type OPFocusType = "i" | "e" | "x" | "?"
+type OPSexType = "f" | "m" | "?"
+type OPAnimalType = "P" | "B" | "C" | "S" | "?"
+
+export interface OPFunctionType {
+  index: number
+  key: any
+  letter: OPLetterType
+  focus: OPFocusType
+  sex: OPSexType
+  savior: boolean
+  odLetter: OPODLetterType
+}
+
+const sortBy = (a: string | number, b: string | number) =>
+  a > b ? 1 : b > a ? -1 : 0
+const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
 export class OPT512 {
   static fromCoinText(typeCode: string): OPT512 {
-    return new OPT512(parseCoinText(typeCode));
+    return new OPT512(parseCoinText(typeCode))
   }
-  type: OPT512Maybe;
-  feeling = new OPFeeling(this);
-  thinking = new OPThinking(this);
-  intuition = new OPIntuition(this);
-  sensing = new OPSensing(this);
 
-  play = new Play(this);
-  sleep = new Sleep(this);
-  blast = new Blast(this);
-  consume = new Consume(this);
-
-  constructor(type: OPT512Maybe) {
-    this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe;
+  get functions() {
+    const { feeling, thinking, intuition, sensing } = this
+    return [feeling, thinking, intuition, sensing].sort(sortByIndex)
   }
+  feeling = new Feeling(this)
+  thinking = new Thinking(this)
+  intuition = new iNtuition(this)
+  sensing = new Sensing(this)
+
+  get animalStack() {
+    const { play, blast, consume, sleep, A1 } = this
+    switch (A1) {
+      case "P":
+        return [play, consume, blast, sleep]
+      case "B":
+        return [blast, sleep, play, consume]
+      case "C":
+        return [consume, play, sleep, blast]
+      case "S":
+        return [sleep, blast, consume, play]
+      default:
+        return []
+    }
+  }
+  get animals() {
+    const { play, sleep, blast, consume } = this
+    return [play, sleep, blast, consume].sort(sortByIndex)
+  }
+  play = new Play(this)
+  sleep = new Sleep(this)
+  blast = new Blast(this)
+  consume = new Consume(this)
+
+  constructor(public type: OPT512Maybe) {
+    this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe
+  }
+  toJSON() {
+    return this.type
+  }
+  static fromJSON(type: OPT512Maybe) {
+    return new OPT512(type)
+  }
+
   get typeNumber() {
-    return parseInt(this.type.map(Number).join(""), 2);
+    return parseInt(this.type.map(Number).join(""), 2)
   }
   get eCount() {
-    return this.type.filter(it => it === true).length;
+    return this.type.filter(it => it === true).length
   }
   get iCount() {
-    return this.type.filter(it => it === false).length;
+    return this.type.filter(it => it === false).length
   }
   get nullCount() {
-    return this.type.filter(it => it == null).length;
+    return this.type.filter(it => it == null).length
   }
   get isEmpty() {
-    return this.nullCount === this.type.length;
+    return this.nullCount === this.type.length
   }
   get isFull() {
-    return this.nullCount === 0;
+    return this.nullCount === 0
   }
-  get fmS() {
+  get fmS(): OPSexType {
     return ["f", "m", "?"][
       maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])
-    ];
+    ] as OPSexType
   }
-  get fmDe() {
+  get fmDe(): OPSexType {
     return ["f", "m", "?"][
       maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
-    ];
+    ] as OPSexType
   }
-  get odLetter() {
+  get odLetter(): OPODLetterType {
     return ["O", "D", "?"][
       maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ]
+    ] as OPODLetterType
   }
-  get dLetter() {
+  get dLetter(): OPDLetterType {
     return ["F", "T", "D"][
       maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
-    ] as any;
+    ] as OPDLetterType
   }
-  set dLetter(letter: "F" | "T" | "D") {
+  set dLetter(letter: OPDLetterType) {
     switch (letter) {
       case "F":
-        this.type[NamedCOINS.coinFT.index] = false;
-        break;
+        this.type[NamedCOINS.coinFT.index] = false
+        break
 
       case "T":
-        this.type[NamedCOINS.coinFT.index] = true;
-        break;
+        this.type[NamedCOINS.coinFT.index] = true
+        break
 
       case "D":
       default:
-        this.type[NamedCOINS.coinFT.index] = null;
+        this.type[NamedCOINS.coinFT.index] = null
     }
   }
-  get oLetter(): "N" | "S" | "O" {
+  get oLetter(): OPOLetterType {
     return ["N", "S", "O"][
       maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])
-    ] as any;
+    ] as OPOLetterType
   }
-  set oLetter(letter: "N" | "S" | "O") {
+  set oLetter(letter: OPOLetterType) {
     switch (letter) {
       case "N":
-        this.type[NamedCOINS.coinNS.index] = false;
-        break;
+        this.type[NamedCOINS.coinNS.index] = false
+        break
 
       case "S":
-        this.type[NamedCOINS.coinNS.index] = true;
-        break;
+        this.type[NamedCOINS.coinNS.index] = true
+        break
 
       case "O":
       default:
-        this.type[NamedCOINS.coinNS.index] = null;
+        this.type[NamedCOINS.coinNS.index] = null
     }
   }
-  get dFocus() {
+
+  get dFocus(): OPFocusType {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])
-    ] as any;
+    ] as OPFocusType
   }
-  get oFocus() {
+  set dFocus(letter: OPFocusType) {
+    switch (letter) {
+      case "i":
+        this.type[NamedCOINS.coinDiDe.index] = false
+        break
+
+      case "e":
+        this.type[NamedCOINS.coinDiDe.index] = true
+        break
+
+      case "x":
+      default:
+        this.type[NamedCOINS.coinDiDe.index] = null
+    }
+  }
+
+  get oFocus(): OPFocusType {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])
-    ] as any;
+    ] as OPFocusType
   }
-  set dFocus(letter: "i" | "e" | "x") {
+  set oFocus(letter: OPFocusType) {
     switch (letter) {
       case "i":
-        this.type[NamedCOINS.coinDiDe.index] = false;
-        break;
+        this.type[NamedCOINS.coinOiOe.index] = false
+        break
 
       case "e":
-        this.type[NamedCOINS.coinDiDe.index] = true;
-        break;
+        this.type[NamedCOINS.coinOiOe.index] = true
+        break
 
       case "x":
       default:
-        this.type[NamedCOINS.coinDiDe.index] = null;
+        this.type[NamedCOINS.coinOiOe.index] = null
     }
   }
-  set oFocus(letter: "i" | "e" | "x") {
-    switch (letter) {
-      case "i":
-        this.type[NamedCOINS.coinOiOe.index] = false;
-        break;
 
-      case "e":
-        this.type[NamedCOINS.coinOiOe.index] = true;
-        break;
-
-      case "x":
-      default:
-        this.type[NamedCOINS.coinOiOe.index] = null;
-    }
-  }
   get a2Focus() {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinA2ie.index])
-    ];
+    ]
   }
   get a2FocusBool() {
-    return this.type[NamedCOINS.coinA2ie.index];
+    return this.type[NamedCOINS.coinA2ie.index]
   }
   get a3FocusBool() {
-    return this.type[NamedCOINS.coinA3ie.index];
+    return this.type[NamedCOINS.coinA3ie.index]
   }
   set a2FocusBool(side: BoolMaybe) {
-    this.type[NamedCOINS.coinA2ie.index] = side;
+    this.type[NamedCOINS.coinA2ie.index] = side
   }
   set a3FocusBool(side: BoolMaybe) {
-    this.type[NamedCOINS.coinA3ie.index] = side;
+    this.type[NamedCOINS.coinA3ie.index] = side
   }
   get a3Focus() {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinA3ie.index])
-    ];
+    ]
   }
   get DTFxei() {
-    return `${this.dLetter}${this.dFocus}`;
+    return `${this.dLetter}${this.dFocus}`
   }
   get OSNxei() {
-    return `${this.oLetter}${this.oFocus}`;
+    return `${this.oLetter}${this.oFocus}`
   }
   get S1() {
     return [this.OSNxei, this.DTFxei, this.DTFxei][
       maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ];
+    ]
   }
   get S2() {
     return [this.DTFxei, this.OSNxei, this.OSNxei][
       maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ];
+    ]
   }
   get D1() {
-    return Flipped[this.S2] || this.S2;
+    return Flipped[this.S2] || this.S2
   }
   get D2() {
-    return Flipped[this.S1] || this.S1;
+    return Flipped[this.S1] || this.S1
   }
   get De() {
-    return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus];
+    return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus]
   }
   get Di() {
-    return Flipped[this.De];
+    return Flipped[this.De]
   }
   get jumper() {
-    return this.dFocus === "x" ? null : this.dFocus === this.oFocus;
+    return this.dFocus === "x" ? null : this.dFocus === this.oFocus
   }
-  get opFunctions() {
+  get opFunctions(): [
+    OPFunctionType,
+    OPFunctionType,
+    OPFunctionType,
+    OPFunctionType,
+  ] {
     const sex = {
       Si: this.fmS,
       Se: this.fmS,
@@ -200,7 +260,8 @@ export class OPT512 {
       Ne: Flipped[this.fmS],
       [this.De]: this.fmDe,
       [this.Di]: Flipped[this.fmDe],
-    };
+    }
+    const { odLetter } = this
 
     const fns = [
       {
@@ -210,6 +271,7 @@ export class OPT512 {
         focus: this.S1[1],
         sex: sex[this.S1],
         savior: true,
+        odLetter,
       },
       {
         index: 1,
@@ -218,6 +280,7 @@ export class OPT512 {
         focus: this.S2[1],
         sex: sex[this.S2],
         savior: true,
+        odLetter: Flipped[odLetter],
       },
       {
         index: 2,
@@ -226,6 +289,7 @@ export class OPT512 {
         focus: this.D1[1],
         sex: sex[this.D1],
         savior: false,
+        odLetter: Flipped[odLetter],
       },
       {
         index: 3,
@@ -234,54 +298,56 @@ export class OPT512 {
         focus: this.D2[1],
         sex: sex[this.D2],
         savior: false,
+        odLetter,
       },
     ].map(it => {
-      if (it.key === "O" || it.key === "D") it.key = it.index;
-      return it;
-    });
+      if (it.key === "O" || it.key === "D") it.key = it.index
+      return it
+    })
     if (this.jumper === true) {
-      const [s1, s2, d1, d2] = fns;
-      fns[1] = d1;
-      d1.index = 1;
-      fns[2] = s2;
-      s2.index = 2;
+      const [s1, s2, d1, d2] = fns
+      fns[1] = d1
+      d1.index = 1
+      fns[2] = s2
+      s2.index = 2
     }
-    return fns;
+    const [fn1, fn2, fn3, fn4] = fns
+    return [fn1, fn2, fn3, fn4]
   }
 
-  get animals() {
-    return [this.A1, this.A2, this.A3, this.A4];
+  get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] {
+    return [this.A1, this.A2, this.A3, this.A4]
   }
   get PlayIndex() {
-    return this.animals.indexOf("P");
+    return this.animalCodes.indexOf("P")
   }
   get BlastIndex() {
-    return this.animals.indexOf("B");
+    return this.animalCodes.indexOf("B")
   }
   get ConsumeIndex() {
-    return this.animals.indexOf("C");
+    return this.animalCodes.indexOf("C")
   }
   get SleepIndex() {
-    return this.animals.indexOf("S");
+    return this.animalCodes.indexOf("S")
   }
 
   get A1Code() {
-    return `O${this.oFocus}D${this.dFocus}`;
+    return `O${this.oFocus}D${this.dFocus}`
   }
   get A1() {
-    return AnimalCodeToAnimalLetter[this.A1Code] || "?";
+    return AnimalCodeToAnimalLetter[this.A1Code] || "?"
   }
   get A2() {
     return (
       AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
-    );
+    )
   }
   get A3() {
     return (
       AnimalLetterFocusCodeToAnimalLetters[
         `${this.A1}${this.A2}${this.a3Focus}`
       ] || "?"
-    );
+    )
   }
   get A4() {
     return (
@@ -291,22 +357,22 @@ export class OPT512 {
         CPS: "B",
         BCS: "P",
       }[[this.A1, this.A2, this.A3].sort().join("")] || "?"
-    );
+    )
   }
   toString() {
     return this.OP512
   }
   get OP512() {
-    const opt = this;
-    const fmS = opt.fmS;
-    const fmDe = opt.fmDe;
-    const S1 = opt.S1;
-    const S2 = opt.S2;
-    const A1 = opt.A1;
-    const A2 = opt.A2;
-    const A3 = opt.A3;
-    const A4 = opt.A4;
-    return cleanCoinText(`${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`);
+    const opt = this
+    const fmS = opt.fmS
+    const fmDe = opt.fmDe
+    const S1 = opt.S1
+    const S2 = opt.S2
+    const A1 = opt.A1
+    const A2 = opt.A2
+    const A3 = opt.A3
+    const A4 = opt.A4
+    return cleanCoinText(`${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`)
   }
   get sideOfEnergyInfo(): BoolMaybe {
     return {
@@ -314,37 +380,37 @@ export class OPT512 {
       C: false,
       B: false,
       P: true,
-    }[this.A4];
+    }[this.A4]
   }
   get sideOfSiNe(): BoolMaybe {
-    if (this.oLetter === "S" && this.oFocus === "i") return false;
-    if (this.oLetter === "N" && this.oFocus === "e") return true;
-    return null;
+    if (this.oLetter === "S" && this.oFocus === "i") return false
+    if (this.oLetter === "N" && this.oFocus === "e") return true
+    return null
   }
   get sideOfNiSe(): BoolMaybe {
-    if (this.oLetter === "N" && this.oFocus === "i") return false;
-    if (this.oLetter === "S" && this.oFocus === "e") return true;
-    return null;
+    if (this.oLetter === "N" && this.oFocus === "i") return false
+    if (this.oLetter === "S" && this.oFocus === "e") return true
+    return null
   }
   get sideOfFiTe(): BoolMaybe {
-    if (this.dLetter === "F" && this.dFocus === "i") return false;
-    if (this.dLetter === "T" && this.dFocus === "e") return true;
-    return null;
+    if (this.dLetter === "F" && this.dFocus === "i") return false
+    if (this.dLetter === "T" && this.dFocus === "e") return true
+    return null
   }
   get sideOfTiFe(): BoolMaybe {
-    if (this.dLetter === "T" && this.dFocus === "i") return false;
-    if (this.dLetter === "F" && this.dFocus === "e") return true;
-    return null;
+    if (this.dLetter === "T" && this.dFocus === "i") return false
+    if (this.dLetter === "F" && this.dFocus === "e") return true
+    return null
   }
   get sideOfSFNT(): BoolMaybe {
-    if (this.oLetter === "S" && this.dLetter === "F") return false;
-    if (this.oLetter === "N" && this.dLetter === "T") return true;
-    return null;
+    if (this.oLetter === "S" && this.dLetter === "F") return false
+    if (this.oLetter === "N" && this.dLetter === "T") return true
+    return null
   }
   get sideOfNFST(): BoolMaybe {
-    if (this.oLetter === "N" && this.dLetter === "F") return false;
-    if (this.oLetter === "S" && this.dLetter === "T") return true;
-    return null;
+    if (this.oLetter === "N" && this.dLetter === "F") return false
+    if (this.oLetter === "S" && this.dLetter === "T") return true
+    return null
   }
 }
 
@@ -387,44 +453,149 @@ const Flipped = {
   Di: "De",
   Oe: "Oi",
   De: "Di",
-};
+}
 
 class OPPart {
-  private opType: OPT512;
-  constructor(opType: OPT512) {
-    this.opType = opType;
-  }
+  readonly code: string
+  constructor(protected opType: OPT512) {}
 }
 
 class OPAnimal extends OPPart {
-  // constructor(opType: OPT512) {
-  //   super(opType);
-  // }
+  readonly code: OPAnimalType
+  readonly focus: OPFocusType
+  get index(): number {
+    return this.opType.animalCodes.indexOf(this.code)
+  }
 }
-class Info extends OPAnimal {}
-class Energy extends OPAnimal {}
-class Blast extends Info {}
-class Consume extends Info {}
-class Play extends Energy {}
-class Sleep extends Energy {}
+class Info extends OPAnimal {
+  kind = "info"
+}
+class Energy extends OPAnimal {
+  kind = "energy"
+}
 
-class OPFn extends OPPart {}
-class OPDecider extends OPFn {}
-class OPObserver extends OPFn {}
-class OPFeeling extends OPDecider {}
-class OPThinking extends OPDecider {}
-class OPIntuition extends OPObserver {}
-class OPSensing extends OPObserver {}
+class Blast extends Info {
+  readonly code = "B" as "B"
+  readonly focus = "e" as "e"
+  get flipSide() {
+    return this.opType.consume
+  }
+}
+class Consume extends Info {
+  readonly code = "C" as "C"
+  readonly focus = "i" as "i"
+  get flipSide() {
+    return this.opType.blast
+  }
+}
+class Play extends Energy {
+  readonly code = "P" as "P"
+  readonly focus = "e" as "e"
+  get flipSide() {
+    return this.opType.sleep
+  }
+}
+class Sleep extends Energy {
+  readonly code = "S" as "S"
+  readonly focus = "i" as "i"
+  get flipSide() {
+    return this.opType.play
+  }
+}
+
+const IndexActivationMap = {
+  "-1": 0,
+  0: 3,
+  1: 2,
+  2: 1,
+  3: -1,
+}
+
+const activationReducer = (activation: number, { index }) =>
+  activation + IndexActivationMap[index]
+
+class OPFn extends OPPart {
+  code = "X"
+  get saviorCode() {
+    const { opFn, opType, activation } = this
+    const [ sex, savior, index ] = [opFn?.sex, opFn?.savior, opFn?.index]
+    if (savior) return "S" + { 0: 1, 1: 2, 2: 2, 3: 2 }[index]
+    return activation === 0 ? "-" : "A"
+  }
+  get activation1or2() {
+    return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation]
+  }
+  get activation() {
+    return this.animals.reduce(activationReducer, 0)
+  }
+  get animals(): OPAnimal[] {
+    const { opFn, opType } = this
+    const { play, blast, consume, sleep } = opType
+    switch (opFn?.odLetter + opFn?.focus) {
+      case "Oi":
+        return [sleep, blast]
+      case "Oe":
+        return [consume, play]
+      case "Di":
+        return [sleep, consume]
+      case "De":
+        return [blast, play]
+      default:
+        return []
+    }
+  }
+  get opFn() {
+    return this.opType.opFunctions.filter(
+      ({ letter }) => letter === this.code,
+    )[0]
+  }
+  get index() {
+    return this.opType.opFunctions.findIndex(
+      ({ letter }) => letter === this.code,
+    )
+  }
+}
+class DeciderFn extends OPFn {
+  code = "D"
+}
+class Feeling extends DeciderFn {
+  readonly code = "F"
+  get flipSide() {
+    return this.opType.thinking
+  }
+}
+class Thinking extends DeciderFn {
+  readonly code = "T"
+  get flipSide() {
+    return this.opType.feeling
+  }
+}
+
+class ObserverFn extends OPFn {
+  code = "O"
+}
+class iNtuition extends ObserverFn {
+  readonly code = "N"
+  get flipSide() {
+    return this.opType.sensing
+  }
+}
+class Sensing extends ObserverFn {
+  readonly code = "S"
+  get flipSide() {
+    return this.opType.intuition
+  }
+}
 
 const maybeBoolToIndex = (value: BoolMaybe) =>
-  !isBool(value) ? 2 : value ? 1 : 0;
+  !isBool(value) ? 2 : value ? 1 : 0
 
 const AnimalCodeToAnimalLetter = {
   OiDi: "S",
   OiDe: "B",
   OeDi: "C",
   OeDe: "P",
-};
+}
 
 const AnimalLetterFocusCodeToAnimalLetters = {
   Si: "C",
@@ -451,4 +622,4 @@ const AnimalLetterFocusCodeToAnimalLetters = {
   CPe: "B",
   BPe: "C",
   PBe: "C",
-};
+}
