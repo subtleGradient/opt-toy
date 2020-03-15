@@ -8,6 +8,10 @@
   "description": "OPT 9 Coin System exploration toy",
   "keywords": [],
   "main": "src/index.tsx",
+  "prettier": {
+    "trailingComma": "all",
+    "semi": false
+  },
   "dependencies": {
     "history": "^4.10.1",
     "react": "16.13.0",
