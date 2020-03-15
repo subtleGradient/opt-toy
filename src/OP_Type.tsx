@@ -1,9 +1,6 @@
 import * as React from "react";
-// import { PropertyControls, ControlType } from "framer";
-import { Defs } from "./OPBubbles4";
-import { SVG_OP_Bubble } from "./SVG_OP_Bubble";
-import { OPT512 } from "./OPT512";
 import { OPTGraph } from "./opt128-svgr";
+import { OPT512 } from "./OPT512";
 
 // Define type of property
 interface Props {
