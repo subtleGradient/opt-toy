@@ -54,6 +54,11 @@ export class OPT512 {
       maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
     ];
   }
+  get odLetter() {
+    return ["O", "D", "?"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
+    ]
+  }
   get dLetter() {
     return ["F", "T", "D"][
       maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
@@ -287,6 +292,9 @@ export class OPT512 {
         BCS: "P",
       }[[this.A1, this.A2, this.A3].sort().join("")] || "?"
     );
+  }
+  toString() {
+    return this.OP512
   }
   get OP512() {
     const opt = this;
