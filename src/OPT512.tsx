@@ -31,6 +31,9 @@ const sortBy = (a: string | number, b: string | number) =>
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
 export class OPT512 {
+  static fromDirtyCoinText(typeCode: string): OPT512 {
+    return new OPT512(parseCoinText(cleanCoinText(typeCode)))
+  }
   static fromCoinText(typeCode: string): OPT512 {
     return new OPT512(parseCoinText(typeCode))
   }
