@@ -7,6 +7,7 @@ import {
   BLANK_TYPE,
   parseCoinText,
 } from "./Coin"
+import { sortBy } from "./sortBy"
 
 type OPODLetterType = "O" | "D" | "?"
 type OPDLetterType = "F" | "T" | "D"
@@ -26,8 +27,6 @@ export interface OPFunctionType {
   odLetter: OPODLetterType
 }
 
-const sortBy = (a: string | number, b: string | number) =>
-  a > b ? 1 : b > a ? -1 : 0
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
 export class OPT512 {
