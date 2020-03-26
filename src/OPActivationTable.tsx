@@ -6,13 +6,7 @@ import { betweenX } from "./between"
 export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
   const showSex = op512.fmDe !== "?" || op512.fmS !== "?"
   return (
-    <div
-      className="OPActivationTable"
-      style={{
-        padding: betweenX(0, 14),
-        paddingBottom: 0,
-      }}
-    >
+    <div className="OPActivationTable">
       <table className="layout">
         <tbody>
           <tr>
@@ -37,11 +31,13 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
                     }) => (
                       <tr key={code}>
                         <td title={activation + 1}>{activation1or2}</td>
-                        {showSex && <td
-                          title={{ f: "feminine", m: "masculine" }[opFn?.sex]}
-                        >
-                          {opFn?.sex}
-                        </td>}
+                        {showSex && (
+                          <td
+                            title={{ f: "feminine", m: "masculine" }[opFn?.sex]}
+                          >
+                            {opFn?.sex}
+                          </td>
+                        )}
                         <td>
                           {code}
                           {opFn?.focus}

@@ -18,7 +18,7 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
             <span
               key={code}
               className={`animal ${Ox.sex + Dx.sex} ${code} ${flipSideIsLast &&
-                "flipSideIsLast"}`}
+                "flipSideIsLast"} index${index}`}
             >
               {showSex && (
                 <span className="part sex">{(Ox.sex + Dx.sex).toUpperCase()}</span>
@@ -32,7 +32,7 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
                 className={`part o ${next?.observer === Ox &&
                   "pair next"} ${previous?.observer === Ox && "pair previous"}`}
               >
-                <i>{Ox.sex}</i>
+                {showSex && <i>{Ox.sex}</i>}
                 {Ox.code}
                 {Ox.focus}
               </span>
@@ -40,7 +40,7 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
                 className={`part o ${next?.decider === Dx &&
                   "pair next"} ${previous?.decider === Dx && "pair previous"}`}
               >
-                <i>{Dx.sex}</i>
+                {showSex && <i>{Dx.sex}</i>}
                 {Dx.code}
                 {Dx.focus}
               </span>

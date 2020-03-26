@@ -1,0 +1,62 @@
+.KnownTypes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.KnownTypes > .TypeTableCells {
+  box-sizing: border-box;
+  width: 25%;
+  border-bottom: 2px solid #aaa;
+}
+
+.TypeTableCells {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.TypeTableCells > * {
+  box-sizing: border-box;
+  width: 25%;
+  text-align: center;
+  padding: 1ex 0;
+  font-size: 0.8em;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.TypeTableCell[data-optype]:hover {
+  border-color: #000;
+}
+
+.TypeTableCell[data-optype*="Ni/"],
+.TypeTableCell[data-optype*="Si/"] {
+  background: #c9daf8;
+}
+.TypeTableCell[data-optype*="Ne/"],
+.TypeTableCell[data-optype*="Se/"] {
+  background: #d9ead3;
+}
+.TypeTableCell[data-optype*="Fi/"],
+.TypeTableCell[data-optype*="Ti/"] {
+  background: #efefef;
+}
+.TypeTableCell[data-optype*="Fe/"],
+.TypeTableCell[data-optype*="Te/"] {
+  background: #f4cccc;
+}
+
+@media (max-width: 424px) {
+  .KnownTypes > .TypeTableCells {
+    width: 50%;
+  }
+}
+@media (min-width: 425px) and (max-width: 767px) {
+  .KnownTypes > .TypeTableCells {
+    width: 25%;
+  }
+}
+@media (min-width: 768px) {
+  .KnownTypes > .TypeTableCells {
+    width: 25%;
+  }
+}

@@ -1,0 +1,48 @@
+.TypeThing {
+  transition: all 0.25s ease-in-out;
+  box-sizing: border-box;
+  padding: 2em 1ex;
+}
+
+.TypeThing {
+  width: 100%;
+}
+
+@media (max-width: 424px) {
+  .TypeThing {
+    width: 100%;
+  }
+}
+@media (min-width: 425px) {
+  .TypeThing {
+    width: 50%;
+  }
+}
+@media (min-width: 768px) {
+  .TypeThing {
+    width: 25%;
+  }
+}
+@media (min-width: 1441px) {
+  .TypeThing {
+    width: calc(100% / 6);
+  }
+}
+
+.TypeThing button {
+  font-size: .9em;
+}
+
+.TypeThing input[type="text"],
+.TypeThing input:not([type]) {
+  box-sizing: border-box;
+  width: 100%;
+}
+.TypeThing:active input,
+.TypeThing:hover input {
+  background-color: #ffffdd;
+}
+
+.TypeThing .spacer {
+  margin: 1ex 0;
+}

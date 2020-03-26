@@ -8,6 +8,7 @@ import { OPT512 } from "./OPT512"
 import OPActivationTable from "./OPActivationTable"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
+import "./TypeThing.css"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   const opt = new OPT512(type)
@@ -59,6 +60,7 @@ export function TypeThing({
   defaultType,
   onClose = null,
   onChangeText = null,
+  showOPTable = true
 }) {
   const [isOpen, setIsOpen] = React.useState(selected)
   const [opType, opTypeActions] = useUndo({
@@ -80,15 +82,7 @@ export function TypeThing({
   }, [opType.present.name, typeText])
 
   return (
-    <div
-      className="TypeThing"
-      data-is-open={isOpen}
-      style={{
-        border: `1px solid`,
-        borderColor: isOpen ? `#000` : `#eee`,
-        // minWidth: 256,
-      }}
-    >
+    <div className="TypeThing" data-is-open={isOpen}>
       <div
         style={{
           // fontSize: betweenX(16, 20),
@@ -103,7 +97,7 @@ export function TypeThing({
           <h3>
             {isOpen ? (
               <input
-                style={{ font: "inherit", textAlign: "center", color: '#333' }}
+                style={{ font: "inherit", textAlign: "center", color: "#333" }}
                 onClick={e => e.stopPropagation()}
                 onChange={e =>
                   opTypeActions.set({
@@ -115,7 +109,7 @@ export function TypeThing({
                 placeholder="Human Name"
               />
             ) : (
-              <div style={{padding:3}}>{opType.present.name}</div>
+              <div style={{ padding: 3 }}>{opType.present.name || `${opTypeInstance.S1}/${opTypeInstance.S2}`}</div>
             )}
           </h3>
         </div>
@@ -124,7 +118,7 @@ export function TypeThing({
           <code>
             {isOpen ? (
               <OPCodeInput
-                style={{ font: "inherit", textAlign: "center",  }}
+                style={{ font: "inherit", textAlign: "center" }}
                 onClick={e => e.stopPropagation()}
                 coins={opTypeInstance.type}
                 onParsed={type => {
@@ -132,11 +126,13 @@ export function TypeThing({
                 }}
               />
             ) : (
-              <div style={{padding:3}}><OPTypeBinaryText type={opTypeInstance.type} /></div>
+              <div style={{ padding: 3 }}>
+                <OPTypeBinaryText type={opTypeInstance.type} />
+              </div>
             )}
           </code>
         </div>
-        <OPActivationTable op512={opTypeInstance} />
+        {showOPTable && <div className="spacer"><OPActivationTable op512={opTypeInstance} /></div>}
         <AOPActivationTable op512={opTypeInstance} />
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
@@ -162,8 +158,8 @@ export function TypeThing({
             <History opTypeActions={opTypeActions}></History>
             <Spacer />
             {onClose && (
-              <button onClick={onClose}>
-                <b>X</b> Delete
+              <button onClick={onClose} title="Delete">
+                🗑️
               </button>
             )}
           </div>

@@ -50,13 +50,14 @@ function RootStyle() {
       <BetweenRootStyles selector="html" xMin={320} xMax={424} />
       <BetweenRootStyles selector="html" xMin={425} xMax={767} />
       <BetweenRootStyles selector="html" xMin={768} xMax={1440} />
+      <BetweenRootStyles selector="html" xMin={1441} xMax={2560} />
       <style>{`
         @media screen and (max-width: 424px) {
           html {
             font-size: ${betweenX(14, 18, 320, 424)};
           }
         }
-        @media screen and (min-width: 425px) and (max-width: 767px) {
+        @media screen and (min-width: 425px) {
           html {
             font-size: ${betweenX(9, 16, 425, 767)};
           }
@@ -64,6 +65,11 @@ function RootStyle() {
         @media screen and (min-width: 768px) {
           html {
             font-size: ${betweenX(8, 16, 768, 1440)};
+          }
+        }
+        @media screen and (min-width: 1441px) {
+          html {
+            font-size: ${betweenX(9, 16, 1441, 2560)};
           }
         }
       `}</style>
@@ -75,6 +81,12 @@ function App() {
   const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff()
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
   const showKnown = showKnowns.length > 0
+  const [showSettings, setShowSettings] = useState(false)
+  const [
+    [showOPTableQueryValue],
+    setShowOPTable,
+  ] = useQueryDataKey("showOPTable", [])
+  const showOPTable = showOPTableQueryValue === "1"
 
   return (
     <div className="App">
@@ -92,16 +104,21 @@ function App() {
         }}
       >
         <button onClick={e => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}>
-          Add
+          ➕ Add
         </button>
         <button
           onClick={e => void setOPTypeTextAtIndex(types.length - 1, null)}
         >
-          Remove
+          🗑️ Remove
         </button>
         <Spacer />
         <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>
-          known types
+          {showKnown ? "⯆" : "⯈"}
+          types
+        </button>
+        <button onClick={() => void setShowSettings(show => !show)}>
+          {showSettings ? "⯆" : "⯈"}
+          settings
         </button>
         <Spacer />
         <span>
@@ -112,6 +129,20 @@ function App() {
         </span>
       </div>
 
+      {showSettings && (
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={showOPTable}
+              onChange={({ target: { checked } }) =>
+                void setShowOPTable(!checked ? ["0"] : ["1"])
+              }
+            />
+            show OP table?
+          </label>
+        </div>
+      )}
       {showKnown && <KnownTypes addType={addType} />}
 
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -124,6 +155,7 @@ function App() {
             onChangeText={(opTypeText: any) =>
               void setOPTypeTextAtIndex(index, opTypeText)
             }
+            showOPTable={showOPTable}
           />
         ))}
       </div>
