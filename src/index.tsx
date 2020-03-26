@@ -1,56 +1,84 @@
-import * as React from "react";
-import { useState } from "react";
-import { render } from "react-dom";
-import { KnownTypes } from "./KnownTypes";
-import { useQueryDataKey } from "./ParsedQuery";
-import "./styles.css";
-import { TypeThing } from "./TypeThing";
-import { BetweenRootStyles } from "./between";
+import * as React from "react"
+import { useState } from "react"
+import { render } from "react-dom"
+import { KnownTypes } from "./KnownTypes"
+import { useQueryDataKey } from "./ParsedQuery"
+import "./styles.css"
+import { TypeThing } from "./TypeThing"
+import { BetweenRootStyles, betweenX } from "./between"
 
-let UID = -1; // user as a unique key for each type
-const getNextUID = () => ++UID;
+let UID = -1 // user as a unique key for each type
+const getNextUID = () => ++UID
 
 function useStuff() {
-  const [types, setTypes] = useQueryDataKey("type", ["Dx/Ox"]);
-  const [typeIDs, setTypeIDs] = useState(() => types.map(getNextUID));
+  const [types, setTypes] = useQueryDataKey("type", ["Dx/Ox"])
+  const [typeIDs, setTypeIDs] = useState(() => types.map(getNextUID))
   const setOPTypeTextAtIndex = (index: number, opTypeText: string | null) => {
     if (opTypeText == null) {
-      const newTypes = types.slice();
-      newTypes.splice(index, 1);
-      setTypes(newTypes);
+      const newTypes = types.slice()
+      newTypes.splice(index, 1)
+      setTypes(newTypes)
 
-      const newTypeIDs = typeIDs.slice();
-      newTypeIDs.splice(index, 1);
-      setTypeIDs(newTypeIDs);
-      return;
+      const newTypeIDs = typeIDs.slice()
+      newTypeIDs.splice(index, 1)
+      setTypeIDs(newTypeIDs)
+      return
     }
-    const newTypes = types.slice();
-    newTypes[index] = opTypeText;
-    setTypes(newTypes);
+    const newTypes = types.slice()
+    newTypes[index] = opTypeText
+    setTypes(newTypes)
 
     if (!(index in typeIDs)) {
-      const newTypeIDs = typeIDs.slice();
-      newTypeIDs[index] = getNextUID();
-      setTypeIDs(newTypeIDs);
+      const newTypeIDs = typeIDs.slice()
+      newTypeIDs[index] = getNextUID()
+      setTypeIDs(newTypeIDs)
     }
-  };
+  }
   return {
     setOPTypeTextAtIndex,
     typeIDs,
     types,
     addType(typeText) {
-      setOPTypeTextAtIndex(types.length, typeText);
+      setOPTypeTextAtIndex(types.length, typeText)
     },
-  };
+  }
+}
+
+function RootStyle() {
+  return (
+    <>
+      <BetweenRootStyles selector="html" xMin={320} xMax={424} />
+      <BetweenRootStyles selector="html" xMin={425} xMax={767} />
+      <BetweenRootStyles selector="html" xMin={768} xMax={1440} />
+      <style>{`
+        @media screen and (max-width: 424px) {
+          html {
+            font-size: ${betweenX(14, 18, 320, 424)};
+          }
+        }
+        @media screen and (min-width: 425px) and (max-width: 767px) {
+          html {
+            font-size: ${betweenX(9, 16, 425, 767)};
+          }
+        }
+        @media screen and (min-width: 768px) {
+          html {
+            font-size: ${betweenX(8, 16, 768, 1440)};
+          }
+        }
+      `}</style>
+    </>
+  )
 }
 
 function App() {
-  const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff();
-  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", []);
-  const showKnown = showKnowns.length > 0;
+  const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff()
+  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
+  const showKnown = showKnowns.length > 0
 
   return (
-    <div className="App" style={{}}>
+    <div className="App">
+      <RootStyle />
       <div
         className="bar"
         style={{
@@ -103,15 +131,13 @@ function App() {
       {types.length > 1 && (
         <blockquote>Click a graph to open details</blockquote>
       )}
-
-      <BetweenRootStyles className="App" />
     </div>
-  );
+  )
 }
 
 function Spacer() {
-  return <span style={{ flex: 1 }} />;
+  return <span style={{ flex: 1 }} />
 }
 
-const rootElement = document.getElementById("root");
-render(<App />, rootElement);
+const rootElement = document.getElementById("root")
+render(<App />, rootElement)

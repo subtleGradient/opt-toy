@@ -6,6 +6,7 @@ import { OPCodeInput } from "./OPCodeInput"
 import { OP_Type } from "./OP_Type"
 import { OPT512 } from "./OPT512"
 import OPActivationTable from "./OPActivationTable"
+import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
@@ -90,7 +91,7 @@ export function TypeThing({
     >
       <div
         style={{
-          fontSize: betweenX(16, 20),
+          // fontSize: betweenX(16, 20),
           textAlign: "center",
           marginTop: betweenX(8, 16),
         }}
@@ -136,6 +137,7 @@ export function TypeThing({
           </code>
         </div>
         <OPActivationTable op512={opTypeInstance} />
+        <AOPActivationTable op512={opTypeInstance} />
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
       {isOpen && (

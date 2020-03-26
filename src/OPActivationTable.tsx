@@ -11,7 +11,6 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
       style={{
         padding: betweenX(0, 14),
         paddingBottom: 0,
-        fontSize: betweenX(8, 14),
       }}
     >
       <table className="layout">

@@ -44,23 +44,12 @@ th > label {
 }
 
 .type-table > * {
-  width: 25%;
+  width: 100%;
   box-sizing: border-box;
 }
 
 .type-table > .type-table {
   border-bottom: 2px solid #aaa;
-}
-
-@media screen and (min-width: 425px) and (max-width: 767px) {
-  .type-table > .type-table {
-    width: 50%;
-  }
-}
-@media screen and (max-width: 424px) {
-  .type-table > .type-table {
-    width: 100%;
-  }
 }
 
 .type-table.with-cells > * {
@@ -97,16 +86,31 @@ th > label {
 }
 
 .TypeThing {
-  width: 25%;
+  width: 100%;
 }
-@media screen and (max-width: 768px) {
+
+@media screen and (max-width: 424px) {
+  .type-table > .type-table {
+    width: 100%;
+  }
+  .TypeThing {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 425px) and (max-width: 767px) {
+  .type-table > .type-table {
+    width: 50%;
+  }
   .TypeThing {
     width: 50%;
   }
 }
-@media screen and (max-width: 424px) {
+@media screen and (min-width: 768px) {
+  .type-table > .type-table {
+    width: 25%;
+  }
   .TypeThing {
-    width: 100%;
+    width: 25%;
   }
 }
 

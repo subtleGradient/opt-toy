@@ -1,0 +1,63 @@
+.AOPActivationTable {
+  box-sizing: border-box;
+  font-size: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.AOPActivationTable .animal {
+  border-radius: 1ex;
+  display: flex;
+  flex-direction: column;
+  padding: 1ex 0;
+}
+.AOPActivationTable .part {
+  padding: 0.1em 0.3em;
+  box-sizing: border-box;
+  height: 2em;
+  line-height: 1.5em;
+  margin: 2px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.AOPActivationTable .part i {
+  font-style: normal;
+  font-size: 1.5ex;
+  opacity: 0.5;
+}
+
+.AOPActivationTable .animal.mm {
+  font-weight: bold;
+}
+.AOPActivationTable .animal.flipSideIsLast {
+  background-color: yellow;
+}
+.AOPActivationTable .animal.flipSideIsLast.mm {
+  color: yellow;
+  background-color: black;
+}
+.AOPActivationTable .sex {
+  font-size: 75%;
+}
+.AOPActivationTable .aa {
+  font-size: 2em;
+}
+
+/* .AOPActivationTable .ff .sex,
+.AOPActivationTable .mm .sex {
+
+} */
+
+.AOPActivationTable .pair {
+  border: 2px solid lime;
+}
+.AOPActivationTable .pair.next {
+  border-radius: 1em 0 0 1em;
+  border-right: 0;
+  margin-right: 0;
+}
+.AOPActivationTable .pair.previous {
+  border-radius: 0 1em 1em 0;
+  border-left: 0;
+  margin-left: 0;
+}

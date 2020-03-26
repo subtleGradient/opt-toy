@@ -37,6 +37,26 @@ export class OPT512 {
     return new OPT512(parseCoinText(typeCode))
   }
 
+  get eDecider() {
+    return this.deciders.find(Dx => Dx.focus === "e") || this.deciders[0]
+  }
+  get iDecider() {
+    return this.deciders.find(Dx => Dx.focus === "i") || this.deciders[1]
+  }
+  get deciders() {
+    const { feeling, thinking } = this
+    return [feeling, thinking].sort(sortByIndex)
+  }
+  get eObserver() {
+    return this.observers.find(Ox => Ox.focus === "e") || this.observers[0]
+  }
+  get iObserver() {
+    return this.observers.find(Ox => Ox.focus === "i") || this.observers[1]
+  }
+  get observers() {
+    const { intuition, sensing } = this
+    return [intuition, sensing].sort(sortByIndex)
+  }
   get functions() {
     const { feeling, thinking, intuition, sensing } = this
     return [feeling, thinking, intuition, sensing].sort(sortByIndex)
@@ -245,6 +265,12 @@ export class OPT512 {
   }
   get Di() {
     return Flipped[this.De]
+  }
+  get Oe() {
+    return { e: this.OSNxei, i: Flipped[this.OSNxei] }[this.oFocus]
+  }
+  get Oi() {
+    return Flipped[this.Oe]
   }
   get jumper() {
     return this.dFocus === "x" ? null : this.dFocus === this.oFocus
@@ -462,17 +488,31 @@ class OPPart {
   constructor(protected opType: OPT512) {}
 }
 
-class OPAnimal extends OPPart {
+type AnimalFunctionPair = [Sensing | iNtuition, Thinking | Feeling]
+
+abstract class OPAnimal extends OPPart {
   readonly code: OPAnimalType
   readonly focus: OPFocusType
   get index(): number {
     return this.opType.animalCodes.indexOf(this.code)
   }
+  abstract get flipSide(): OPAnimal
+  abstract get functions(): AnimalFunctionPair
+  get observer(){
+    return this.functions[0]
+  }
+  get decider(){
+    return this.functions[1]
+  }
+
+  get flipSideIsLast() {
+    return this.flipSide.index === 3
+  }
 }
-class Info extends OPAnimal {
+abstract class Info extends OPAnimal {
   kind = "info"
 }
-class Energy extends OPAnimal {
+abstract class Energy extends OPAnimal {
   kind = "energy"
 }
 
@@ -482,12 +522,18 @@ class Blast extends Info {
   get flipSide() {
     return this.opType.consume
   }
+  get functions(): AnimalFunctionPair {
+    return [this.opType.iObserver, this.opType.eDecider]
+  }
 }
 class Consume extends Info {
   readonly code = "C" as "C"
   readonly focus = "i" as "i"
   get flipSide() {
     return this.opType.blast
+  }
+  get functions(): AnimalFunctionPair {
+    return [this.opType.eObserver, this.opType.iDecider]
   }
 }
 class Play extends Energy {
@@ -496,12 +542,18 @@ class Play extends Energy {
   get flipSide() {
     return this.opType.sleep
   }
+  get functions(): AnimalFunctionPair {
+    return [this.opType.eObserver, this.opType.eDecider]
+  }
 }
 class Sleep extends Energy {
   readonly code = "S" as "S"
   readonly focus = "i" as "i"
   get flipSide() {
     return this.opType.play
+  }
+  get functions(): AnimalFunctionPair {
+    return [this.opType.iObserver, this.opType.iDecider]
   }
 }
 
@@ -516,11 +568,14 @@ const IndexActivationMap = {
 const activationReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
+const activationCodeReducer = (activation: number, { index }) =>
+  activation + IndexActivationMap[index]
+
 class OPFn extends OPPart {
   code = "X"
   get saviorCode() {
     const { opFn, opType, activation } = this
-    const [ sex, savior, index ] = [opFn?.sex, opFn?.savior, opFn?.index]
+    const [sex, savior, index] = [opFn?.sex, opFn?.savior, opFn?.index]
     if (savior) return "S" + { 0: 1, 1: 2, 2: 2, 3: 2 }[index]
     return activation === 0 ? "-" : "A"
   }
@@ -550,6 +605,16 @@ class OPFn extends OPPart {
     return this.opType.opFunctions.filter(
       ({ letter }) => letter === this.code,
     )[0]
+  }
+  get fullCode() {
+    const { sex, code, focus } = this
+    return (sex === "?" ? "" : sex) + code + focus
+  }
+  get sex() {
+    return this.opFn?.sex || "?"
+  }
+  get focus() {
+    return this.opFn?.focus || "?"
   }
   get index() {
     return this.opType.opFunctions.findIndex(
