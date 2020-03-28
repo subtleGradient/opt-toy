@@ -1,50 +1,26 @@
 {
   "name": "@opdex/toy",
-  "license": "MIT",
-  "authors": [
-    "Thomas Aylott <oblivious@subtlegradient.com>"
-  ],
-  "version": "1.0.0",
-  "description": "OPT 9 Coin System exploration toy",
-  "keywords": [],
-  "main": "src/index.tsx",
+  "version": "9.0.0",
+  "private": true,
   "prettier": {
     "trailingComma": "all",
     "semi": false
   },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
-    "history": "^4.10.1",
+    "next": "9.3.0",
+    "next-transpile-modules": "^3.1.0",
     "react": "16.13.0",
     "react-dom": "16.13.0",
-    "react-scripts": "3.4.0",
-    "styled-jsx": "^3.2.5",
-    "use-persisted-state": "^0.3.0",
-    "use-undo": "1.0.3"
+    "use-undo": "^1.0.3"
   },
   "devDependencies": {
-    "@types/facebook-pixel": "^0.0.20",
-    "@types/react": "16.9.23",
-    "@types/react-dom": "16.9.5",
-    "@types/styled-jsx": "^2.2.8",
-    "@types/use-persisted-state": "^0.3.0",
-    "framer": "^1.1.7",
+    "@types/node": "^13.9.0",
+    "@types/react": "^16.9.23",
     "typescript": "^3.8.3"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "now-build": "react-scripts build"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/subtleGradient/opt-toy.git"
   }
 }

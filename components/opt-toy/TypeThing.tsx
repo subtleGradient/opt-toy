@@ -83,6 +83,11 @@ export function TypeThing({
   return (
     <div className="TypeThing" data-is-open={isOpen}>
       <style jsx global>{`
+        .TypeThing svg,
+        .TypeThing svg * {
+          transition: all 0.5s ease-in-out;
+        }
+
         .TypeThing {
           transition: all 0.25s ease-in-out;
           box-sizing: border-box;

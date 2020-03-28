@@ -1,5 +1,4 @@
 import * as React from "react";
-import { PropertyControls } from "framer";
 import { Bubble, Defs } from "./OPBubbles4";
 import { BubbleText } from "./SVG_OP_BubbleText";
 
@@ -22,7 +21,7 @@ export class OP_Function_Bubble extends React.Component<Props> {
   static defaultProps = {
     color: Object.keys(colors)[0],
   };
-  static propertyControls: PropertyControls = {
+  static propertyControls = {
     color: {
       title: "Color",
       type: "segmentedenum" as any, //ControlType.SegmentedEnum,
