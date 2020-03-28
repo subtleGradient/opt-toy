@@ -1,7 +1,6 @@
 import * as React from "react"
 import knownTypes from "./known-types.sheet.json"
 import { OPT512 } from "./OPT512"
-import "./KnownTypes.css"
 
 export interface KnownType {
   opType: OPT512
@@ -36,12 +35,21 @@ export const KNOWN_TYPES: KnownType[] = knownTypes.map(knownType => ({
 
 export function KnownTypes({ addType, Cell = TypeTableCell }) {
   return (
-    // prettier-ignore
     <div className="KnownTypes">
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(0, 32)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(32, 64)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(64, 96)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(96, 128)} />
+      <style jsx>{`
+        .KnownTypes {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+      `}</style>
+      {/* prettier-ignore */}
+      <>
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(0, 32)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(32, 64)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(64, 96)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(96, 128)} />
+      </>
     </div>
   )
 }
@@ -49,55 +57,118 @@ export function KnownTypes({ addType, Cell = TypeTableCell }) {
 export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
   let o = 0
   return (
-    // prettier-ignore
-    <div>
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
-      {void (o += 128)}
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
-      {void (o += 128)}
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
-      {void (o += 128)}
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
-      <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
+    <div className="KnownTypes">
+      <style jsx>{`
+        .KnownTypes {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+      `}</style>
+      {/* prettier-ignore */}
+      <>
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
+        {void (o += 128)}
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
+        {void (o += 128)}
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
+        {void (o += 128)}
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 32, o + 64)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 64, o + 96)} />
+        <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 96, o + 128)} />
+      </>
     </div>
   )
 }
 
 function Cells({ kTypes, addType, Cell = TypeTableCell }) {
   return (
-    <div className="TypeTableCells">
-      <div className="TypeTableCell">{kTypes[0].animals}</div>
-      <div className="TypeTableCell">{kTypes[1].animals}</div>
-      <div className="TypeTableCell">{kTypes[2].animals}</div>
-      <div className="TypeTableCell">{kTypes[3].animals}</div>
+    <div className="Cells">
+      <style jsx>{`
+        .Cells {
+          box-sizing: border-box;
+          width: 25%;
+          border-bottom: 2px solid #aaa;
+        }
+
+        .Cells {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .Cells > * {
+          box-sizing: border-box;
+          width: 25%;
+          text-align: center;
+          padding: 1ex 0;
+          font-size: 0.8em;
+          border: 2px solid transparent;
+          cursor: pointer;
+        }
+
+        @media (max-width: 424px) {
+          .Cells {
+            width: 50%;
+          }
+        }
+        @media (min-width: 425px) and (max-width: 767px) {
+          .Cells {
+            width: 25%;
+          }
+        }
+        @media (min-width: 768px) {
+          .Cells {
+            width: 25%;
+          }
+        }
+
+        [data-optype]:hover {
+          border-color: #000;
+        }
+
+        [data-optype*="Ni/"],
+        [data-optype*="Si/"] {
+          background: #c9daf8;
+        }
+        [data-optype*="Ne/"],
+        [data-optype*="Se/"] {
+          background: #d9ead3;
+        }
+        [data-optype*="Fi/"],
+        [data-optype*="Ti/"] {
+          background: #efefef;
+        }
+        [data-optype*="Fe/"],
+        [data-optype*="Te/"] {
+          background: #f4cccc;
+        }
+      `}</style>
+      <div>{kTypes[0].animals}</div>
+      <div>{kTypes[1].animals}</div>
+      <div>{kTypes[2].animals}</div>
+      <div>{kTypes[3].animals}</div>
       {kTypes.map((kType: KnownType) => (
-        <Cell
-          key={kType.typeCode}
-          className="TypeTableCell"
-          kType={kType}
-          addType={addType}
-        />
+        <span key={kType.typeCode} data-optype={kType.typeCode}>
+          <Cell kType={kType} addType={addType} />
+        </span>
       ))}
     </div>
   )
 }
-function TypeTableCell({ kType, addType, className }) {
+function TypeTableCell({ kType, addType, ...props }) {
   return (
     <a
-      className={className}
-      key={kType.typeCode}
-      data-optype={kType.typeCode}
       onClick={e => {
         e.preventDefault()
         addType(
@@ -108,6 +179,7 @@ function TypeTableCell({ kType, addType, className }) {
           kType.typeCode,
         )
       }}
+      {...props}
     >
       {kType.typeCode.split("-")[1]}
     </a>
