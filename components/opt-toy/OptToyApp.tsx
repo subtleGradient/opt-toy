@@ -129,23 +129,31 @@ export default function OptToyApp() {
         </span>
       </div>
 
-      {showSettings && (
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={showOPTable}
-              onChange={({ target: { checked } }) =>
-                void setShowOPTable(!checked ? ["0"] : ["1"])
-              }
-            />
-            show OP table?
-          </label>
-        </div>
-      )}
-      {showKnown && <KnownTypes addType={addType} />}
+      <div className="settings">
+        {showSettings && (
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={showOPTable}
+                onChange={({ target: { checked } }) =>
+                  void setShowOPTable(!checked ? ["0"] : ["1"])
+                }
+              />
+              show OP table?
+            </label>
+          </div>
+        )}
+      </div>
 
-      <div className="all-the-TypeThings" style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+      <div className="KnownTypes-wrapper">
+        {showKnown && <KnownTypes addType={addType} />}
+      </div>
+
+      <div
+        className="all-the-TypeThings"
+        style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+      >
         {types.map((type, index) => (
           <TypeThing
             key={typeIDs[index]}
