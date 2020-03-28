@@ -6,7 +6,7 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
   const showSex = op512.fmDe !== "?" || op512.fmS !== "?"
   return (
     <div className="AOPActivationTable">
-      <style jsx global>{`
+      <style jsx>{`
         .AOPActivationTable {
           box-sizing: border-box;
           font-size: 1em;

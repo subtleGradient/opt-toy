@@ -94,7 +94,7 @@ export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
 function Cells({ kTypes, addType, Cell = TypeTableCell }) {
   return (
     <div className="Cells">
-      <style jsx global>{`
+      <style jsx>{`
         .Cells {
           box-sizing: border-box;
           width: 25%;
@@ -136,7 +136,7 @@ function Cells({ kTypes, addType, Cell = TypeTableCell }) {
         span[data-optype] {
           display: flex;
         }
-        span[data-optype] > * {
+        span[data-optype] > :global(*) {
           flex: 1;
         }
         [data-optype]:hover {

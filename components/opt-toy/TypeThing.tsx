@@ -82,9 +82,9 @@ export function TypeThing({
 
   return (
     <div className="TypeThing" data-is-open={isOpen}>
-      <style jsx global>{`
-        .TypeThing svg,
-        .TypeThing svg * {
+      <style jsx>{`
+        .TypeThing :global(svg),
+        .TypeThing :global(svg) :global(*) {
           transition: all 0.5s ease-in-out;
         }
 
@@ -139,7 +139,6 @@ export function TypeThing({
       `}</style>
       <div
         style={{
-          // fontSize: betweenX(16, 20),
           textAlign: "center",
           marginTop: betweenX(8, 16),
         }}
@@ -198,13 +197,7 @@ export function TypeThing({
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
       {isOpen && (
-        <div
-          style={
-            {
-              // minWidth: 500
-            }
-          }
-        >
+        <div>
           <div
             style={{
               display: "flex",

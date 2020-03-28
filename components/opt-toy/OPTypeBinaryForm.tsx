@@ -20,7 +20,7 @@ export function OPTypeBinaryForm({
         fontSize: betweenX(10, 12),
       }}
     >
-      <style jsx global>{`
+      <style jsx>{`
         .OPTypeBinaryForm td {
           white-space: nowrap;
         }

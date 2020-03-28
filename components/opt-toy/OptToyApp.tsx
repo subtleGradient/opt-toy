@@ -51,7 +51,7 @@ function RootStyle() {
         ${betweenRootStylesX({ selector: "html", min: 768, max: 1440 })}
         ${betweenRootStylesX({ selector: "html", min: 1441, max: 2560 })}
       `}</style>
-      <style>{`
+      <style jsx global>{`
         @media screen and (max-width: 424px) {
           html {
             font-size: ${betweenX(14, 18, 320, 424)};
@@ -145,7 +145,7 @@ export default function OptToyApp() {
       )}
       {showKnown && <KnownTypes addType={addType} />}
 
-      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+      <div className="all-the-TypeThings" style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
         {types.map((type, index) => (
           <TypeThing
             key={typeIDs[index]}
