@@ -5,7 +5,7 @@ import { KnownTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
 import "./styles.css"
 import { TypeThing } from "./TypeThing"
-import { BetweenRootStyles, betweenX } from "./between"
+import { betweenX, betweenRootStylesX } from "./between"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -47,10 +47,12 @@ function useStuff() {
 function RootStyle() {
   return (
     <>
-      <BetweenRootStyles selector="html" xMin={320} xMax={424} />
-      <BetweenRootStyles selector="html" xMin={425} xMax={767} />
-      <BetweenRootStyles selector="html" xMin={768} xMax={1440} />
-      <BetweenRootStyles selector="html" xMin={1441} xMax={2560} />
+      <style>{`
+        ${betweenRootStylesX({ selector: "html", min: 320, max: 424 })}
+        ${betweenRootStylesX({ selector: "html", min: 425, max: 767 })}
+        ${betweenRootStylesX({ selector: "html", min: 768, max: 1440 })}
+        ${betweenRootStylesX({ selector: "html", min: 1441, max: 2560 })}
+      `}</style>
       <style>{`
         @media screen and (max-width: 424px) {
           html {
@@ -82,10 +84,10 @@ function App() {
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
   const showKnown = showKnowns.length > 0
   const [showSettings, setShowSettings] = useState(false)
-  const [
-    [showOPTableQueryValue],
-    setShowOPTable,
-  ] = useQueryDataKey("showOPTable", [])
+  const [[showOPTableQueryValue], setShowOPTable] = useQueryDataKey(
+    "showOPTable",
+    [],
+  )
   const showOPTable = showOPTableQueryValue === "1"
 
   return (
