@@ -102,11 +102,9 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
               className={`animal ${Ox.sex + Dx.sex} ${code} ${flipSideIsLast &&
                 "flipSideIsLast"} index${index}`}
             >
-              {showSex && (
-                <span className="part sex">
-                  {(Ox.sex + Dx.sex).toUpperCase()}
-                </span>
-              )}
+              <span className="part sex">
+                {showSex && (Ox.sex + Dx.sex).toUpperCase()}
+              </span>
               <span>
                 {Ox.code}
                 {Dx.code}

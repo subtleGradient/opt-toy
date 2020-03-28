@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useEffect, useLayoutEffect } from "react"
 import useUndo from "use-undo"
 import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin"
 import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
@@ -8,6 +8,9 @@ import { OPT512 } from "./OPT512"
 import OPActivationTable from "./OPActivationTable"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
+import { OPTGraph } from "./opt128-svgr"
+
+const isSSR = typeof window === "undefined"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   const opt = new OPT512(type)
@@ -61,10 +64,17 @@ export function TypeThing({
   onChangeText = null,
   showOPTable = true,
 }) {
+  useEffect(() => {
+    opTypeActions.reset({
+      name: String(defaultType.split(SEPARATOR)[1] || ""),
+      type: parseCoinText(cleanCoinText(defaultType.split(SEPARATOR)[0])),
+    })
+  }, [])
+
   const [isOpen, setIsOpen] = React.useState(selected)
   const [opType, opTypeActions] = useUndo({
-    name: String(defaultType.split(SEPARATOR)[1] || ""),
-    type: parseCoinText(cleanCoinText(defaultType.split(SEPARATOR)[0])),
+    name: "loading...",
+    type: BLANK_TYPE,
   })
   const opTypeInstance = new OPT512(opType.present.type)
   const typeText = opTypeInstance.OP512
@@ -169,7 +179,7 @@ export function TypeThing({
             )}
           </h3>
         </div>
-        <OP_Type opType={opTypeInstance} />
+        <OPTGraph style={{ maxWidth: 500 }} opType={opTypeInstance} />
         <div>
           <code>
             {isOpen ? (
