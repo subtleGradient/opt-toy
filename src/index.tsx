@@ -5,7 +5,8 @@ import { KnownTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
 import "./styles.css"
 import { TypeThing } from "./TypeThing"
-import { BetweenRootStyles, betweenX } from "./between"
+import { betweenRootStylesX, betweenX } from "./between"
+import css from "styled-jsx/macro"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -44,35 +45,38 @@ function useStuff() {
   }
 }
 
+const RootStyles = css.resolve`
+  @media screen and (max-width: 424px) {
+    :global(html) {
+      font-size: ${betweenX(14, 18, 320, 424)};
+    }
+  }
+  @media screen and (min-width: 425px) {
+    :global(html) {
+      font-size: ${betweenX(9, 16, 425, 767)};
+    }
+  }
+  @media screen and (min-width: 768px) {
+    :global(html) {
+      font-size: ${betweenX(8, 16, 768, 1440)};
+    }
+  }
+  @media screen and (min-width: 1441px) {
+    :global(html) {
+      font-size: ${betweenX(9, 16, 1441, 2560)};
+    }
+  }
+`
 function RootStyle() {
   return (
     <>
-      <BetweenRootStyles selector="html" xMin={320} xMax={424} />
-      <BetweenRootStyles selector="html" xMin={425} xMax={767} />
-      <BetweenRootStyles selector="html" xMin={768} xMax={1440} />
-      <BetweenRootStyles selector="html" xMin={1441} xMax={2560} />
       <style>{`
-        @media screen and (max-width: 424px) {
-          html {
-            font-size: ${betweenX(14, 18, 320, 424)};
-          }
-        }
-        @media screen and (min-width: 425px) {
-          html {
-            font-size: ${betweenX(9, 16, 425, 767)};
-          }
-        }
-        @media screen and (min-width: 768px) {
-          html {
-            font-size: ${betweenX(8, 16, 768, 1440)};
-          }
-        }
-        @media screen and (min-width: 1441px) {
-          html {
-            font-size: ${betweenX(9, 16, 1441, 2560)};
-          }
-        }
+        ${betweenRootStylesX({ selector: "html", min: 320, max: 424 })}
+        ${betweenRootStylesX({ selector: "html", min: 425, max: 767 })}
+        ${betweenRootStylesX({ selector: "html", min: 768, max: 1440 })}
+        ${betweenRootStylesX({ selector: "html", min: 1441, max: 2560 })}
       `}</style>
+      {RootStyles.styles}
     </>
   )
 }
