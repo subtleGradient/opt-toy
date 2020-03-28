@@ -1,7 +1,6 @@
 import * as React from "react"
 import knownTypes from "./known-types.sheet.json"
 import { OPT512 } from "./OPT512"
-import css from "styled-jsx/macro"
 
 export interface KnownType {
   opType: OPT512
@@ -34,18 +33,16 @@ export const KNOWN_TYPES: KnownType[] = knownTypes.map(knownType => ({
   opType: OPT512.fromCoinText(knownType.typeCode),
 }))
 
-const KnownTypesStyle = css.resolve`
-  .KnownTypes {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-`
 export function KnownTypes({ addType, Cell = TypeTableCell }) {
-  const { className, styles } = KnownTypesStyle
   return (
-    <div className={"KnownTypes " + className}>
-      {styles}
+    <div className="KnownTypes">
+      <style jsx>{`
+        .KnownTypes {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+      `}</style>
       {/* prettier-ignore */}
       <>
         <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(0, 32)} />
@@ -58,11 +55,16 @@ export function KnownTypes({ addType, Cell = TypeTableCell }) {
 }
 
 export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
-  const { className, styles } = KnownTypesStyle
   let o = 0
   return (
-    <div className={"KnownTypes " + className}>
-      {styles}
+    <div className="KnownTypes">
+      <style jsx>{`
+        .KnownTypes {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+      `}</style>
       {/* prettier-ignore */}
       <>
         <Cells addType={addType} Cell={Cell} kTypes={KNOWN_TYPES.slice(o + 0, o + 32)} />
@@ -89,89 +91,76 @@ export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
   )
 }
 
-const CellsStyle = css.resolve`
-  .Cells {
-    box-sizing: border-box;
-    width: 25%;
-    border-bottom: 2px solid #aaa;
-  }
-
-  .Cells {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .Cells > * {
-    box-sizing: border-box;
-    width: 25%;
-    text-align: center;
-    padding: 1ex 0;
-    font-size: 0.8em;
-    border: 2px solid transparent;
-    cursor: pointer;
-  }
-
-  @media (max-width: 424px) {
-    .Cells {
-      width: 50%;
-    }
-  }
-  @media (min-width: 425px) and (max-width: 767px) {
-    .Cells {
-      width: 25%;
-    }
-  }
-  @media (min-width: 768px) {
-    .Cells {
-      width: 25%;
-    }
-  }
-
-  [data-optype] {
-    display: flex;
-  }
-  [data-optype] > * {
-    flex: 1;
-  }
-  [data-optype]:hover {
-    border-color: #000;
-  }
-
-  [data-optype*="Ni/"],
-  [data-optype*="Si/"] {
-    background: #c9daf8;
-  }
-  [data-optype*="Ne/"],
-  [data-optype*="Se/"] {
-    background: #d9ead3;
-  }
-  [data-optype*="Fi/"],
-  [data-optype*="Ti/"] {
-    background: #efefef;
-  }
-  [data-optype*="Fe/"],
-  [data-optype*="Te/"] {
-    background: #f4cccc;
-  }
-`
-
 function Cells({ kTypes, addType, Cell = TypeTableCell }) {
-  const { className, styles } = CellsStyle
   return (
-    <div className={"Cells " + className}>
-      {styles}
-      <div className={className}>{kTypes[0].animals}</div>
-      <div className={className}>{kTypes[1].animals}</div>
-      <div className={className}>{kTypes[2].animals}</div>
-      <div className={className}>{kTypes[3].animals}</div>
+    <div className="Cells">
+      <style jsx>{`
+        .Cells {
+          box-sizing: border-box;
+          width: 25%;
+          border-bottom: 2px solid #aaa;
+        }
+
+        .Cells {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .Cells > * {
+          box-sizing: border-box;
+          width: 25%;
+          text-align: center;
+          padding: 1ex 0;
+          font-size: 0.8em;
+          border: 2px solid transparent;
+          cursor: pointer;
+        }
+
+        @media (max-width: 424px) {
+          .Cells {
+            width: 50%;
+          }
+        }
+        @media (min-width: 425px) and (max-width: 767px) {
+          .Cells {
+            width: 25%;
+          }
+        }
+        @media (min-width: 768px) {
+          .Cells {
+            width: 25%;
+          }
+        }
+
+        [data-optype]:hover {
+          border-color: #000;
+        }
+
+        [data-optype*="Ni/"],
+        [data-optype*="Si/"] {
+          background: #c9daf8;
+        }
+        [data-optype*="Ne/"],
+        [data-optype*="Se/"] {
+          background: #d9ead3;
+        }
+        [data-optype*="Fi/"],
+        [data-optype*="Ti/"] {
+          background: #efefef;
+        }
+        [data-optype*="Fe/"],
+        [data-optype*="Te/"] {
+          background: #f4cccc;
+        }
+      `}</style>
+      <div>{kTypes[0].animals}</div>
+      <div>{kTypes[1].animals}</div>
+      <div>{kTypes[2].animals}</div>
+      <div>{kTypes[3].animals}</div>
       {kTypes.map((kType: KnownType) => (
-        <span
-          key={kType.typeCode}
-          className={className}
-          data-optype={kType.typeCode}
-        >
-          <Cell className={className} kType={kType} addType={addType} />
+        <span key={kType.typeCode} data-optype={kType.typeCode}>
+          <Cell kType={kType} addType={addType} />
         </span>
       ))}
     </div>

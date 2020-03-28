@@ -1,71 +1,64 @@
 // inspired by https://css-tricks.com/between-the-lines/
+import * as React from "react"
 
 export const WIDTH_MIN = 320
 export const WIDTH_MAX = 1024
 export const HEIGHT_MIN = 568
 export const HEIGHT_MAX = 1024
 
-export const betweenRootStylesX = ({
+export const BetweenRootStyles = ({
   selector,
-  min = WIDTH_MIN,
-  max = WIDTH_MAX,
+  xMin = WIDTH_MIN,
+  xMax = WIDTH_MAX,
+  yMin = HEIGHT_MIN,
+  yMax = HEIGHT_MAX,
 }: {
   selector: string
-  min?: number
-  max?: number
-}) =>
-  `
+  xMin?: number
+  xMax?: number
+  yMin?: number
+  yMax?: number
+}) => (
+  <style>{`
     ${selector} {
-      --is-x-between-${min}-${max}: 1;
-      --is-x-${max}: 0;
-      --is-x-${min}: 0;
-    }
-    @media (min-width: ${max}px) {
-      ${selector} {
-        --is-x-between-${min}-${max}: 0;
-        --is-x-${max}: 1;
-        --is-x-${min}: 0;
-      }
-    }
-    @media (max-width: ${min}px) {
-      ${selector} {
-        --is-x-between-${min}-${max}: 0;
-        --is-x-${max}: 0;
-        --is-x-${min}: 1;
-      }
-    }
-  `
+      --is-x-between-${xMin}-${xMax}: 1;
+      --is-x-${xMax}: 0;
+      --is-x-${xMin}: 0;
 
-export const betweenRootStylesY = ({
-  selector,
-  min = HEIGHT_MIN,
-  max = HEIGHT_MAX,
-}: {
-  selector: string
-  min?: number
-  max?: number
-}) =>
-  `
+      --is-y-between-${yMin}-${yMax}: 1;
+      --is-y-${yMax}: 0;
+      --is-y-${yMin}: 0;
+    }
+    @media (min-width: ${xMax}px) {
       ${selector} {
-        --is-y-between-${min}-${max}: 1;
-        --is-y-${max}: 0;
-        --is-y-${min}: 0;
+        --is-x-between-${xMin}-${xMax}: 0;
+        --is-x-${xMax}: 1;
+        --is-x-${xMin}: 0;
       }
-      @media (min-height: ${max}px) {
-        ${selector} {
-          --is-y-between-${min}-${max}: 0;
-          --is-y-${max}: 1;
-          --is-y-${min}: 0;
-        }
+    }
+    @media (max-width: ${xMin}px) {
+      ${selector} {
+        --is-x-between-${xMin}-${xMax}: 0;
+        --is-x-${xMax}: 0;
+        --is-x-${xMin}: 1;
       }
-      @media (max-height: ${max}px) {
-        ${selector} {
-          --is-y-between-${min}-${max}: 0;
-          --is-y-${max}: 0;
-          --is-y-${min}: 1;
-        }
+    }
+    @media (min-height: ${yMax}px) {
+      ${selector} {
+        --is-y-between-${yMin}-${yMax}: 0;
+        --is-y-${yMax}: 1;
+        --is-y-${yMin}: 0;
       }
-    `
+    }
+    @media (max-height: ${yMax}px) {
+      ${selector} {
+        --is-y-between-${yMin}-${yMax}: 0;
+        --is-y-${yMax}: 0;
+        --is-y-${yMin}: 1;
+      }
+    }
+  `}</style>
+)
 
 function between(
   from: number,
