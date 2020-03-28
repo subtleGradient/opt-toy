@@ -113,11 +113,11 @@ function App() {
         </button>
         <Spacer />
         <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>
-          {showKnown ? "⯆" : "⯈"}
+          {showKnown ? "▼" : "▶"}
           types
         </button>
         <button onClick={() => void setShowSettings(show => !show)}>
-          {showSettings ? "⯆" : "⯈"}
+          {showSettings ? "▼" : "▶"}
           settings
         </button>
         <Spacer />
