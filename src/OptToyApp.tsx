@@ -1,12 +1,9 @@
 import * as React from "react"
-import OptToyApp from './OptToyApp'
 import { useState } from "react"
-import { render } from "react-dom"
+import { betweenRootStylesX, betweenX } from "./between"
 import { KnownTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
-import "./styles.css"
 import { TypeThing } from "./TypeThing"
-import { betweenX, betweenRootStylesX } from "./between"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -80,7 +77,7 @@ function RootStyle() {
   )
 }
 
-function App() {
+export default function OptToyApp() {
   const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff()
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
   const showKnown = showKnowns.length > 0
@@ -173,6 +170,3 @@ function App() {
 function Spacer() {
   return <span style={{ flex: 1 }} />
 }
-
-const rootElement = document.getElementById("root")
-render(<OptToyApp />, rootElement)

@@ -1,24 +1,30 @@
-import * as React from "react";
-import { betweenX } from "./between";
-import { BLANK_TYPE, COINS, isBool, OPT512Maybe } from "./Coin";
-import { CoinSideVirtual } from "./CoinSideVirtual";
-import { OPT512 } from "./OPT512";
-import "./OPTypeBinaryForm.css"
+import * as React from "react"
+import { betweenX } from "./between"
+import { BLANK_TYPE, COINS, isBool, OPT512Maybe } from "./Coin"
+import { CoinSideVirtual } from "./CoinSideVirtual"
+import { OPT512 } from "./OPT512"
 
 export function OPTypeBinaryForm({
   type = BLANK_TYPE,
   onChange,
 }: {
-  type: OPT512Maybe;
-  onChange: (type: OPT512Maybe) => void;
+  type: OPT512Maybe
+  onChange: (type: OPT512Maybe) => void
 }) {
-  if (!type) type = BLANK_TYPE;
-  const opType = new OPT512(type);
+  if (!type) type = BLANK_TYPE
+  const opType = new OPT512(type)
   return (
-    <div className="OPTypeBinaryForm" style={{
-      fontSize: betweenX(10, 12),
-
-    }}>
+    <div
+      className="OPTypeBinaryForm"
+      style={{
+        fontSize: betweenX(10, 12),
+      }}
+    >
+      <style jsx global>{`
+        .OPTypeBinaryForm td {
+          white-space: nowrap;
+        }
+      `}</style>
       <table style={{ margin: "auto" }}>
         <tbody style={{ background: "#ddd" }}>
           <tr>
@@ -34,9 +40,9 @@ export function OPTypeBinaryForm({
               side={coinSide}
               coin={COINS[coinIndex]}
               onFlip={side => {
-                const newType = type.slice(0) as OPT512Maybe;
-                newType[coinIndex] = side;
-                onChange(newType);
+                const newType = type.slice(0) as OPT512Maybe
+                newType[coinIndex] = side
+                onChange(newType)
               }}
             />
           ))}
@@ -70,8 +76,8 @@ export function OPTypeBinaryForm({
               tails: "Energy",
             }}
             onFlip={side => {
-              opType.a3FocusBool = side == null ? null : !opType.a3FocusBool;
-              onChange(opType.type);
+              opType.a3FocusBool = side == null ? null : !opType.a3FocusBool
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -80,9 +86,9 @@ export function OPTypeBinaryForm({
             heads="ST"
             edge={"OD"}
             onFlipWithXx={(OOO, DDD) => {
-              opType.oLetter = OOO;
-              opType.dLetter = DDD;
-              onChange(opType.type);
+              opType.oLetter = OOO
+              opType.dLetter = DDD
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -91,9 +97,9 @@ export function OPTypeBinaryForm({
             heads="NT"
             edge={"OD"}
             onFlipWithXx={(OOO, DDD) => {
-              opType.oLetter = OOO;
-              opType.dLetter = DDD;
-              onChange(opType.type);
+              opType.oLetter = OOO
+              opType.dLetter = DDD
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -102,9 +108,9 @@ export function OPTypeBinaryForm({
             heads="Se"
             edge={"Ox"}
             onFlipWithXx={(letter, focus) => {
-              opType.oLetter = letter;
-              opType.oFocus = focus;
-              onChange(opType.type);
+              opType.oLetter = letter
+              opType.oFocus = focus
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -113,9 +119,9 @@ export function OPTypeBinaryForm({
             heads="Ne"
             edge={"Ox"}
             onFlipWithXx={(letter, focus) => {
-              opType.oLetter = letter;
-              opType.oFocus = focus;
-              onChange(opType.type);
+              opType.oLetter = letter
+              opType.oFocus = focus
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -124,9 +130,9 @@ export function OPTypeBinaryForm({
             heads="Te"
             edge={"Dx"}
             onFlipWithXx={(letter, focus) => {
-              opType.dLetter = letter;
-              opType.dFocus = focus;
-              onChange(opType.type);
+              opType.dLetter = letter
+              opType.dFocus = focus
+              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
@@ -135,9 +141,9 @@ export function OPTypeBinaryForm({
             heads="Fe"
             edge={"Dx"}
             onFlipWithXx={(letter, focus) => {
-              opType.dLetter = letter;
-              opType.dFocus = focus;
-              onChange(opType.type);
+              opType.dLetter = letter
+              opType.dFocus = focus
+              onChange(opType.type)
             }}
           />
           <tr />
@@ -145,7 +151,7 @@ export function OPTypeBinaryForm({
       </table>
     </div>
     // <SVG_OP_Bubble color="red" width={128} children="Fe" />
-  );
+  )
 }
 
 function CoinSideVirtual2({ side, heads, tails, edge, onFlipWithXx }) {
@@ -160,8 +166,8 @@ function CoinSideVirtual2({ side, heads, tails, edge, onFlipWithXx }) {
         onFlipWithXx(
           !isBool(side) ? edge[0] : side ? heads[0] : tails[0],
           !isBool(side) ? edge[1] : side ? heads[1] : tails[1],
-        );
+        )
       }}
     />
-  );
+  )
 }

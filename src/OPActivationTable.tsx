@@ -1,12 +1,55 @@
 import * as React from "react"
 import { OPT512 } from "./OPT512"
-import "./OPActivationTable.css"
 import { betweenX } from "./between"
 
 export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
   const showSex = op512.fmDe !== "?" || op512.fmS !== "?"
   return (
     <div className="OPActivationTable">
+      <style jsx global>{`
+        .OPActivationTable {
+          box-sizing: border-box;
+          font-size: 1em;
+        }
+
+        .OPActivationTable table {
+          width: 100%;
+          border-spacing: 0;
+          border-collapse: collapse;
+        }
+
+        .OPActivationTable table td,
+        .OPActivationTable table th {
+          width: 25%;
+          border: 1px solid #cccccc;
+        }
+
+        .OPActivationTable table th {
+          background-color: #eeeeee;
+          font-size: 80%;
+          font-weight: normal;
+        }
+
+        .OPActivationTable .animals {
+          background-color: #eeeeee;
+        }
+        .OPActivationTable .animals th {
+          width: 50%;
+        }
+
+        /* .OPActivationTable table.layout {
+  
+} */
+        .OPActivationTable table.layout > tbody > tr > td {
+          border: none;
+          padding: 0;
+          padding-right: 0.2em;
+        }
+        .OPActivationTable table.layout > tbody > tr > td + td {
+          padding: 0;
+          padding-left: 0.2em;
+        }
+      `}</style>
       <table className="layout">
         <tbody>
           <tr>

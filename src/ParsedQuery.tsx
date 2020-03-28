@@ -1,26 +1,27 @@
-import * as React from "react";
-import { SetStateAction, Dispatch } from "react";
+import * as React from "react"
+import { SetStateAction, Dispatch } from "react"
+const isSSR = typeof window === "undefined"
 
 interface ParsedQuery {
-  [key: string]: string[];
+  [key: string]: string[]
 }
 
 function encodeAsQueryString(data: ParsedQuery): string {
-  const params = [];
+  const params = []
   for (const key in data) {
-    if (!data.hasOwnProperty(key)) continue;
-    if (!key) continue;
-    const value = data[key];
-    if (!value) continue;
+    if (!data.hasOwnProperty(key)) continue
+    if (!key) continue
+    const value = data[key]
+    if (!value) continue
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (item == null) continue;
+        if (item == null) continue
         params.push(
           `${encodeURIComponent(key) + "[]"}=${encodeURIComponent(item).replace(
             /%2F/g,
             "/",
           )}`,
-        );
+        )
       }
     } else {
       params.push(
@@ -28,10 +29,10 @@ function encodeAsQueryString(data: ParsedQuery): string {
           /%2F/g,
           "/",
         )}`,
-      );
+      )
     }
   }
-  return `?${params.join("&")}`;
+  return `?${params.join("&")}`
 }
 
 function parseQueryString(query: string): ParsedQuery {
@@ -44,45 +45,47 @@ function parseQueryString(query: string): ParsedQuery {
     .reduce((data, param) => {
       const [key, value]: string[] = param
         .split("=")
-        .map(it => decodeURIComponent(it));
-      const simpleKey = key.replace("[]", "");
-      data[simpleKey] = [...(data[simpleKey] || []), value].filter(Boolean);
-      return data;
-    }, {});
+        .map(it => decodeURIComponent(it))
+      const simpleKey = key.replace("[]", "")
+      data[simpleKey] = [...(data[simpleKey] || []), value].filter(Boolean)
+      return data
+    }, {})
 }
 
 function useLocationHash(
   // eslint-disable-next-line no-restricted-globals
-  window: Window = top,
+  window: Window = isSSR ? null : top,
 ): [string, Dispatch<SetStateAction<string>>] {
-  const [query, setQuery] = React.useState(() => window.location.hash);
+  const [query, setQuery] = React.useState(
+    isSSR ? "" : () => window.location.hash,
+  )
   React.useEffect(() => {
-    window.location.hash = query;
-  }, [query]);
-  return [query, setQuery];
+    if (!isSSR) window.location.hash = query
+  }, [query])
+  return [query, setQuery]
 }
 
 function useQueryData(): [ParsedQuery, Dispatch<SetStateAction<ParsedQuery>>] {
-  const [query, setQuery] = useLocationHash(window);
+  const [query, setQuery] = useLocationHash(isSSR ? null : window)
   const [queryData, setQueryData] = React.useState(() =>
     parseQueryString(query),
-  );
-  const encodedQuery = encodeAsQueryString(queryData);
-  React.useEffect(() => setQuery(encodedQuery), [encodedQuery]);
+  )
+  const encodedQuery = encodeAsQueryString(queryData)
+  React.useEffect(() => setQuery(encodedQuery), [encodedQuery])
   return [
     queryData,
     newData => {
-      setQueryData(parseQueryString(window.location.hash));
-      setQueryData(newData);
+      if (!isSSR) setQueryData(parseQueryString(window.location.hash))
+      setQueryData(newData)
     },
-  ];
+  ]
 }
 
 export function useQueryDataKey(
   dataKey: string,
   defaultValues: string[] = [],
 ): [string[], Dispatch<SetStateAction<string[]>>] {
-  const [queryData, setQueryData] = useQueryData();
+  const [queryData, setQueryData] = useQueryData()
   return [
     queryData[dataKey] || defaultValues,
     newValue => {
@@ -92,7 +95,7 @@ export function useQueryDataKey(
           typeof newValue === "function"
             ? newValue(state[dataKey] || defaultValues)
             : newValue,
-      }));
+      }))
     },
-  ];
+  ]
 }

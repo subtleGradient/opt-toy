@@ -8,7 +8,6 @@ import { OPT512 } from "./OPT512"
 import OPActivationTable from "./OPActivationTable"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
-import "./TypeThing.css"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   const opt = new OPT512(type)
@@ -60,7 +59,7 @@ export function TypeThing({
   defaultType,
   onClose = null,
   onChangeText = null,
-  showOPTable = true
+  showOPTable = true,
 }) {
   const [isOpen, setIsOpen] = React.useState(selected)
   const [opType, opTypeActions] = useUndo({
@@ -83,6 +82,56 @@ export function TypeThing({
 
   return (
     <div className="TypeThing" data-is-open={isOpen}>
+      <style jsx global>{`
+        .TypeThing {
+          transition: all 0.25s ease-in-out;
+          box-sizing: border-box;
+          padding: 2em 1ex;
+        }
+
+        .TypeThing {
+          width: 100%;
+        }
+
+        @media (max-width: 424px) {
+          .TypeThing {
+            width: 100%;
+          }
+        }
+        @media (min-width: 425px) {
+          .TypeThing {
+            width: 50%;
+          }
+        }
+        @media (min-width: 768px) {
+          .TypeThing {
+            width: 25%;
+          }
+        }
+        @media (min-width: 1441px) {
+          .TypeThing {
+            width: calc(100% / 6);
+          }
+        }
+
+        .TypeThing button {
+          font-size: 0.9em;
+        }
+
+        .TypeThing input[type="text"],
+        .TypeThing input:not([type]) {
+          box-sizing: border-box;
+          width: 100%;
+        }
+        .TypeThing:active input,
+        .TypeThing:hover input {
+          background-color: #ffffdd;
+        }
+
+        .TypeThing .spacer {
+          margin: 1ex 0;
+        }
+      `}</style>
       <div
         style={{
           // fontSize: betweenX(16, 20),
@@ -109,7 +158,10 @@ export function TypeThing({
                 placeholder="Human Name"
               />
             ) : (
-              <div style={{ padding: 3 }}>{opType.present.name || `${opTypeInstance.S1}/${opTypeInstance.S2}`}</div>
+              <div style={{ padding: 3 }}>
+                {opType.present.name ||
+                  `${opTypeInstance.S1}/${opTypeInstance.S2}`}
+              </div>
             )}
           </h3>
         </div>
@@ -132,7 +184,11 @@ export function TypeThing({
             )}
           </code>
         </div>
-        {showOPTable && <div className="spacer"><OPActivationTable op512={opTypeInstance} /></div>}
+        {showOPTable && (
+          <div className="spacer">
+            <OPActivationTable op512={opTypeInstance} />
+          </div>
+        )}
         <AOPActivationTable op512={opTypeInstance} />
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
