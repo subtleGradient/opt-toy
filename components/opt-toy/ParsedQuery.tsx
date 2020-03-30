@@ -99,3 +99,16 @@ export function useQueryDataKey(
     },
   ]
 }
+
+export function useQueryDataKeySingle(
+  dataKey: string,
+  defaultValue?: string,
+): [string, (value: string) => void] {
+  const [queryData, setQueryData] = useQueryData()
+  return [
+    (queryData[dataKey] || [defaultValue])[0] || defaultValue,
+    newValue => {
+      setQueryData(state => ({ ...state, [dataKey]: [newValue] }))
+    },
+  ]
+}
