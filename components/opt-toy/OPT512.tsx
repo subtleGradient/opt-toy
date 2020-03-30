@@ -12,7 +12,7 @@ import { sortBy } from "./sortBy"
 type OPODLetterType = "O" | "D" | "?"
 type OPDLetterType = "F" | "T" | "D"
 type OPOLetterType = "N" | "S" | "O"
-type OPLetterType = "N" | "S" | "F" | "T" | "X"
+type OPLetterType = OPDLetterType | OPOLetterType | OPODLetterType
 type OPFocusType = "i" | "e" | "x" | "?"
 type OPSexType = "f" | "m" | "?"
 type OPAnimalType = "P" | "B" | "C" | "S" | "?"
@@ -299,8 +299,8 @@ export class OPT512 {
       {
         index: 0,
         key: this.S1[0],
-        letter: this.S1[0],
-        focus: this.S1[1],
+        letter: this.S1[0] as OPLetterType,
+        focus: this.S1[1] as OPFocusType,
         sex: sex[this.S1],
         savior: true,
         odLetter,
@@ -308,8 +308,8 @@ export class OPT512 {
       {
         index: 1,
         key: this.S2[0],
-        letter: this.S2[0],
-        focus: this.S2[1],
+        letter: this.S2[0] as OPLetterType,
+        focus: this.S2[1] as OPFocusType,
         sex: sex[this.S2],
         savior: true,
         odLetter: Flipped[odLetter],
@@ -317,8 +317,8 @@ export class OPT512 {
       {
         index: 2,
         key: this.D1[0],
-        letter: this.D1[0],
-        focus: this.D1[1],
+        letter: this.D1[0] as OPLetterType,
+        focus: this.D1[1] as OPFocusType,
         sex: sex[this.D1],
         savior: false,
         odLetter: Flipped[odLetter],
@@ -326,14 +326,14 @@ export class OPT512 {
       {
         index: 3,
         key: this.D2[0],
-        letter: this.D2[0],
-        focus: this.D2[1],
+        letter: this.D2[0] as OPLetterType,
+        focus: this.D2[1] as OPFocusType,
         sex: sex[this.D2],
         savior: false,
         odLetter,
       },
     ].map(it => {
-      if (it.key === "O" || it.key === "D") it.key = it.index
+      if (it.key === "O" || it.key === "D") it.key = it.index as any
       return it
     })
     if (this.jumper === true) {
