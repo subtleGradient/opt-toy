@@ -29,6 +29,10 @@ export interface OPFunctionType {
 
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
+type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
+
+type OSNxei = "Oe" | "Se" | "Ne" | "Oi" | "Si" | "Ni" | "Ox" | "Sx" | "Nx"
+
 export class OPT512 {
   static fromDirtyCoinText(typeCode: string): OPT512 {
     return new OPT512(parseCoinText(cleanCoinText(typeCode)))
@@ -233,16 +237,16 @@ export class OPT512 {
   set a3FocusBool(side: BoolMaybe) {
     this.type[NamedCOINS.coinA3ie.index] = side
   }
-  get a3Focus() {
+  get a3Focus(): "i" | "e" | "x" {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinA3ie.index])
-    ]
+    ] as any
   }
-  get DTFxei() {
-    return `${this.dLetter}${this.dFocus}`
+  get DTFxei(): DTFxei {
+    return `${this.dLetter}${this.dFocus}` as any
   }
-  get OSNxei() {
-    return `${this.oLetter}${this.oFocus}`
+  get OSNxei(): OSNxei {
+    return `${this.oLetter}${this.oFocus}` as any
   }
   get S1() {
     return [this.OSNxei, this.DTFxei, this.DTFxei][
@@ -260,16 +264,16 @@ export class OPT512 {
   get D2() {
     return Flipped[this.S1] || this.S1
   }
-  get De() {
+  get De(): "De" | "Te" | "Fe" {
     return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus]
   }
-  get Di() {
+  get Di(): "Di" | "Ti" | "Fi" {
     return Flipped[this.De]
   }
-  get Oe() {
+  get Oe(): "Oe" | "Se" | "Ne" {
     return { e: this.OSNxei, i: Flipped[this.OSNxei] }[this.oFocus]
   }
-  get Oi() {
+  get Oi(): "Oi" | "Si" | "Ni" {
     return Flipped[this.Oe]
   }
   get jumper() {
@@ -411,76 +415,70 @@ export class OPT512 {
     }[this.A4]
   }
   get sideOfSiNe(): BoolMaybe {
-    if (this.oLetter === "S" && this.oFocus === "i") return false
     if (this.oLetter === "N" && this.oFocus === "e") return true
+    if (this.oLetter === "S" && this.oFocus === "i") return false
     return null
   }
   get sideOfNiSe(): BoolMaybe {
-    if (this.oLetter === "N" && this.oFocus === "i") return false
     if (this.oLetter === "S" && this.oFocus === "e") return true
+    if (this.oLetter === "N" && this.oFocus === "i") return false
     return null
   }
   get sideOfFiTe(): BoolMaybe {
-    if (this.dLetter === "F" && this.dFocus === "i") return false
     if (this.dLetter === "T" && this.dFocus === "e") return true
+    if (this.dLetter === "F" && this.dFocus === "i") return false
     return null
   }
   get sideOfTiFe(): BoolMaybe {
-    if (this.dLetter === "T" && this.dFocus === "i") return false
     if (this.dLetter === "F" && this.dFocus === "e") return true
+    if (this.dLetter === "T" && this.dFocus === "i") return false
     return null
   }
   get sideOfSFNT(): BoolMaybe {
-    if (this.oLetter === "S" && this.dLetter === "F") return false
-    if (this.oLetter === "N" && this.dLetter === "T") return true
+    if (this.oLetter === "S" && this.dLetter === "F") return true
+    if (this.oLetter === "N" && this.dLetter === "T") return false
     return null
   }
   get sideOfNFST(): BoolMaybe {
-    if (this.oLetter === "N" && this.dLetter === "F") return false
     if (this.oLetter === "S" && this.dLetter === "T") return true
+    if (this.oLetter === "N" && this.dLetter === "F") return false
     return null
   }
 }
 
 const Flipped = {
-  f: "m",
-  m: "f",
-
-  S: "N",
-  F: "T",
-  N: "S",
-  T: "F",
-
-  Sx: "Nx",
-  Fx: "Tx",
-  Nx: "Sx",
-  Tx: "Fx",
-
-  Se: "Ni",
-  Fe: "Ti",
-  Ne: "Si",
-  Te: "Fi",
-
-  Si: "Ne",
-  Fi: "Te",
-  Ni: "Se",
-  Ti: "Fe",
-
-  i: "e",
-  e: "i",
-  x: "x",
-  I: "E",
-  E: "I",
-  X: "X",
-
-  O: "D",
-  D: "O",
-  Ox: "Ox",
-  Dx: "Dx",
-  Oi: "Oe",
-  Di: "De",
-  Oe: "Oi",
-  De: "Di",
+  f: "m" as "m",
+  m: "f" as "f",
+  S: "N" as "N",
+  F: "T" as "T",
+  N: "S" as "S",
+  T: "F" as "F",
+  Sx: "Nx" as "Nx",
+  Fx: "Tx" as "Tx",
+  Nx: "Sx" as "Sx",
+  Tx: "Fx" as "Fx",
+  Se: "Ni" as "Ni",
+  Fe: "Ti" as "Ti",
+  Ne: "Si" as "Si",
+  Te: "Fi" as "Fi",
+  Si: "Ne" as "Ne",
+  Fi: "Te" as "Te",
+  Ni: "Se" as "Se",
+  Ti: "Fe" as "Fe",
+  i: "e" as "e",
+  e: "i" as "i",
+  x: "x" as "x",
+  I: "E" as "E",
+  E: "I" as "I",
+  X: "X" as "X",
+  O: "D" as "D",
+  D: "O" as "O",
+  Ox: "Ox" as "Ox",
+  Dx: "Dx" as "Dx",
+  Oi: "Oe" as "Oe",
+  Di: "De" as "De",
+  Oe: "Oi" as "Oi",
+  De: "Di" as "Di",
 }
 
 class OPPart {
@@ -498,10 +496,10 @@ abstract class OPAnimal extends OPPart {
   }
   abstract get flipSide(): OPAnimal
   abstract get functions(): AnimalFunctionPair
-  get observer(){
+  get observer() {
     return this.functions[0]
   }
-  get decider(){
+  get decider() {
     return this.functions[1]
   }
 
@@ -623,6 +621,8 @@ class OPFn extends OPPart {
   }
 }
 class DeciderFn extends OPFn {
+  isObserver = false
+  isDecider = true
   code = "D"
 }
 class Feeling extends DeciderFn {
@@ -639,6 +639,8 @@ class Thinking extends DeciderFn {
 }
 
 class ObserverFn extends OPFn {
+  isObserver = true
+  isDecider = false
   code = "O"
 }
 class iNtuition extends ObserverFn {
