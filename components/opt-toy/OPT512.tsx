@@ -8,6 +8,11 @@ import {
   parseCoinText,
 } from "./Coin"
 import { sortBy } from "./sortBy"
+import getRandomInt from "./getRandomInt"
+import {
+  euclideanDistance,
+  euclideanDistanceSquared,
+} from "./euclideanDistance"
 
 type OPODLetterType = "O" | "D" | "?"
 type OPDLetterType = "F" | "T" | "D"
@@ -105,8 +110,50 @@ export class OPT512 {
   }
 
   get typeNumber() {
-    return parseInt(this.type.map(Number).join(""), 2)
+    return parseInt(
+      this.type
+        .map(Number)
+        .reverse()
+        .join(""),
+      2,
+    )
   }
+  getComplimentType(): OPT512 {
+    return OPT512.fromTypeNumber(this.typeNumber ^ 0b111111111)
+  }
+  static fromTypeNumber(typeNumber: number): OPT512 {
+    return new OPT512(typeNumberToCoins(typeNumber))
+  }
+  static random() {
+    return OPT512.fromTypeNumber(getRandomInt(0, 0b111111111))
+  }
+  get position() {
+    return [
+      this.PlayIndex,
+      this.BlastIndex,
+      this.ConsumeIndex,
+      this.SleepIndex,
+      ...[
+        this.sideOfEnergyInfo,
+        this.sideOfNFST,
+        this.sideOfSFNT,
+        this.sideOfFiTe,
+        this.sideOfNiSe,
+        this.sideOfSiNe,
+        this.sideOfTiFe,
+      ].map(sideToDistance),
+      ...this.type.map(sideToDistance),
+    ].map(Number)
+  }
+  static getCoinDistanceBetween(a: OPT512, b: OPT512) {
+    return euclideanDistanceSquared(a.position, b.position)
+  }
+  static getAll(): OPT512[] {
+    return Array(511)
+      .fill(0)
+      .map((_, i) => OPT512.fromTypeNumber(i))
+  }
+
   get eCount() {
     return this.type.filter(it => it === true).length
   }
@@ -692,3 +739,23 @@ const AnimalLetterFocusCodeToAnimalLetters = {
   BPe: "C",
   PBe: "C",
 }
+
+function typeNumberToCoins(typeNumber: number): OPT512Maybe {
+  return typeNumber
+    .toString(2)
+    .padStart(9, "0")
+    .split("")
+    .map(Number)
+    .map(Boolean) as OPT512Maybe
+}
+
+const sideToDistance = (side: number | boolean): number =>
+  side === true
+    ? 1
+    : side === false
+    ? -1
+    : side == null
+    ? 0
+    : typeof side === "number"
+    ? [0, -1, 1][side + 1] || 0
+    : 0

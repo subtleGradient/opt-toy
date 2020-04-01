@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from "react"
+import React, { useEffect, useLayoutEffect, FC } from "react"
 import useUndo from "use-undo"
 import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin"
 import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
@@ -57,13 +57,19 @@ const Permalink = props => (
   </a>
 )
 
-export function TypeThing({
+export const TypeThing: FC<{
+  selected?: boolean
+  defaultType: string
+  onClose?: () => void
+  onChangeText?: (opType:string) => void
+  showOPTable?: boolean
+}> = ({
   selected = false,
   defaultType,
   onClose = null,
   onChangeText = null,
   showOPTable = true,
-}) {
+}) => {
   useEffect(() => {
     opTypeActions.reset({
       name: String(defaultType.split(SEPARATOR)[1] || ""),
@@ -81,6 +87,7 @@ export function TypeThing({
   const displayName = opType.present.name || typeText
 
   React.useEffect(() => {
+    if (opType.past.length === 0) return;
     if (onChangeText) {
       onChangeText(
         `${typeText}${
