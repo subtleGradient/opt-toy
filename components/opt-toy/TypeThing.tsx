@@ -160,6 +160,9 @@ export const TypeThing: FC<{
         onClick={e => {
           setIsOpen(!isOpen)
         }}
+        onAuxClick={e => {
+          onClose()
+        }}
       >
         <div>
           <h3>
