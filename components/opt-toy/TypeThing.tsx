@@ -1,14 +1,13 @@
-import React, { useEffect, useLayoutEffect, FC } from "react"
+import React, { FC, useEffect, useState } from "react"
 import useUndo from "use-undo"
-import { OPT512Maybe, BLANK_TYPE, parseCoinText, cleanCoinText } from "./Coin"
-import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
-import { OPCodeInput } from "./OPCodeInput"
-import { OP_Type } from "./OP_Type"
-import { OPT512 } from "./OPT512"
-import OPActivationTable from "./OPActivationTable"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
+import { BLANK_TYPE, cleanCoinText, OPT512Maybe, parseCoinText } from "./Coin"
+import OPActivationTable from "./OPActivationTable"
+import { OPCodeInput } from "./OPCodeInput"
 import { OPTGraph } from "./opt128-svgr"
+import { OPT512 } from "./OPT512"
+import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
 
 const isSSR = typeof window === "undefined"
 
@@ -77,16 +76,15 @@ export const TypeThing: FC<{
     })
   }, [])
 
-  const [isOpen, setIsOpen] = React.useState(selected)
+  const [isOpen, setIsOpen] = useState(selected)
   const [opType, opTypeActions] = useUndo({
     name: "loading...",
     type: BLANK_TYPE,
   })
   const opTypeInstance = new OPT512(opType.present.type)
   const typeText = opTypeInstance.OP512
-  const displayName = opType.present.name || typeText
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (opType.past.length === 0) return;
     if (onChangeText) {
       onChangeText(
