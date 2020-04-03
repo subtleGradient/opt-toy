@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { FC, ComponentType, createContext, useContext } from "react"
 import knownTypes from "./known-types.sheet.json"
 import { OPT512 } from "./OPT512"
 import { sortBy } from "./sortBy"
@@ -34,7 +34,10 @@ export const KNOWN_TYPES: KnownType[] = knownTypes.map(knownType => ({
   opType: OPT512.fromCoinText(knownType.typeCode),
 }))
 
-export function KnownTypes({ addType, Cell = TypeTableCell }) {
+export const KnownTypes: FC<{
+  addType: any
+  Cell?: typeof TypeTableCell
+}> = ({ addType, Cell = TypeTableCell }) => {
   return (
     <div className="KnownTypes">
       <style jsx>{`
@@ -100,6 +103,7 @@ const Cells: FC<{
   addType: any
   Cell: typeof TypeTableCell
 }> = ({ kTypes, addType, Cell = TypeTableCell }) => {
+  const selectedTypes = useContext(SelectedTypes)
   kTypes.sort(({ opType: a }, { opType: b }) =>
     sortBy(b.sortValue, a.sortValue),
   )
@@ -174,20 +178,39 @@ const Cells: FC<{
         [data-optype*="Te/"] > :global(*) {
           background: #f4cccc;
         }
+        [data-selected="true"] {
+          outline: 2px solid black;
+          z-index: 1;
+        }
       `}</style>
       <div>{kTypes[0].animals}</div>
       <div>{kTypes[1].animals}</div>
       <div>{kTypes[2].animals}</div>
       <div>{kTypes[3].animals}</div>
-      {kTypes.map((kType: KnownType) => (
-        <span key={kType.typeCode} data-optype={kType.typeCode}>
-          <Cell kType={kType} addType={addType} />
-        </span>
-      ))}
+      {kTypes.map((kType: KnownType) => {
+        const selected = kType.opType.includesAnyText(...selectedTypes)
+        return (
+          <span
+            key={kType.typeCode}
+            data-optype={kType.typeCode}
+            data-selected={selected}
+          >
+            <Cell kType={kType} addType={addType} selected={selected} />
+          </span>
+        )
+      })}
     </div>
   )
 }
-function TypeTableCell({ kType, addType, ...props }) {
+
+export const SelectedTypes = createContext<string[]>([])
+
+const TypeTableCell: FC<{
+  addType: (typeCodePart: string, typeCode: string) => void
+  kType: KnownType
+  selected?: boolean
+  className?: string
+}> = ({ kType, addType, selected = false, ...props }) => {
   return (
     <a
       onClick={e => {
