@@ -257,7 +257,7 @@ function Bub({
     { x: 211, y: 213, size: 193 },
     { x: 401, y: 371, size: 122 },
     { x: 246, y: 376, size: 92 },
-  ][opFunction.index]
+  ][opFunction.grantStackIndex]
   return (
     <g
       {...props}
@@ -292,7 +292,7 @@ function BubBorder({
     { x: 211, y: 213, size: 193 },
     { x: 401, y: 371, size: 122 },
     { x: 246, y: 376, size: 92 },
-  ][opFunction.index]
+  ][opFunction.grantStackIndex]
   return (
     <g
       {...props}

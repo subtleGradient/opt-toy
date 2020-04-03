@@ -34,6 +34,7 @@ type OPAnimalType = "P" | "B" | "C" | "S" | "?"
 
 export interface OPFunctionType {
   index: number
+  grantStackIndex: number
   key: any
   letter: OPLetterType
   focus: OPFocusType
@@ -368,6 +369,7 @@ export class OPT512 {
     const fns = [
       {
         index: 0,
+        grantStackIndex: 0,
         key: this.S1[0],
         letter: this.S1[0] as OPLetterType,
         focus: this.S1[1] as OPFocusType,
@@ -377,6 +379,7 @@ export class OPT512 {
       },
       {
         index: 1,
+        grantStackIndex: 1,
         key: this.S2[0],
         letter: this.S2[0] as OPLetterType,
         focus: this.S2[1] as OPFocusType,
@@ -386,6 +389,7 @@ export class OPT512 {
       },
       {
         index: 2,
+        grantStackIndex: 2,
         key: this.D1[0],
         letter: this.D1[0] as OPLetterType,
         focus: this.D1[1] as OPFocusType,
@@ -395,6 +399,7 @@ export class OPT512 {
       },
       {
         index: 3,
+        grantStackIndex: 3,
         key: this.D2[0],
         letter: this.D2[0] as OPLetterType,
         focus: this.D2[1] as OPFocusType,
@@ -403,15 +408,15 @@ export class OPT512 {
         odLetter,
       },
     ].map(it => {
-      if (it.key === "O" || it.key === "D") it.key = it.index as any
+      if (it.key === "O" || it.key === "D") it.key = it.grantStackIndex as any
       return it
     })
     if (this.jumper === true) {
       const [s1, s2, d1, d2] = fns
       fns[1] = d1
-      // d1.index = 1
+      d1.grantStackIndex = 1
       fns[2] = s2
-      // s2.index = 2
+      s2.grantStackIndex = 2
     }
     const [fn1, fn2, fn3, fn4] = fns
     return [fn1, fn2, fn3, fn4]
