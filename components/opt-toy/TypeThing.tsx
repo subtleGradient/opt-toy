@@ -60,7 +60,7 @@ export const TypeThing: FC<{
   selected?: boolean
   defaultType: string
   onClose?: () => void
-  onChangeText?: (opType:string) => void
+  onChangeText?: (opType: string) => void
   showOPTable?: boolean
 }> = ({
   selected = false,
@@ -85,7 +85,7 @@ export const TypeThing: FC<{
   const typeText = opTypeInstance.OP512
 
   useEffect(() => {
-    if (opType.past.length === 0) return;
+    if (opType.past.length === 0) return
     if (onChangeText) {
       onChangeText(
         `${typeText}${
@@ -158,10 +158,14 @@ export const TypeThing: FC<{
           marginTop: betweenX(8, 16),
         }}
         onClick={e => {
+          if (e.button !== 0) {
+            e.stopPropagation()
+            return
+          }
           setIsOpen(!isOpen)
         }}
-        onAuxClick={e => {
-          onClose()
+        onMouseDown={e => {
+          if (e.button === 1) onClose()
         }}
       >
         <div>
