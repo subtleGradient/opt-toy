@@ -14,6 +14,16 @@ import {
   euclideanDistanceSquared,
 } from "./euclideanDistance"
 
+export {
+  // OPT512Maybe,
+  NamedCOINS,
+  // BoolMaybe,
+  isBool,
+  cleanCoinText,
+  BLANK_TYPE,
+  parseCoinText,
+}
+
 type OPODLetterType = "O" | "D" | "?"
 type OPDLetterType = "F" | "T" | "D"
 type OPOLetterType = "N" | "S" | "O"
@@ -127,8 +137,21 @@ export class OPT512 {
   static random() {
     return OPT512.fromTypeNumber(getRandomInt(0, 0b111111111))
   }
+  get sortValue() {
+    return (
+      sideToDistance(this.type[NamedCOINS.coinNS.index]) *
+        (this.type[NamedCOINS.coinOD.index] ? 10 : 100) +
+      sideToDistance(this.type[NamedCOINS.coinFT.index]) *
+        (this.type[NamedCOINS.coinOD.index] ? 100 : 10) +
+      sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
+    )
+  }
   get position() {
     return [
+      this.tIndex,
+      this.sIndex,
+      this.fIndex,
+      this.nIndex,
       this.PlayIndex,
       this.BlastIndex,
       this.ConsumeIndex,
@@ -386,14 +409,31 @@ export class OPT512 {
     if (this.jumper === true) {
       const [s1, s2, d1, d2] = fns
       fns[1] = d1
-      d1.index = 1
+      // d1.index = 1
       fns[2] = s2
-      s2.index = 2
+      // s2.index = 2
     }
     const [fn1, fn2, fn3, fn4] = fns
     return [fn1, fn2, fn3, fn4]
   }
 
+  get letters() {
+    return this.opFunctions
+      .sort(({ index: a }, { index: b }) => sortBy(a, b))
+      .map(opFn => opFn.letter[0])
+  }
+  get tIndex() {
+    return this.letters.indexOf("T")
+  }
+  get sIndex() {
+    return this.letters.indexOf("S")
+  }
+  get fIndex() {
+    return this.letters.indexOf("F")
+  }
+  get nIndex() {
+    return this.letters.indexOf("N")
+  }
   get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] {
     return [this.A1, this.A2, this.A3, this.A4]
   }
@@ -749,7 +789,7 @@ function typeNumberToCoins(typeNumber: number): OPT512Maybe {
     .map(Boolean) as OPT512Maybe
 }
 
-const sideToDistance = (side: number | boolean): number =>
+export const sideToDistance = (side: number | boolean): number =>
   side === true
     ? 1
     : side === false
