@@ -31,6 +31,7 @@ export function OPCodeInput({
   return (
     <input
       {...props}
+      spellCheck={false}
       style={{ opacity: isEditing ? 1 : 0.8, ...style }}
       placeholder={inputTypeText}
       onChange={handleChange}
