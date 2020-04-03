@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, useEffect, useState, createContext } from "react"
 import useUndo from "use-undo"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
@@ -20,7 +20,7 @@ const SEPARATOR = `!`
 
 const Spacer = () => <span style={{ flex: "1 1 0%" }} />
 
-const History = props => (
+const History = (props) => (
   <div>
     <button
       key="undo"
@@ -50,24 +50,30 @@ const History = props => (
   </div>
 )
 
-const Permalink = props => (
+const Permalink = (props) => (
   <a href={`#?type[]=${props.typeText}`} title={props.typeText} target="_blank">
     permalink
   </a>
 )
 
-export const TypeThing: FC<{
+export type TypeThingProps = {
   selected?: boolean
   defaultType: string
   onClose?: () => void
   onChangeText?: (opType: string) => void
   showOPTable?: boolean
-}> = ({
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>
+
+export const TypeThing: FC<TypeThingProps> = ({
   selected = false,
   defaultType,
   onClose = null,
   onChangeText = null,
   showOPTable = true,
+  ...props
 }) => {
   useEffect(() => {
     opTypeActions.reset({
@@ -95,8 +101,9 @@ export const TypeThing: FC<{
     }
   }, [opType.present.name, typeText])
 
+  const placeholderName = `${opTypeInstance.S1}/${opTypeInstance.S2}`
   return (
-    <div className="TypeThing" data-is-open={isOpen}>
+    <div className="TypeThing" data-is-open={isOpen} {...props}>
       <style jsx>{`
         .TypeThing :global(svg),
         .TypeThing :global(svg) :global(*) {
@@ -109,31 +116,6 @@ export const TypeThing: FC<{
           padding: 2em 1ex;
         }
 
-        .TypeThing {
-          width: 100%;
-        }
-
-        @media (max-width: 424px) {
-          .TypeThing {
-            width: 100%;
-          }
-        }
-        @media (min-width: 425px) {
-          .TypeThing {
-            width: 50%;
-          }
-        }
-        @media (min-width: 768px) {
-          .TypeThing {
-            width: 25%;
-          }
-        }
-        @media (min-width: 1441px) {
-          .TypeThing {
-            width: calc(100% / 6);
-          }
-        }
-
         .TypeThing button {
           font-size: 0.9em;
         }
@@ -143,13 +125,20 @@ export const TypeThing: FC<{
           box-sizing: border-box;
           width: 100%;
         }
-        .TypeThing:active input,
-        .TypeThing:hover input {
+        .TypeThing:active :global(input),
+        .TypeThing:hover :global(input) {
           background-color: #ffffdd;
+        }
+        .TypeThing:not(:hover) :global(input) {
+          border-color: transparent;
         }
 
         .TypeThing .spacer {
           margin: 1ex 0;
+        }
+        h3,
+        h4 {
+          margin: 0;
         }
       `}</style>
       <div
@@ -157,14 +146,14 @@ export const TypeThing: FC<{
           textAlign: "center",
           marginTop: betweenX(8, 16),
         }}
-        onClick={e => {
+        onClick={(e) => {
           if (e.button !== 0) {
             e.stopPropagation()
             return
           }
           setIsOpen(!isOpen)
         }}
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           if (e.button === 1) onClose()
         }}
       >
@@ -173,33 +162,34 @@ export const TypeThing: FC<{
             {isOpen ? (
               <input
                 style={{ font: "inherit", textAlign: "center", color: "#333" }}
-                onClick={e => e.stopPropagation()}
-                onChange={e =>
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) =>
                   opTypeActions.set({
                     type: opType.present.type,
                     name: e.currentTarget.value,
                   })
                 }
                 value={opType.present.name}
-                placeholder="Human Name"
+                placeholder={placeholderName}
               />
             ) : (
               <div style={{ padding: 3 }}>
-                {opType.present.name ||
-                  `${opTypeInstance.S1}/${opTypeInstance.S2}`}
+                {opType.present.name || placeholderName}
               </div>
             )}
           </h3>
         </div>
-        <OPTGraph style={{ maxWidth: 500 }} opType={opTypeInstance} />
         <div>
-          <code>
+          <OPTGraph style={{ maxWidth: 500 }} opType={opTypeInstance} />
+        </div>
+        <div>
+          <h4>
             {isOpen ? (
               <OPCodeInput
                 style={{ font: "inherit", textAlign: "center" }}
-                onClick={e => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
                 coins={opTypeInstance.type}
-                onParsed={type => {
+                onParsed={(type) => {
                   opTypeActions.set({ name: opType.present.name, type })
                 }}
               />
@@ -208,7 +198,7 @@ export const TypeThing: FC<{
                 <OPTypeBinaryText type={opTypeInstance.type} />
               </div>
             )}
-          </code>
+          </h4>
         </div>
         {showOPTable && (
           <div className="spacer">
@@ -241,7 +231,7 @@ export const TypeThing: FC<{
           </div>
           <OPTypeBinaryForm
             type={opType.present.type}
-            onChange={type => {
+            onChange={(type) => {
               opTypeActions.set({ name: opType.present.name, type })
             }}
           />
