@@ -1,6 +1,7 @@
-import * as React from "react"
+import React, { FC } from "react"
 import knownTypes from "./known-types.sheet.json"
 import { OPT512 } from "./OPT512"
+import { sortBy } from "./sortBy"
 
 export interface KnownType {
   opType: OPT512
@@ -54,7 +55,10 @@ export function KnownTypes({ addType, Cell = TypeTableCell }) {
   )
 }
 
-export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
+export const KnownTypesTable: FC<{
+  addType?: any
+  Cell?: typeof TypeTableCell
+}> = ({ addType, Cell = TypeTableCell }) => {
   let o = 0
   return (
     <div className="KnownTypes">
@@ -91,7 +95,14 @@ export function KnownTypesTable({ addType, filters, Cell = TypeTableCell }) {
   )
 }
 
-function Cells({ kTypes, addType, Cell = TypeTableCell }) {
+const Cells: FC<{
+  kTypes: KnownType[]
+  addType: any
+  Cell: typeof TypeTableCell
+}> = ({ kTypes, addType, Cell = TypeTableCell }) => {
+  kTypes.sort(({ opType: a }, { opType: b }) =>
+    sortBy(b.sortValue, a.sortValue),
+  )
   return (
     <div className="Cells">
       <style jsx>{`
@@ -111,10 +122,13 @@ function Cells({ kTypes, addType, Cell = TypeTableCell }) {
           box-sizing: border-box;
           width: 25%;
           text-align: center;
-          padding: 1ex 0;
           font-size: 0.8em;
-          border: 2px solid transparent;
+          /*border: 2px solid transparent;*/
           cursor: pointer;
+        }
+
+        .Cells > * > :global(*) {
+          padding: 1ex 0;
         }
 
         @media (max-width: 424px) {
@@ -133,30 +147,31 @@ function Cells({ kTypes, addType, Cell = TypeTableCell }) {
           }
         }
 
-        span[data-optype] {
+        [data-optype] {
           display: flex;
         }
         span[data-optype] > :global(*) {
+          display: block;
           flex: 1;
         }
         [data-optype]:hover {
           border-color: #000;
         }
 
-        [data-optype*="Ni/"],
-        [data-optype*="Si/"] {
+        [data-optype*="Ni/"] > :global(*),
+        [data-optype*="Si/"] > :global(*) {
           background: #c9daf8;
         }
-        [data-optype*="Ne/"],
-        [data-optype*="Se/"] {
+        [data-optype*="Ne/"] > :global(*),
+        [data-optype*="Se/"] > :global(*) {
           background: #d9ead3;
         }
-        [data-optype*="Fi/"],
-        [data-optype*="Ti/"] {
+        [data-optype*="Fi/"] > :global(*),
+        [data-optype*="Ti/"] > :global(*) {
           background: #efefef;
         }
-        [data-optype*="Fe/"],
-        [data-optype*="Te/"] {
+        [data-optype*="Fe/"] > :global(*),
+        [data-optype*="Te/"] > :global(*) {
           background: #f4cccc;
         }
       `}</style>
