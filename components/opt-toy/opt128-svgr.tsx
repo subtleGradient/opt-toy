@@ -1,13 +1,15 @@
-import * as React from "react"
+import React, { useRef, FC, forwardRef } from "react"
 import { Defs } from "./OPBubbles4"
 import { SVG_OP_Bubble, SVG_OP_Bubble_border } from "./SVG_OP_Bubble"
 import { bubbleTextStyle } from "./SVG_OP_BubbleText"
 import { OPFunctionType, OPT512 } from "./OPT512"
+import { download } from "../../util/download"
 
-export const OPTGraph: React.SFC<{
-  opType: OPT512
-  style: any
-}> = ({ opType, ...props }) => {
+export const OPTGraph = forwardRef<
+  SVGSVGElement,
+  { opType: OPT512 } & React.SVGProps<SVGSVGElement>
+>(({ opType, ...props }, svgRef0) => {
+  const svgRef = useRef<SVGSVGElement>()
   const { opFunctions } = opType
   const opAnimals = {
     Play: { strength: opType.PlayIndex, text: "Play" },
@@ -32,19 +34,29 @@ export const OPTGraph: React.SFC<{
   const rightAnimal = shouldFlipH ? opAnimals.Sleep : opAnimals.Play
 
   return (
-    <OPTGraphInnards
-      {...props}
-      {...{
-        opFunctions,
-        shouldFlipH,
-        bottomAnimal,
-        topAnimal,
-        leftAnimal,
-        rightAnimal,
+    <div
+      onContextMenu={(e) => {
+        download(
+          opType.toString().replace(/[-/()]/g, "") + ".svg",
+          svgRef.current.outerHTML,
+        )
       }}
-    />
+    >
+      <OPTGraphInnards
+        ref={svgRef as any}
+        {...props}
+        {...{
+          opFunctions,
+          shouldFlipH,
+          bottomAnimal,
+          topAnimal,
+          leftAnimal,
+          rightAnimal,
+        }}
+      />
+    </div>
   )
-}
+})
 
 const AnimalStrengthToFontSize = [30.778, 24.772, 19.518, 13.512]
 
@@ -71,178 +83,195 @@ const Lines = () => (
   </g>
 )
 
-export const OPTGraphInnards = ({
-  opFunctions,
-  shouldFlipH,
-  bottomAnimal,
-  topAnimal,
-  leftAnimal,
-  rightAnimal,
-  style = null,
-  ...props
-}: React.SVGProps<SVGSVGElement> & {
-  opFunctions: OPFunctionType[]
-  shouldFlipH: boolean
-  bottomAnimal: { strength: number; text: string }
-  topAnimal: { strength: number; text: string }
-  leftAnimal: { strength: number; text: string }
-  rightAnimal: { strength: number; text: string }
-}) => {
-  const opFnByLetter = {
-    S:
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "S")[0] ||
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[0],
-    F:
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "F")[0] ||
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[0],
-    N:
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "N")[0] ||
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[1],
-    T:
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "T")[0] ||
-      opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[1],
-  }
+export const OPTGraphInnards = forwardRef<
+  SVGSVGElement,
+  {
+    opFunctions: OPFunctionType[]
+    shouldFlipH: boolean
+    bottomAnimal: { strength: number; text: string }
+    topAnimal: { strength: number; text: string }
+    leftAnimal: { strength: number; text: string }
+    rightAnimal: { strength: number; text: string }
+  } & React.SVGProps<SVGSVGElement>
+>(
+  (
+    {
+      opFunctions,
+      shouldFlipH,
+      bottomAnimal,
+      topAnimal,
+      leftAnimal,
+      rightAnimal,
+      style = null,
+      ...props
+    },
+    svgRef,
+  ) => {
+    const opFnByLetter = {
+      S:
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "S")[0] ||
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[0],
+      F:
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "F")[0] ||
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[0],
+      N:
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "N")[0] ||
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "O")[1],
+      T:
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "T")[0] ||
+        opFunctions.filter((fn: { letter: string }) => fn.letter === "D")[1],
+    }
 
-  return (
-    <svg
-      viewBox="0 0 1115 610"
-      fillRule="evenodd"
-      clipRule="evenodd"
-      {...props}
-      style={{
-        ...style,
-        transform: `scale(${shouldFlipH ? -1 : 1},1)`,
-      }}
-    >
-      <g
+    return (
+      <svg
+        ref={svgRef}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1115 610"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        {...props}
         style={{
           ...style,
-          transform: `translate(123px)`,
+          transform: `scale(${shouldFlipH ? -1 : 1},1)`,
         }}
       >
-        <g id="bottom">
-          <path
-            {...AnimalStrokes[bottomAnimal.strength]}
-            d="M170.116 9.576s-6.137 17.235-34.988 29.616C106.277 51.572 54.713 59.098 0 33.049c24.049 2.581 63.283-2.111 63.283-41.611"
-            fill="none"
-            transform="matrix(-1.71693 .02997 .02994 1.7153 615.803 448.003)"
-          />
-          <g transform="translate(-199.029 -160.442) scale(2.289) translate(364.302 295.991)">
-            <g
-              style={
-                shouldFlipH
-                  ? { transform: `scale(-1,1)`, textAnchor: "end" }
-                  : null
-              }
-            >
-              <text
-                fontFamily={bubbleTextStyle.fontFamily}
-                fontSize={AnimalStrengthToFontSize[bottomAnimal.strength] || 0}
-              >
-                {bottomAnimal.text}
-              </text>
-            </g>
-          </g>
-        </g>
-        <g id="right">
-          <path
-            {...AnimalStrokes[rightAnimal.strength]}
-            d="M132.591-2.45S69.148 67.665 0 28.882C15.681 24.056 39.268 12.41 39.268-27.09"
-            fill="none"
-            transform="matrix(-1.49282 .86188 .86345 1.49554 679.45 325.746)"
-          />
-          <g transform="translate(-199.029 -160.442) scale(2.289) translate(402.586 239.69)">
-            <g
-              style={
-                shouldFlipH
-                  ? { transform: `scale(-1,1)`, textAnchor: "end" }
-                  : null
-              }
-            >
-              <text
-                fontFamily={bubbleTextStyle.fontFamily}
-                fontSize={AnimalStrengthToFontSize[rightAnimal.strength] || 0}
-              >
-                {rightAnimal.text}
-              </text>
-            </g>
-          </g>
-        </g>
-        <g id="top">
-          <path
-            {...AnimalStrokes[topAnimal.strength]}
-            d="M139 30.496s-62 27.5-139 18c14 1.5 38.5-16.5 38.5-56"
-            fill="none"
-            transform="matrix(1.7183 0 0 -1.71876 210.442 177.733)"
-          />
-          <g transform="translate(-199.029 -160.442) scale(2.289) translate(172.987 118.081)">
-            <g style={shouldFlipH ? { transform: `scale(-1,1)` } : null}>
-              <text
-                fontFamily={bubbleTextStyle.fontFamily}
-                fontSize={AnimalStrengthToFontSize[topAnimal.strength] || 0}
+        <g
+          style={{
+            ...style,
+            transform: `translate(123px)`,
+          }}
+        >
+          <g id="bottom">
+            <path
+              {...AnimalStrokes[bottomAnimal.strength]}
+              d="M170.116 9.576s-6.137 17.235-34.988 29.616C106.277 51.572 54.713 59.098 0 33.049c24.049 2.581 63.283-2.111 63.283-41.611"
+              fill="none"
+              transform="matrix(-1.71693 .02997 .02994 1.7153 615.803 448.003)"
+            />
+            <g transform="translate(-199.029 -160.442) scale(2.289) translate(364.302 295.991)">
+              <g
                 style={
-                  shouldFlipH ? { textAnchor: "start" } : { textAnchor: "end" }
+                  shouldFlipH
+                    ? { transform: `scale(-1,1)`, textAnchor: "end" }
+                    : null
                 }
               >
-                {topAnimal.text}
-              </text>
+                <text
+                  fontFamily={bubbleTextStyle.fontFamily}
+                  fontSize={
+                    AnimalStrengthToFontSize[bottomAnimal.strength] || 0
+                  }
+                >
+                  {bottomAnimal.text}
+                </text>
+              </g>
             </g>
           </g>
-        </g>
-        <g id="left">
-          <path
-            {...AnimalStrokes[leftAnimal.strength]}
-            d="M104.703 26.043S67.539 53.766 0 28.882c15.681-4.826 49.823-15.017 55.856-53.825"
-            fill="none"
-            transform="matrix(1.72358 -.02525 .0253 1.72671 126.697 384.861)"
-          />
-          <g transform="translate(-199.029 -160.442) scale(2.289) translate(138.609 265.213)">
-            <g
-              style={
-                shouldFlipH
-                  ? { transform: `scale(-1,1)`, textAnchor: "start" }
-                  : null
-              }
-            >
-              {" "}
-              <text
-                fontFamily={bubbleTextStyle.fontFamily}
-                fontSize={AnimalStrengthToFontSize[leftAnimal.strength] || 0}
+          <g id="right">
+            <path
+              {...AnimalStrokes[rightAnimal.strength]}
+              d="M132.591-2.45S69.148 67.665 0 28.882C15.681 24.056 39.268 12.41 39.268-27.09"
+              fill="none"
+              transform="matrix(-1.49282 .86188 .86345 1.49554 679.45 325.746)"
+            />
+            <g transform="translate(-199.029 -160.442) scale(2.289) translate(402.586 239.69)">
+              <g
                 style={
-                  shouldFlipH ? { textAnchor: "start" } : { textAnchor: "end" }
+                  shouldFlipH
+                    ? { transform: `scale(-1,1)`, textAnchor: "end" }
+                    : null
                 }
               >
-                {leftAnimal.text}
-              </text>
+                <text
+                  fontFamily={bubbleTextStyle.fontFamily}
+                  fontSize={AnimalStrengthToFontSize[rightAnimal.strength] || 0}
+                >
+                  {rightAnimal.text}
+                </text>
+              </g>
             </g>
+          </g>
+          <g id="top">
+            <path
+              {...AnimalStrokes[topAnimal.strength]}
+              d="M139 30.496s-62 27.5-139 18c14 1.5 38.5-16.5 38.5-56"
+              fill="none"
+              transform="matrix(1.7183 0 0 -1.71876 210.442 177.733)"
+            />
+            <g transform="translate(-199.029 -160.442) scale(2.289) translate(172.987 118.081)">
+              <g style={shouldFlipH ? { transform: `scale(-1,1)` } : null}>
+                <text
+                  fontFamily={bubbleTextStyle.fontFamily}
+                  fontSize={AnimalStrengthToFontSize[topAnimal.strength] || 0}
+                  style={
+                    shouldFlipH
+                      ? { textAnchor: "start" }
+                      : { textAnchor: "end" }
+                  }
+                >
+                  {topAnimal.text}
+                </text>
+              </g>
+            </g>
+          </g>
+          <g id="left">
+            <path
+              {...AnimalStrokes[leftAnimal.strength]}
+              d="M104.703 26.043S67.539 53.766 0 28.882c15.681-4.826 49.823-15.017 55.856-53.825"
+              fill="none"
+              transform="matrix(1.72358 -.02525 .0253 1.72671 126.697 384.861)"
+            />
+            <g transform="translate(-199.029 -160.442) scale(2.289) translate(138.609 265.213)">
+              <g
+                style={
+                  shouldFlipH
+                    ? { transform: `scale(-1,1)`, textAnchor: "start" }
+                    : null
+                }
+              >
+                {" "}
+                <text
+                  fontFamily={bubbleTextStyle.fontFamily}
+                  fontSize={AnimalStrengthToFontSize[leftAnimal.strength] || 0}
+                  style={
+                    shouldFlipH
+                      ? { textAnchor: "start" }
+                      : { textAnchor: "end" }
+                  }
+                >
+                  {leftAnimal.text}
+                </text>
+              </g>
+            </g>
+          </g>
+
+          <g id="bubble-borders">
+            <BubBorder key="S" opFunction={opFnByLetter.S} />
+            <BubBorder key="F" opFunction={opFnByLetter.F} />
+            <BubBorder key="N" opFunction={opFnByLetter.N} />
+            <BubBorder key="T" opFunction={opFnByLetter.T} />
+          </g>
+
+          <Lines />
+
+          {/* prettier-ignore */}
+          <g id="bubbles">
+            <Bub key="S" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.S} />
+            <Bub key="F" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.F} />
+            <Bub key="N" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.N} />
+            <Bub key="T" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.T} />
           </g>
         </g>
 
-        <g id="bubble-borders">
-          <BubBorder key="S" opFunction={opFnByLetter.S} />
-          <BubBorder key="F" opFunction={opFnByLetter.F} />
-          <BubBorder key="N" opFunction={opFnByLetter.N} />
-          <BubBorder key="T" opFunction={opFnByLetter.T} />
-        </g>
-
-        <Lines />
-
-        <g id="bubbles">
-          <Bub key="S" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.S} />
-          <Bub key="F" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.F} />
-          <Bub key="N" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.N} />
-          <Bub key="T" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.T} />
-        </g>
-      </g>
-
-      <Defs color="gray" />
-      <Defs color="green" />
-      <Defs color="blue" />
-      <Defs color="yellow" />
-      <Defs color="red" />
-    </svg>
-  )
-}
+        <Defs color="gray" />
+        <Defs color="green" />
+        <Defs color="blue" />
+        <Defs color="yellow" />
+        <Defs color="red" />
+      </svg>
+    )
+  },
+)
 
 function Bub({
   shouldFlipH = false,
