@@ -536,6 +536,13 @@ export class OPT512 {
     if (this.oLetter === "N" && this.dLetter === "F") return false
     return null
   }
+
+  includesText(type: string) {
+    return this.toString().includes(type)
+  }
+  includesAnyText(...types: string[]) {
+    return types.findIndex(type => this.includesText(type)) > -1
+  }
 }
 
 const Flipped = {
