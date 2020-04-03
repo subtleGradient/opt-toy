@@ -1,9 +1,9 @@
-import * as React from "react"
+import React, { FC } from "react"
 import { useState } from "react"
 import { betweenRootStylesX, betweenX } from "./between"
-import { KnownTypes } from "./KnownTypes"
+import { KnownTypes, SelectedTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
-import { TypeThing } from "./TypeThing"
+import { TypeThing, TypeThingProps } from "./TypeThing"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -35,8 +35,18 @@ function useStuff() {
   return {
     setOPTypeTextAtIndex,
     typeIDs,
+    typeIDInsertBefore(tidBeingMoved: number, oldTID: number) {
+      setTypeIDs((typeIDs) => {
+        const newTypeIDs = typeIDs.slice(0)
+        const oldIndex = typeIDs.indexOf(tidBeingMoved)
+        const newIndex = typeIDs.indexOf(oldTID)
+        newTypeIDs.splice(oldIndex, 1)
+        newTypeIDs.splice(newIndex, 0, tidBeingMoved)
+        return newTypeIDs
+      })
+    },
     types,
-    addType(typeText) {
+    addType(typeText: string) {
       setOPTypeTextAtIndex(types.length, typeText)
     },
   }
@@ -52,6 +62,12 @@ function RootStyle() {
         ${betweenRootStylesX({ selector: "html", min: 1441, max: 2560 })}
       `}</style>
       <style jsx global>{`
+        html,
+        body {
+          font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+            sans-serif;
+        }
         @media screen and (max-width: 424px) {
           html {
             font-size: ${betweenX(14, 18, 320, 424)};
@@ -72,13 +88,106 @@ function RootStyle() {
             font-size: ${betweenX(9, 16, 1441, 2560)};
           }
         }
+
+        .TypeThing-wrap {
+          width: 100%;
+        }
+
+        @media (max-width: 424px) {
+          .TypeThing-wrap {
+            width: 100%;
+          }
+        }
+        @media (min-width: 425px) {
+          .TypeThing-wrap {
+            width: 50%;
+          }
+        }
+        @media (min-width: 768px) {
+          .TypeThing-wrap {
+            width: 25%;
+          }
+        }
+        @media (min-width: 1441px) {
+          .TypeThing-wrap {
+            width: calc(100% / 6);
+          }
+        }
       `}</style>
     </>
   )
 }
 
+const DragableTypeThing: FC<
+  {
+    tID: number
+    onDropOnto: (a: number, b: number) => void
+  } & TypeThingProps
+> = ({ tID, onDropOnto: typeIDInsertBefore, ...props }) => {
+  const [isDragging, setIsDragging] = useState(false)
+  const [isDropping, setIsDropping] = useState(false)
+  return (
+    <div
+      className="TypeThing-wrap"
+      data-is-dragging={isDragging}
+      data-is-dropping={isDropping}
+      onDragOver={(e) => {
+        setIsDropping(true)
+        e.preventDefault()
+      }}
+      onDragEnter={(e) => {
+        setIsDropping(true)
+      }}
+      onDragLeave={(e) => {
+        setIsDropping(false)
+      }}
+      onDrop={(e) => {
+        setIsDropping(false)
+        const typeID = parseInt(
+          e.dataTransfer.getData("application/opdex+typeID"),
+          10,
+        )
+        typeIDInsertBefore(typeID, tID)
+      }}
+      draggable
+      onDragStart={(e) => {
+        setIsDragging(true)
+        e.dataTransfer.setData("application/opdex+typeID", tID + "")
+      }}
+      onDragEnd={(e) => {
+        setIsDragging(false)
+      }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <style jsx>{`
+        [data-is-dragging="true"] {
+          opacity: 0.125;
+          transform: scale(0.75);
+        }
+        [data-is-dropping] {
+          box-sizing: border-box;
+          border-left: 2px solid transparent;
+        }
+        [data-is-dropping="true"] {
+          border-left-color: black;
+        }
+      `}</style>
+      <TypeThing {...props} />
+    </div>
+  )
+}
+
 export default function OptToyApp() {
-  const { setOPTypeTextAtIndex, typeIDs, types, addType } = useStuff()
+  const {
+    setOPTypeTextAtIndex,
+    typeIDs,
+    typeIDInsertBefore,
+    types,
+    addType,
+  } = useStuff()
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
   const showKnown = showKnowns.length > 0
   const [showSettings, setShowSettings] = useState(false)
@@ -89,89 +198,96 @@ export default function OptToyApp() {
   const showOPTable = showOPTableQueryValue === "1"
 
   return (
-    <div className="App">
-      <RootStyle />
-      <div
-        className="bar"
-        style={{
-          display: "flex",
-          background: "#eee",
-          padding: 3,
-          // position: "fixed",
-          // top: 0,
-          // left: 0,
-          // width: "100%",
-        }}
-      >
-        <button onClick={e => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}>
-          ➕ Add
-        </button>
-        <button
-          onClick={e => void setOPTypeTextAtIndex(types.length - 1, null)}
+    <SelectedTypes.Provider value={types}>
+      <div className="App">
+        <RootStyle />
+        <div
+          className="bar"
+          style={{
+            display: "flex",
+            background: "#eee",
+            padding: 3,
+            // position: "fixed",
+            // top: 0,
+            // left: 0,
+            // width: "100%",
+          }}
         >
-          🗑️ Remove
-        </button>
-        <Spacer />
-        <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>
-          {showKnown ? "▼" : "▶"}
-          types
-        </button>
-        <button onClick={() => void setShowSettings(show => !show)}>
-          {showSettings ? "▼" : "▶"}
-          settings
-        </button>
-        <Spacer />
-        <span>
-          <a href="https://OPDEX.app" style={{ whiteSpace: "nowrap" }}>
-            OP<b>DEX</b>
-            <small>.app</small>
-          </a>
-        </span>
-      </div>
+          <button
+            onClick={(e) => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}
+          >
+            ➕ Add
+          </button>
+          <button
+            onClick={(e) => void setOPTypeTextAtIndex(types.length - 1, null)}
+          >
+            🗑️ Remove
+          </button>
+          <Spacer />
+          <button onClick={() => void setShowKnown(showKnown ? [] : ["1"])}>
+            {showKnown ? "▼" : "▶"}
+            types
+          </button>
+          <button onClick={() => void setShowSettings((show) => !show)}>
+            {showSettings ? "▼" : "▶"}
+            settings
+          </button>
+          <Spacer />
+          <span>
+            <a href="https://OPDEX.app" style={{ whiteSpace: "nowrap" }}>
+              OP<b>DEX</b>
+              <small>.app</small>
+            </a>
+          </span>
+        </div>
 
-      <div className="settings">
-        {showSettings && (
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={showOPTable}
-                onChange={({ target: { checked } }) =>
-                  void setShowOPTable(!checked ? ["0"] : ["1"])
-                }
-              />
-              show OP table?
-            </label>
-          </div>
+        <div className="settings">
+          {showSettings && (
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showOPTable}
+                  onChange={({ target: { checked } }) =>
+                    void setShowOPTable(!checked ? ["0"] : ["1"])
+                  }
+                />
+                show OP table?
+              </label>
+            </div>
+          )}
+        </div>
+
+        <div className="KnownTypes-wrapper">
+          {showKnown && <KnownTypes addType={addType} />}
+        </div>
+
+        <div
+          className="all-the-TypeThings"
+          style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+        >
+          {types.map((defaultType, index) => (
+            <DragableTypeThing
+              key={typeIDs[index]}
+              tID={typeIDs[index]}
+              onDropOnto={typeIDInsertBefore}
+              {...{
+                onClose: () => void setOPTypeTextAtIndex(index, null),
+                onChangeText: (opTypeText: any) =>
+                  void setOPTypeTextAtIndex(index, opTypeText),
+                selected: types.length === 1,
+                defaultType,
+                showOPTable,
+              }}
+            />
+          ))}
+        </div>
+
+        {types.length > 1 && (
+          <blockquote>Click a graph to open details</blockquote>
         )}
       </div>
-
-      <div className="KnownTypes-wrapper">
-        {showKnown && <KnownTypes addType={addType} />}
-      </div>
-
-      <div
-        className="all-the-TypeThings"
-        style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
-      >
-        {types.map((type, index) => (
-          <TypeThing
-            key={typeIDs[index]}
-            selected={types.length === 1}
-            defaultType={type}
-            onClose={() => void setOPTypeTextAtIndex(index, null)}
-            onChangeText={(opTypeText: any) =>
-              void setOPTypeTextAtIndex(index, opTypeText)
-            }
-            showOPTable={showOPTable}
-          />
-        ))}
-      </div>
-
-      {types.length > 1 && (
-        <blockquote>Click a graph to open details</blockquote>
-      )}
-    </div>
+    </SelectedTypes.Provider>
   )
 }
 
