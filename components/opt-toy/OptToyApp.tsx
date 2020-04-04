@@ -4,6 +4,7 @@ import { betweenRootStylesX, betweenX } from "./between"
 import { KnownTypes, SelectedTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
 import { TypeThing, TypeThingProps } from "./TypeThing"
+import { GlobalDefs } from "./OPBubbles4"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -114,6 +115,7 @@ function RootStyle() {
           }
         }
       `}</style>
+      <GlobalDefs />
     </>
   )
 }
@@ -135,10 +137,10 @@ const DragableTypeThing: FC<
         setIsDropping(true)
         e.preventDefault()
       }}
-      onDragEnter={(e) => {
+      onDragEnter={() => {
         setIsDropping(true)
       }}
-      onDragLeave={(e) => {
+      onDragLeave={() => {
         setIsDropping(false)
       }}
       onDrop={(e) => {
@@ -154,7 +156,7 @@ const DragableTypeThing: FC<
         setIsDragging(true)
         e.dataTransfer.setData("application/opdex+typeID", tID + "")
       }}
-      onDragEnd={(e) => {
+      onDragEnd={() => {
         setIsDragging(false)
       }}
       style={{
@@ -201,6 +203,7 @@ export default function OptToyApp() {
     <SelectedTypes.Provider value={types}>
       <div className="App">
         <RootStyle />
+
         <div
           className="bar"
           style={{
@@ -214,12 +217,12 @@ export default function OptToyApp() {
           }}
         >
           <button
-            onClick={(e) => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}
+            onClick={() => void setOPTypeTextAtIndex(types.length, "Dx/Ox")}
           >
             ➕ Add
           </button>
           <button
-            onClick={(e) => void setOPTypeTextAtIndex(types.length - 1, null)}
+            onClick={() => void setOPTypeTextAtIndex(types.length - 1, null)}
           >
             🗑️ Remove
           </button>
@@ -282,7 +285,7 @@ export default function OptToyApp() {
             />
           ))}
         </div>
-
+        
         {types.length > 1 && (
           <blockquote>Click a graph to open details</blockquote>
         )}

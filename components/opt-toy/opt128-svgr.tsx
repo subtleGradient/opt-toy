@@ -4,6 +4,7 @@ import { SVG_OP_Bubble, SVG_OP_Bubble_border } from "./SVG_OP_Bubble"
 import { bubbleTextStyle } from "./SVG_OP_BubbleText"
 import { OPFunctionType, OPT512 } from "./OPT512"
 import { download } from "../../util/download"
+import { renderToStaticMarkup } from 'react-dom/server'
 
 export const OPTGraph = forwardRef<
   SVGSVGElement,
@@ -38,7 +39,7 @@ export const OPTGraph = forwardRef<
       onContextMenu={(e) => {
         download(
           opType.toString().replace(/[-/()]/g, "") + ".svg",
-          svgRef.current.outerHTML,
+          svgRef.current.outerHTML.replace(`</svg>`,`${renderToStaticMarkup(<Defs/>)}</svg>`),
         )
       }}
     >
@@ -135,6 +136,8 @@ export const OPTGraphInnards = forwardRef<
           transform: `scale(${shouldFlipH ? -1 : 1},1)`,
         }}
       >
+        {/* Include GlobalDefs in the main HTML instead */}
+        {/* <Defs /> */}
         <g
           style={{
             ...style,
@@ -262,12 +265,6 @@ export const OPTGraphInnards = forwardRef<
             <Bub key="T" shouldFlipH={shouldFlipH} opFunction={opFnByLetter.T} />
           </g>
         </g>
-
-        <Defs color="gray" />
-        <Defs color="green" />
-        <Defs color="blue" />
-        <Defs color="yellow" />
-        <Defs color="red" />
       </svg>
     )
   },
