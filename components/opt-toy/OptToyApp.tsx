@@ -286,9 +286,6 @@ export default function OptToyApp() {
           ))}
         </div>
         
-        {types.length > 1 && (
-          <blockquote>Click a graph to open details</blockquote>
-        )}
       </div>
     </SelectedTypes.Provider>
   )

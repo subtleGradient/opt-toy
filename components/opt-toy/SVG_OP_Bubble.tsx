@@ -1,14 +1,14 @@
 import * as React from "react"
-import { SFC } from "react"
+import { FC } from "react"
 import { fromCenter } from "./fromCenter"
-import { Bubble } from "./OPBubbles4"
+import { Bubble, Colors } from "./OPBubbles4"
 import { intrinsicHeight, intrinsicWidth } from "./OP_Type"
 import { BubbleText } from "./SVG_OP_BubbleText"
 
 
 
-export const SVG_OP_Bubble: SFC<{
-  color: string
+export const SVG_OP_Bubble: FC<{
+  color: Colors
   width: number
   height?: number
   prefix?: string
@@ -39,7 +39,7 @@ export const SVG_OP_Bubble: SFC<{
   )
 }
 
-export const SVG_OP_Bubble_border: SFC<{
+export const SVG_OP_Bubble_border: FC<{
   width: number
   height?: number
 }> = ({ width, height = width }) => (

@@ -235,26 +235,21 @@ export const Defs: FC<{ color?: Colors }> = ({ color }) => (
   </defs>
 )
 
-export function Bubble({
+export const Bubble: FC<{ color?: Colors } & React.SVGProps<SVGGElement>> = ({
   color = "gray",
   ...props
-}: {
-  color: Colors
-} & React.SVGProps<SVGGElement>) {
-  const white = color === "white"
-  return (
-    <g {...props}>
-      <circle cx={64} cy={64} r={64} fill="#fff" />
-      {!white && (
-        <>
-          <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
-          <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
-          <path
-            d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
-            fill={`url(#${color}3)`}
-          />
-        </>
-      )}
-    </g>
-  )
-}
+}) => (
+  <g className={`${color} Bubble`} {...props}>
+    <circle cx={64} cy={64} r={64} fill="#fff" />
+    {color !== "white" && (
+      <>
+        <circle cx={64} cy={64} r={64} fill={`url(#${color}1)`} />
+        <circle cx={64} cy={64} r={64} fill={`url(#${color}2)`} />
+        <path
+          d="M7.32 52.214c0 26.98 113.156 26.98 113.156 0S95.125 3.33 63.898 3.33C32.672 3.33 7.32 25.234 7.32 52.214z"
+          fill={`url(#${color}3)`}
+        />
+      </>
+    )}
+  </g>
+)
