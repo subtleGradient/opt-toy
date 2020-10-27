@@ -222,7 +222,7 @@ const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
 export const isBool = (value: BoolMaybe) => value === true || value === false;
 
 const cleanerCoins = COINS.filter(COIN => typeof COIN.clean === "function");
-export const cleanCoinText = value =>
+export const cleanCoinText = (value:string = ''):string =>
   cleanerCoins.reduce((vvv, { clean }) => clean(vvv), value);
 
 const parserCoins = COINS.filter(COIN => typeof COIN.parse === "function");

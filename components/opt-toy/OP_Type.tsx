@@ -1,24 +1,25 @@
-import * as React from "react";
-import { OPTGraph } from "./opt128-svgr";
-import { OPT512 } from "./OPT512";
+import * as React from "react"
+import { GlobalDefs } from "./OPBubbles4"
+import { OPTGraph } from "./opt128-svgr"
+import { OPT512 } from "./OPT512"
 
 // Define type of property
 interface Props {
-  width?: number;
-  height?: number;
-  opType: OPT512;
+  width?: number
+  height?: number
+  opType: OPT512
 }
 
-export const intrinsicWidth = 128;
-export const intrinsicHeight = 128;
+export const intrinsicWidth = 128
+export const intrinsicHeight = 128
 
-const Gold = 0.61803398875;
+const Gold = 0.61803398875
 
 export class OP_Type extends React.Component<Props> {
   // Set default properties
   static defaultProps = {
-    text: "Hello World!"
-  };
+    text: "Hello World!",
+  }
 
   // Items shown in property panel
   // static propertyControls: PropertyControls = {
@@ -26,7 +27,12 @@ export class OP_Type extends React.Component<Props> {
   // };
 
   render() {
-    const { height = 256, width = height * 4, opType } = this.props;
-    return <OPTGraph style={{ maxWidth: 500 }} opType={opType} />;
+    const { height = 256, width = height * 4, opType } = this.props
+    return (
+      <div>
+        <GlobalDefs />
+        <OPTGraph style={{ maxWidth: 500 }} opType={opType} />
+      </div>
+    )
   }
 }

@@ -58,20 +58,20 @@ export class OPT512 {
   }
 
   get eDecider() {
-    return this.deciders.find(Dx => Dx.focus === "e") || this.deciders[0]
+    return this.deciders.find((Dx) => Dx.focus === "e") || this.deciders[0]
   }
   get iDecider() {
-    return this.deciders.find(Dx => Dx.focus === "i") || this.deciders[1]
+    return this.deciders.find((Dx) => Dx.focus === "i") || this.deciders[1]
   }
   get deciders() {
     const { feeling, thinking } = this
     return [feeling, thinking].sort(sortByIndex)
   }
   get eObserver() {
-    return this.observers.find(Ox => Ox.focus === "e") || this.observers[0]
+    return this.observers.find((Ox) => Ox.focus === "e") || this.observers[0]
   }
   get iObserver() {
-    return this.observers.find(Ox => Ox.focus === "i") || this.observers[1]
+    return this.observers.find((Ox) => Ox.focus === "i") || this.observers[1]
   }
   get observers() {
     const { intuition, sensing } = this
@@ -121,13 +121,7 @@ export class OPT512 {
   }
 
   get typeNumber() {
-    return parseInt(
-      this.type
-        .map(Number)
-        .reverse()
-        .join(""),
-      2,
-    )
+    return parseInt(this.type.map(Number).reverse().join(""), 2)
   }
   getComplimentType(): OPT512 {
     return OPT512.fromTypeNumber(this.typeNumber ^ 0b111111111)
@@ -179,13 +173,13 @@ export class OPT512 {
   }
 
   get eCount() {
-    return this.type.filter(it => it === true).length
+    return this.type.filter((it) => it === true).length
   }
   get iCount() {
-    return this.type.filter(it => it === false).length
+    return this.type.filter((it) => it === false).length
   }
   get nullCount() {
-    return this.type.filter(it => it == null).length
+    return this.type.filter((it) => it == null).length
   }
   get isEmpty() {
     return this.nullCount === this.type.length
@@ -407,7 +401,7 @@ export class OPT512 {
         savior: false,
         odLetter,
       },
-    ].map(it => {
+    ].map((it) => {
       if (it.key === "O" || it.key === "D") it.key = it.grantStackIndex as any
       return it
     })
@@ -425,7 +419,7 @@ export class OPT512 {
   get letters() {
     return this.opFunctions
       .sort(({ index: a }, { index: b }) => sortBy(a, b))
-      .map(opFn => opFn.letter[0])
+      .map((opFn) => opFn.letter[0])
   }
   get tIndex() {
     return this.letters.indexOf("T")
@@ -486,7 +480,7 @@ export class OPT512 {
   toString() {
     return this.OP512
   }
-  get OP512() {
+  get OP512(): string {
     const opt = this
     const fmS = opt.fmS
     const fmDe = opt.fmDe
@@ -541,7 +535,7 @@ export class OPT512 {
     return this.toString().includes(type)
   }
   includesAnyText(...types: string[]) {
-    return types.findIndex(type => this.includesText(type)) > -1
+    return types.findIndex((type) => this.includesText(type)) > -1
   }
 }
 
