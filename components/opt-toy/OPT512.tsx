@@ -576,7 +576,7 @@ const Flipped = {
 
 class OPPart {
   readonly code: string
-  constructor(protected opType: OPT512) {}
+  constructor(public opType: OPT512) {}
 }
 
 type AnimalFunctionPair = [Sensing | iNtuition, Thinking | Feeling]
@@ -650,10 +650,10 @@ class Sleep extends Energy {
 
 const IndexActivationMap = {
   "-1": 0,
-  0: 3,
-  1: 2,
-  2: 1,
-  3: -1,
+  0: 4,
+  1: 3,
+  2: 2,
+  3: 1,
 }
 
 const activationReducer = (activation: number, { index }) =>
@@ -662,7 +662,7 @@ const activationReducer = (activation: number, { index }) =>
 const activationCodeReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
-class OPFn extends OPPart {
+export class OPFn extends OPPart {
   code = "X"
   get saviorCode() {
     const { opFn, opType, activation } = this
@@ -673,24 +673,56 @@ class OPFn extends OPPart {
   get activation1or2() {
     return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation]
   }
-  get activation() {
-    return this.animals.reduce(activationReducer, 0)
+  get gapBetweenAnimals(): 0 | 1 | 2 {
+    return (this.animals[1].index - this.animals[0].index - 1) as any
   }
-  get animals(): OPAnimal[] {
+  get activation() {
+    const {
+      opFn: { sex, index, grantStackIndex, savior },
+      animals: [{ index: a1Index = -1 }, { index: a2Index = -1 }],
+    } = this
+    return [
+      savior,
+      sex === "m", // this measures something very different
+      9-this.gapBetweenAnimals,
+
+
+
+      // index === 0,
+      9-a1Index,
+      9-a2Index,
+      9-index,
+
+      // 9,
+      9-grantStackIndex,
+      // 9,
+      // 9-index,
+    ]
+      .map(Number)
+      .reverse()
+      .reduceRight((acc, value, index) => acc + value * 10 ** index, 0)
+  }
+  get animals(): [Info, Energy] | [Energy, Info] | [] {
     const { opFn, opType } = this
     const { play, blast, consume, sleep } = opType
+    let animals: [Info, Energy] | [Energy, Info] | []
     switch (opFn?.odLetter + opFn?.focus) {
       case "Oi":
-        return [sleep, blast]
+        animals = [sleep, blast]
+        break
       case "Oe":
-        return [consume, play]
+        animals = [consume, play]
+        break
       case "Di":
-        return [sleep, consume]
+        animals = [sleep, consume]
+        break
       case "De":
-        return [blast, play]
+        animals = [blast, play]
+        break
       default:
-        return []
+        animals = []
     }
+    return animals.sort((a, b) => sortBy(a.index, b.index))
   }
   get opFn() {
     return this.opType.opFunctions.filter(
