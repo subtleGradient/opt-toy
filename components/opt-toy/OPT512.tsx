@@ -50,8 +50,11 @@ type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
 type OSNxei = "Oe" | "Se" | "Ne" | "Oi" | "Si" | "Ni" | "Ox" | "Sx" | "Nx"
 
 export class OPT512 {
-  static fromDirtyCoinText(typeCode: string): OPT512 {
+  static from(typeCode: string): OPT512 {
     return new OPT512(parseCoinText(cleanCoinText(typeCode)))
+  }
+  static fromDirtyCoinText(typeCode: string): OPT512 {
+    return OPT512.from(typeCode)
   }
   static fromCoinText(typeCode: string): OPT512 {
     return new OPT512(parseCoinText(typeCode))
@@ -123,6 +126,9 @@ export class OPT512 {
   get typeNumber() {
     return parseInt(this.type.map(Number).reverse().join(""), 2)
   }
+  get typeNumberString() {
+    return this.type.map(Number).reverse().join("")
+  }
   getComplimentType(): OPT512 {
     return OPT512.fromTypeNumber(this.typeNumber ^ 0b111111111)
   }
@@ -141,8 +147,9 @@ export class OPT512 {
       sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
     )
   }
+  _position: number[]
   get position() {
-    return [
+    return this._position || (this._position = [
       this.tIndex,
       this.sIndex,
       this.fIndex,
@@ -161,7 +168,7 @@ export class OPT512 {
         this.sideOfTiFe,
       ].map(sideToDistance),
       ...this.type.map(sideToDistance),
-    ].map(Number)
+    ].map(Number))
   }
   static getCoinDistanceBetween(a: OPT512, b: OPT512) {
     return euclideanDistanceSquared(a.position, b.position)
@@ -665,10 +672,18 @@ const activationCodeReducer = (activation: number, { index }) =>
 export class OPFn extends OPPart {
   code = "X"
   get saviorCode() {
-    const { opFn, opType, activation } = this
-    const [sex, savior, index] = [opFn?.sex, opFn?.savior, opFn?.index]
-    if (savior) return "S" + { 0: 1, 1: 2, 2: 2, 3: 2 }[index]
-    return activation === 0 ? "-" : "A"
+    const {
+      opFn: { index },
+      animals: [a1],
+    } = this
+    switch (a1.index) {
+      case 0:
+        return ["S1", "S2", "ERROR", "ERROR", "ERROR"][index]
+      case 1: //return 'A1'
+      case 2: //return 'A2'
+      case 3:
+        return index
+    }
   }
   get activation1or2() {
     return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation]
@@ -676,27 +691,69 @@ export class OPFn extends OPPart {
   get gapBetweenAnimals(): 0 | 1 | 2 {
     return (this.animals[1].index - this.animals[0].index - 1) as any
   }
+  get activationDetails() {
+    const {
+      opFn: { sex, index, grantStackIndex, savior },
+      animals: [fA1, fA2],
+      opType: {
+        animals: [a1, a2, a3, a4],
+      },
+      gapBetweenAnimals,
+    } = this
+    return {
+      index,
+      grantStackIndex,
+      sex,
+      gapBetweenAnimals,
+    }
+  }
+  get isPolar() {
+    return this.gapBetweenAnimals === 2
+  }
+  get isPairActive() {
+    return this.gapBetweenAnimals === 0
+  }
   get activation() {
     const {
       opFn: { sex, index, grantStackIndex, savior },
-      animals: [{ index: a1Index = -1 }, { index: a2Index = -1 }],
+      animals: [fA1, fA2],
+      opType: {
+        animals: [a1, a2, a3, a4],
+      },
     } = this
     return [
-      savior,
-      sex === "m", // this measures something very different
-      9-this.gapBetweenAnimals,
+      // first function is always super intense
+      [1, 0, 0, 0][index],
 
+      // middle functions are balanced and constantly toggling
+      [0, 1, 1, 0][index],
 
+      // masculine functions are constantly being activated unconscously
+      { m: 2, f: 1 }[sex],
 
-      // index === 0,
-      9-a1Index,
-      9-a2Index,
-      9-index,
+      // pair activated functions 
+      [9, 5, 1][this.gapBetweenAnimals],
+      // 9 - grantStackIndex,
 
-      // 9,
-      9-grantStackIndex,
-      // 9,
+      // fA1 === a1,
+      // fA1 === a2,
+      // fA1 === a3,
+
+      // fA2 === a1,
+      // fA2 === a2,
+      // fA2 === a3,
+
+      // savior,
+
+      // // index === 0,
+      // 9-a1Index,
+      // 9-a2Index,
       // 9-index,
+
+      // // 9,
+      // 9-grantStackIndex,
+      // // 9,
+      // // 9-index,
     ]
       .map(Number)
       .reverse()
@@ -734,15 +791,13 @@ export class OPFn extends OPPart {
     return (sex === "?" ? "" : sex) + code + focus
   }
   get sex() {
-    return this.opFn?.sex || "?"
+    return this.opFn?.sex ?? "?"
   }
   get focus() {
-    return this.opFn?.focus || "?"
+    return this.opFn?.focus ?? "?"
   }
   get index() {
-    return this.opType.opFunctions.findIndex(
-      ({ letter }) => letter === this.code,
-    )
+    return this.opFn?.index ?? -1
   }
 }
 class DeciderFn extends OPFn {
@@ -818,7 +873,7 @@ const AnimalLetterFocusCodeToAnimalLetters = {
   PBe: "C",
 }
 
-function typeNumberToCoins(typeNumber: number): OPT512Maybe {
+function typeNumberToCoins(typeNumber: number | string): OPT512Maybe {
   return typeNumber
     .toString(2)
     .padStart(9, "0")
@@ -837,3 +892,31 @@ export const sideToDistance = (side: number | boolean): number =>
     : typeof side === "number"
     ? [0, -1, 1][side + 1] || 0
     : 0
+
+if (process.env.NODE_ENV !== "production") {
+  const assert = (test: () => boolean, message?: string) => {
+    console.log(
+      test.toString().replace(/^function \(\) {\s+|[;]|return\s+|\s*\}$/g, ""),
+    )
+    console.assert(test(), message)
+  }
+  const Tom = OPT512.from("fffesepbcs")
+  const Britt = OPT512.from("mmfisisbpc")
+
+  assert(() => Tom.functions[0].activation > 0)
+  assert(() => Britt.functions[0].activation > 0)
+
+  assert(() => Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
+  assert(() => Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
+
+  assert(() => Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
+
+  console.log({
+    "B.f": Britt.feeling.activation,
+    "B.f+": JSON.stringify(Britt.feeling.activationDetails),
+
+    "T.f": Tom.feeling.activation,
+    "T.f+": JSON.stringify(Tom.feeling.activationDetails),
+  })
+  console.log("yay")
+}
