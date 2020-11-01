@@ -43,12 +43,7 @@ export interface OPFunctionType {
   odLetter: OPODLetterType
 }
 
-type OP4Fns = [
-  OPFunctionType,
-  OPFunctionType,
-  OPFunctionType,
-  OPFunctionType
-]
+type OP4Fns = [OPFunctionType, OPFunctionType, OPFunctionType, OPFunctionType]
 
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
@@ -59,7 +54,7 @@ type OSNxei = "Oe" | "Se" | "Ne" | "Oi" | "Si" | "Ni" | "Ox" | "Sx" | "Nx"
 export class OPT512 {
   edit() {
     for (const key in this) {
-      if (key.charAt(0) !== '_') continue
+      if (key.charAt(0) !== "_") continue
       delete this[key]
     }
   }
@@ -122,10 +117,11 @@ export class OPT512 {
     const { play, sleep, blast, consume } = this
     return [play, sleep, blast, consume].sort(sortByIndex)
   }
-  play = new Play(this)
-  sleep = new Sleep(this)
-  blast = new Blast(this)
-  consume = new Consume(this)
+
+  public readonly play = new Play(this)
+  public readonly sleep = new Sleep(this)
+  public readonly blast = new Blast(this)
+  public readonly consume = new Consume(this)
 
   constructor(public type: OPT512Maybe) {
     this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe
@@ -163,26 +159,29 @@ export class OPT512 {
   }
   private _position: number[]
   get position() {
-    return this._position || (this._position = [
-      this.tIndex,
-      this.sIndex,
-      this.fIndex,
-      this.nIndex,
-      this.PlayIndex,
-      this.BlastIndex,
-      this.ConsumeIndex,
-      this.SleepIndex,
-      ...[
-        this.sideOfEnergyInfo,
-        this.sideOfNFST,
-        this.sideOfSFNT,
-        this.sideOfFiTe,
-        this.sideOfNiSe,
-        this.sideOfSiNe,
-        this.sideOfTiFe,
-      ].map(sideToDistance),
-      ...this.type.map(sideToDistance),
-    ].map(Number))
+    return (
+      this._position ||
+      (this._position = [
+        this.tIndex,
+        this.sIndex,
+        this.fIndex,
+        this.nIndex,
+        this.PlayIndex,
+        this.BlastIndex,
+        this.ConsumeIndex,
+        this.SleepIndex,
+        ...[
+          this.sideOfEnergyInfo,
+          this.sideOfNFST,
+          this.sideOfSFNT,
+          this.sideOfFiTe,
+          this.sideOfNiSe,
+          this.sideOfSiNe,
+          this.sideOfTiFe,
+        ].map(sideToDistance),
+        ...this.type.map(sideToDistance),
+      ].map(Number))
+    )
   }
   static getCoinDistanceBetween(a: OPT512, b: OPT512) {
     return euclideanDistanceSquared(a.position, b.position)
@@ -437,13 +436,11 @@ export class OPT512 {
       s2.grantStackIndex = 2
     }
     const [fn1, fn2, fn3, fn4] = fns
-    return this._opFunctions = [fn1, fn2, fn3, fn4]
+    return (this._opFunctions = [fn1, fn2, fn3, fn4])
   }
 
   get letters() {
-    return this.opFunctions
-      .sort(({ index: a }, { index: b }) => sortBy(a, b))
-      .map((opFn) => opFn.letter[0])
+    return this.opFunctions.sort(sortByIndex).map((opFn) => opFn.letter[0])
   }
   get tIndex() {
     return this.letters.indexOf("T")
@@ -748,7 +745,7 @@ export class OPFn extends OPPart {
       // masculine functions are constantly being activated unconscously
       { m: 2, f: 1 }[sex],
 
-      // pair activated functions 
+      // pair activated functions
       [9, 5, 1][this.gapBetweenAnimals],
       // 9 - grantStackIndex,
 
@@ -796,7 +793,7 @@ export class OPFn extends OPPart {
       default:
         animals = []
     }
-    return animals.sort((a, b) => sortBy(a.index, b.index))
+    return animals.sort(sortByIndex)
   }
   get opFn() {
     return this.opType.opFunctions.filter(
