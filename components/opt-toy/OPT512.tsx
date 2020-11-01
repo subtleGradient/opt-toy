@@ -43,6 +43,13 @@ export interface OPFunctionType {
   odLetter: OPODLetterType
 }
 
+type OP4Fns = [
+  OPFunctionType,
+  OPFunctionType,
+  OPFunctionType,
+  OPFunctionType
+]
+
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
 type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
@@ -50,6 +57,13 @@ type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
 type OSNxei = "Oe" | "Se" | "Ne" | "Oi" | "Si" | "Ni" | "Ox" | "Sx" | "Nx"
 
 export class OPT512 {
+  edit() {
+    for (const key in this) {
+      if (key.charAt(0) !== '_') continue
+      delete this[key]
+    }
+  }
+
   static from(typeCode: string): OPT512 {
     return new OPT512(parseCoinText(cleanCoinText(typeCode)))
   }
@@ -147,7 +161,7 @@ export class OPT512 {
       sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
     )
   }
-  _position: number[]
+  private _position: number[]
   get position() {
     return this._position || (this._position = [
       this.tIndex,
@@ -215,6 +229,7 @@ export class OPT512 {
     ] as OPDLetterType
   }
   set dLetter(letter: OPDLetterType) {
+    this.edit()
     switch (letter) {
       case "F":
         this.type[NamedCOINS.coinFT.index] = false
@@ -235,6 +250,7 @@ export class OPT512 {
     ] as OPOLetterType
   }
   set oLetter(letter: OPOLetterType) {
+    this.edit()
     switch (letter) {
       case "N":
         this.type[NamedCOINS.coinNS.index] = false
@@ -256,6 +272,7 @@ export class OPT512 {
     ] as OPFocusType
   }
   set dFocus(letter: OPFocusType) {
+    this.edit()
     switch (letter) {
       case "i":
         this.type[NamedCOINS.coinDiDe.index] = false
@@ -277,6 +294,7 @@ export class OPT512 {
     ] as OPFocusType
   }
   set oFocus(letter: OPFocusType) {
+    this.edit()
     switch (letter) {
       case "i":
         this.type[NamedCOINS.coinOiOe.index] = false
@@ -304,9 +322,11 @@ export class OPT512 {
     return this.type[NamedCOINS.coinA3ie.index]
   }
   set a2FocusBool(side: BoolMaybe) {
+    this.edit()
     this.type[NamedCOINS.coinA2ie.index] = side
   }
   set a3FocusBool(side: BoolMaybe) {
+    this.edit()
     this.type[NamedCOINS.coinA3ie.index] = side
   }
   get a3Focus(): "i" | "e" | "x" {
@@ -351,12 +371,9 @@ export class OPT512 {
   get jumper() {
     return this.dFocus === "x" ? null : this.dFocus === this.oFocus
   }
-  get opFunctions(): [
-    OPFunctionType,
-    OPFunctionType,
-    OPFunctionType,
-    OPFunctionType,
-  ] {
+  private _opFunctions: OP4Fns
+  get opFunctions(): OP4Fns {
+    if (this._opFunctions) return this._opFunctions
     const sex = {
       Si: this.fmS,
       Se: this.fmS,
@@ -367,7 +384,7 @@ export class OPT512 {
     }
     const { odLetter } = this
 
-    const fns = [
+    const fns: OPFunctionType[] = [
       {
         index: 0,
         grantStackIndex: 0,
@@ -420,7 +437,7 @@ export class OPT512 {
       s2.grantStackIndex = 2
     }
     const [fn1, fn2, fn3, fn4] = fns
-    return [fn1, fn2, fn3, fn4]
+    return this._opFunctions = [fn1, fn2, fn3, fn4]
   }
 
   get letters() {
