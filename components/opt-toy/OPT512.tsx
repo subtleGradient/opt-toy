@@ -597,7 +597,6 @@ const Flipped = {
 
 abstract class OPPart {
   readonly code: string
-  abstract get flipSide(): OPFn
   constructor(public opType: OPT512) {}
 }
 
@@ -687,7 +686,7 @@ const activationReducer = (activation: number, { index }) =>
 const activationCodeReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
-abstract class OPFn extends OPPart {
+export abstract class OPFn extends OPPart {
   code = "X"
   get saviorCode() {
     const {
