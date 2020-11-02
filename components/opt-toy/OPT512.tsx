@@ -595,8 +595,9 @@ const Flipped = {
   De: "Di" as "Di",
 }
 
-class OPPart {
+abstract class OPPart {
   readonly code: string
+  abstract get flipSide(): OPFn
   constructor(public opType: OPT512) {}
 }
 
@@ -610,6 +611,9 @@ abstract class OPAnimal extends OPPart {
   }
   abstract get flipSide(): OPAnimal
   abstract get functions(): AnimalFunctionPair
+  get sex(): "MM" | "MF" | "FM" | "FF" {
+    return (this.observer.sex + this.decider.sex).toUpperCase() as any
+  }
   get observer() {
     return this.functions[0]
   }
@@ -683,7 +687,7 @@ const activationReducer = (activation: number, { index }) =>
 const activationCodeReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
-export class OPFn extends OPPart {
+abstract class OPFn extends OPPart {
   code = "X"
   get saviorCode() {
     const {
@@ -736,17 +740,62 @@ export class OPFn extends OPPart {
       },
     } = this
     return [
-      // first function is always super intense
-      [1, 0, 0, 0][index],
+      // savior,
+      this.isPairActive && fA1.index === 0 && sex === "m" && index === 0, // M double pair activated 1st
+      this.isPairActive && fA1.index === 0 && sex === "m" && index === 1, // M double pair activated 2nd
+      this.isPairActive && fA1.index === 0 && sex === "f" && index === 0, // F double pair activated 1st
+      this.isPairActive && fA1.index === 0 && sex === "f" && index === 1, // F double pair activated 2nd
 
-      // middle functions are balanced and constantly toggling
-      [0, 1, 1, 0][index],
+      
+      9 - fA1.index,
+      2 - this.gapBetweenAnimals,
+      sex === "m",
+      9 - index,
+      
+      // this.isPairActive && fA1.index === 1 && index === 2 && sex === "m",
+      // this.isPairActive && fA1.index === 1 && index === 2 && sex === "f",
+      // this.isPairActive && fA1.index === 1 && index === 3 && sex === "m",
+      // this.isPairActive && fA1.index === 1 && index === 3 && sex === "f",
+      // this.isPairActive && fA1.index === 2 && index === 2 && sex === "m",
+      // this.isPairActive && fA1.index === 2 && index === 2 && sex === "f",
+      // this.isPairActive && fA1.index === 2 && index === 3 && sex === "m",
+      // this.isPairActive && fA1.index === 2 && index === 3 && sex === "f",
+
+      // fA1.sex === "MM" && index === 0 && sex === "m",
+      // fA1.sex !== "FF" && index === 0 && sex === "m",
+      // fA1.sex !== "FF" && index === 0 && sex === "f",
+      // fA1.sex === "FF" && index === 0,
+      // fA1.sex === "MM" && index === 1 && sex === "m",
+      // fA1.sex !== "FF" && index === 1 && sex === "m",
+      // fA1.sex !== "FF" && index === 1 && sex === "f",
+      // fA1.sex === "FF" && index === 1,
+      // fA1.sex === "MM" && index === 2 && sex === "m",
+      // fA1.sex !== "FF" && index === 2 && sex === "m",
+      // fA1.sex !== "FF" && index === 2 && sex === "f",
+      // fA1.sex === "FF" && index === 2,
+      // fA1.sex === "MM" && index === 3 && sex === "m",
+      // fA1.sex !== "FF" && index === 3 && sex === "m",
+      // fA1.sex !== "FF" && index === 3 && sex === "f",
+      // fA1.sex === "FF" && index === 3,
+      // fA1.sex === "MM" && index === 2 && sex === "m",
+      // fA1.sex !== "FF" && index === 2 && sex === "m",
+      // fA1.sex !== "FF" && index === 2 && sex === "f",
+      // fA1.sex === "FF" && index === 2,
+
+      // this.isPolar && index === 0 && sex === "m",
+      // this.isPolar && index === 1 && sex === "m",
+
+      // first function is always super intense
+      // [9, 0, 0, 0][index],
 
       // masculine functions are constantly being activated unconscously
-      { m: 2, f: 1 }[sex],
+      // { m: 2, f: 1 }[sex],
 
       // pair activated functions
-      [9, 5, 1][this.gapBetweenAnimals],
+      // [9, 5, 1][this.gapBetweenAnimals],
+
+      // middle functions are balanced and constantly toggling
+      // [0, 2, 1, 0][index],
       // 9 - grantStackIndex,
 
       // fA1 === a1,
