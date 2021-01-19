@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState, createContext } from "react"
 import useUndo from "use-undo"
+import { AOPActivationSpectrums } from "./AOPActivationSpectrums"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
 import { BLANK_TYPE, cleanCoinText, OPT512Maybe, parseCoinText } from "./Coin"
@@ -206,6 +207,7 @@ export const TypeThing: FC<TypeThingProps> = ({
           </div>
         )}
         <AOPActivationTable op512={opTypeInstance} />
+        {opTypeInstance.isFull && <AOPActivationSpectrums op512={opTypeInstance} />}
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
       {isOpen && (
