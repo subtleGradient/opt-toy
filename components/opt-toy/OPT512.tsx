@@ -31,6 +31,26 @@ type OPLetterType = OPDLetterType | OPOLetterType | OPODLetterType
 type OPFocusType = "i" | "e" | "x" | "?"
 type OPSexType = "f" | "m" | "?"
 type OPAnimalType = "P" | "B" | "C" | "S" | "?"
+type OPCodeLetter = OPLetterType | OPFocusType | OPSexType
+
+const OPCodeLetterToSide: { [F in OPCodeLetter]: BoolMaybe } = {
+  "?": null,
+  x: null,
+  e: true,
+  i: false,
+
+  D: 1,
+  O: 0,
+
+  T: 1,
+  F: 0,
+
+  S: 1,
+  N: 0,
+
+  m: 1,
+  f: 0,
+}
 
 export interface OPFunctionType {
   index: number
@@ -200,34 +220,59 @@ export class OPT512 {
       sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
     )
   }
+
+  get positionSTNF() {
+    return (
+      (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
+    )
+  }
+
   private _position: number[]
   get position() {
     return (
       this._position ||
       (this._position = [
-        this.tIndex,
         this.sIndex,
-        this.fIndex,
+        this.tIndex,
         this.nIndex,
+        this.fIndex,
+
         this.PlayIndex,
         this.BlastIndex,
         this.ConsumeIndex,
         this.SleepIndex,
+
+        this.play.rawActivation,
+        this.blast.rawActivation,
+        this.consume.rawActivation,
+        this.sleep.rawActivation,
+
+        this.positionSTNF,
+        // this.NT.index,
+        // this.SF.index,
+
         ...[
-          this.sideOfEnergyInfo,
-          this.sideOfNFST,
-          this.sideOfSFNT,
-          this.sideOfFiTe,
-          this.sideOfNiSe,
-          this.sideOfSiNe,
-          this.sideOfTiFe,
+          OPCodeLetterToSide[this.S.focus],
+          OPCodeLetterToSide[this.T.focus],
+
+          OPCodeLetterToSide[this.S.sex],
+          OPCodeLetterToSide[this.De.sex],
+          OPCodeLetterToSide[this.T.sex],
+
+          // this.sideOfEnergyInfo,
+          // this.sideOfNFST,
+          // this.sideOfSFNT,
+          // this.sideOfFiTe,
+          // this.sideOfNiSe,
+          // this.sideOfSiNe,
+          // this.sideOfTiFe,
+          // ...this.type,
         ].map(sideToDistance),
-        ...this.type.map(sideToDistance),
       ].map(Number))
     )
   }
   static getCoinDistanceBetween(a: OPT512, b: OPT512) {
-    return euclideanDistanceSquared(a.position, b.position)
+    return euclideanDistance(a?.position, b?.position)
   }
 
   get rawActivation() {
@@ -710,9 +755,12 @@ abstract class OPAnimal extends OPPart {
     return this.flipSide.index === 3
   }
   get rawActivation() {
-    return 1 // TODO: implement
-    // const [{ activation: aO }, { activation: aD }] = this.functions
-    // return aO + aD
+    return (
+      2 -
+      this.index +
+      (this.flipSideIsLast ? 0.5 : 0) +
+      0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
+    )
   }
 }
 abstract class Info extends OPAnimal {
