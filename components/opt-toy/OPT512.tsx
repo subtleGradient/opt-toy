@@ -93,10 +93,28 @@ export class OPT512 {
     const { feeling, thinking, intuition, sensing } = this
     return [feeling, thinking, intuition, sensing].sort(sortByIndex)
   }
-  feeling = new Feeling(this)
-  thinking = new Thinking(this)
-  intuition = new iNtuition(this)
-  sensing = new Sensing(this)
+  readonly S = new Sensing(this)
+  readonly T = new Thinking(this)
+  readonly N = new iNtuition(this)
+  readonly F = new Feeling(this)
+
+  readonly sensing = this.S
+  readonly thinking = this.T
+  readonly intuition = this.N
+  readonly feeling = this.F
+
+  get Di(): Thinking | Feeling {
+    return this[this.codeDi[0]]
+  }
+  get De(): Thinking | Feeling {
+    return this[this.codeDe[0]]
+  }
+  get Oi(): Sensing | iNtuition {
+    return this[this.codeOi[0]]
+  }
+  get Oe(): Sensing | iNtuition {
+    return this[this.codeOe[0]]
+  }
 
   get animalStack() {
     const { play, blast, consume, sleep, A1 } = this
@@ -122,6 +140,25 @@ export class OPT512 {
   public readonly sleep = new Sleep(this)
   public readonly blast = new Blast(this)
   public readonly consume = new Consume(this)
+
+  private getAnimalByLetters(letters: AnimalLetters) {
+    const { play, sleep, blast, consume } = this
+    const animals = [play, sleep, blast, consume]
+    const index = animals.findIndex((animal) => animal.letters === letters)
+    return animals[index]
+  }
+  get ST() {
+    return this.getAnimalByLetters("ST")
+  }
+  get SF() {
+    return this.getAnimalByLetters("SF")
+  }
+  get NT() {
+    return this.getAnimalByLetters("NT")
+  }
+  get NF() {
+    return this.getAnimalByLetters("NF")
+  }
 
   constructor(public type: OPT512Maybe) {
     this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe
@@ -186,6 +223,11 @@ export class OPT512 {
   static getCoinDistanceBetween(a: OPT512, b: OPT512) {
     return euclideanDistanceSquared(a.position, b.position)
   }
+
+  get rawActivation() {
+    return this.functions.reduce((aaa, fn) => aaa + fn.activation, 0)
+  }
+
   static getAll(): OPT512[] {
     return Array(511)
       .fill(0)
@@ -355,19 +397,19 @@ export class OPT512 {
   get D2() {
     return Flipped[this.S1] || this.S1
   }
-  get De(): "De" | "Te" | "Fe" {
+  get codeDe(): "De" | "Te" | "Fe" {
     return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus]
   }
-  get Di(): "Di" | "Ti" | "Fi" {
-    return Flipped[this.De]
+  get codeDi(): "Di" | "Ti" | "Fi" {
+    return Flipped[this.codeDe]
   }
-  get Oe(): "Oe" | "Se" | "Ne" {
+  get codeOe(): "Oe" | "Se" | "Ne" {
     return { e: this.OSNxei, i: Flipped[this.OSNxei] }[this.oFocus]
   }
-  get Oi(): "Oi" | "Si" | "Ni" {
-    return Flipped[this.Oe]
+  get codeOi(): "Oi" | "Si" | "Ni" {
+    return Flipped[this.codeOe]
   }
-  get jumper() {
+  get isJumper() {
     return this.dFocus === "x" ? null : this.dFocus === this.oFocus
   }
   private _opFunctions: OP4Fns
@@ -378,8 +420,8 @@ export class OPT512 {
       Se: this.fmS,
       Ni: Flipped[this.fmS],
       Ne: Flipped[this.fmS],
-      [this.De]: this.fmDe,
-      [this.Di]: Flipped[this.fmDe],
+      [this.codeDe]: this.fmDe,
+      [this.codeDi]: Flipped[this.fmDe],
     }
     const { odLetter } = this
 
@@ -428,7 +470,7 @@ export class OPT512 {
       if (it.key === "O" || it.key === "D") it.key = it.grantStackIndex as any
       return it
     })
-    if (this.jumper === true) {
+    if (this.isJumper === true) {
       const [s1, s2, d1, d2] = fns
       fns[1] = d1
       d1.grantStackIndex = 1
@@ -595,14 +637,56 @@ const Flipped = {
   De: "Di" as "Di",
 }
 
-abstract class OPPart {
+const rawActivations = [
+  7206,
+  7207,
+  7216,
+  7217,
+  8106,
+  8107,
+  8116,
+  8117,
+  8206,
+  8207,
+  8216,
+  8217,
+  ,
+  9008,
+  9009,
+  9018,
+  9019,
+  9108,
+  9109,
+  9118,
+  9119,
+  19208,
+  109209,
+  1009218,
+  10009219,
+]
+
+export abstract class OPPart {
   readonly code: string
   constructor(public opType: OPT512) {}
+  abstract get flipSide(): OPPart
+  abstract get rawActivation(): number
+  get activation() {
+    return rawActivations.indexOf(this.rawActivation)
+  }
+  get activationDistance() {
+    return this.activation - 12
+  }
 }
 
 type AnimalFunctionPair = [Sensing | iNtuition, Thinking | Feeling]
 
+type AnimalLetters = "ST" | "SF" | "NT" | "NF"
+
 abstract class OPAnimal extends OPPart {
+  get letters(): AnimalLetters {
+    const [{ code: letterO }, { code: letterD }] = this.functions
+    return (letterO + letterD) as any // TODO(tom): remove any once we upgrade to the latest TS
+  }
   readonly code: OPAnimalType
   readonly focus: OPFocusType
   get index(): number {
@@ -619,9 +703,13 @@ abstract class OPAnimal extends OPPart {
   get decider() {
     return this.functions[1]
   }
-
   get flipSideIsLast() {
     return this.flipSide.index === 3
+  }
+  get rawActivation() {
+    return 1 // TODO: implement
+    // const [{ activation: aO }, { activation: aD }] = this.functions
+    // return aO + aD
   }
 }
 abstract class Info extends OPAnimal {
@@ -730,7 +818,8 @@ export abstract class OPFn extends OPPart {
   get isPairActive() {
     return this.gapBetweenAnimals === 0
   }
-  get activation() {
+
+  get rawActivation() {
     const {
       opFn: { sex, index, grantStackIndex, savior },
       animals: [fA1, fA2],
@@ -745,12 +834,11 @@ export abstract class OPFn extends OPPart {
       this.isPairActive && fA1.index === 0 && sex === "f" && index === 0, // F double pair activated 1st
       this.isPairActive && fA1.index === 0 && sex === "f" && index === 1, // F double pair activated 2nd
 
-      
       9 - fA1.index,
       2 - this.gapBetweenAnimals,
       sex === "m",
       9 - index,
-      
+
       // this.isPairActive && fA1.index === 1 && index === 2 && sex === "m",
       // this.isPairActive && fA1.index === 1 && index === 2 && sex === "f",
       // this.isPairActive && fA1.index === 1 && index === 3 && sex === "m",
@@ -862,7 +950,7 @@ export abstract class OPFn extends OPPart {
     return this.opFn?.index ?? -1
   }
 }
-class DeciderFn extends OPFn {
+abstract class DeciderFn extends OPFn {
   isObserver = false
   isDecider = true
   code = "D"
@@ -880,7 +968,7 @@ class Thinking extends DeciderFn {
   }
 }
 
-class ObserverFn extends OPFn {
+abstract class ObserverFn extends OPFn {
   isObserver = true
   isDecider = false
   code = "O"
