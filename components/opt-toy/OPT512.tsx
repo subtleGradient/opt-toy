@@ -51,6 +51,12 @@ type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
 
 type OSNxei = "Oe" | "Se" | "Ne" | "Oi" | "Si" | "Ni" | "Ox" | "Sx" | "Nx"
 
+const MissingAnimal = {
+  BCP: "S" as "S",
+  BPS: "C" as "C",
+  CPS: "B" as "B",
+  BCS: "P" as "P",
+}
 export class OPT512 {
   edit() {
     for (const key in this) {
@@ -351,10 +357,10 @@ export class OPT512 {
     }
   }
 
-  get a2Focus() {
+  get a2Focus(): OPFocusType {
     return ["i", "e", "x"][
       maybeBoolToIndex(this.type[NamedCOINS.coinA2ie.index])
-    ]
+    ] as any
   }
   get a2FocusBool() {
     return this.type[NamedCOINS.coinA2ie.index]
@@ -515,32 +521,28 @@ export class OPT512 {
   get A1Code() {
     return `O${this.oFocus}D${this.dFocus}`
   }
-  get A1() {
+  get A1(): OPAnimalType {
     return AnimalCodeToAnimalLetter[this.A1Code] || "?"
   }
-  get A2() {
+  get A2(): OPAnimalType {
     return (
       AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
     )
   }
-  get A3() {
+  get A3(): OPAnimalType {
     return (
       AnimalLetterFocusCodeToAnimalLetters[
         `${this.A1}${this.A2}${this.a3Focus}`
       ] || "?"
     )
   }
-  get A4() {
-    return (
-      {
-        BCP: "S",
-        BPS: "C",
-        CPS: "B",
-        BCS: "P",
-      }[[this.A1, this.A2, this.A3].sort().join("")] || "?"
-    )
+  get A4(): OPAnimalType {
+    return MissingAnimal[[this.A1, this.A2, this.A3].sort().join("")] || "?"
   }
   toString() {
+    return this.OP512
+  }
+  valueOf() {
     return this.OP512
   }
   get OP512(): string {
@@ -553,6 +555,7 @@ export class OPT512 {
     const A2 = opt.A2
     const A3 = opt.A3
     const A4 = opt.A4
+    // @ts-ignore
     return cleanCoinText(`${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`)
   }
   get sideOfEnergyInfo(): BoolMaybe {
