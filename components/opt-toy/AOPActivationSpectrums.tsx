@@ -1,6 +1,7 @@
 import { OPPart, OPT512 } from "./OPT512"
 
 export function AOPActivationSpectrums({ op512 }: { op512: OPT512 }) {
+  return null
   return (
     <table>
       <style jsx>{`
