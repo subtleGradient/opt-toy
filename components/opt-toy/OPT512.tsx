@@ -221,9 +221,33 @@ export class OPT512 {
     )
   }
 
+  get dPosition() {
+    return this.De.rawActivation - this.Di.rawActivation
+  }
+  get dRotation() {
+    return Math.round(Math.atan2(this.De.rawActivation, this.Di.rawActivation) * 180/Math.PI *100)/100
+  }
+  get oPosition() {
+    return this.Oe.rawActivation - this.Oi.rawActivation
+  }
+  get oRotation() {
+    return Math.round(Math.atan2(this.Oe.rawActivation, this.Oi.rawActivation) * 180/Math.PI *100)/100
+  }
+  get temperamentPosition(): [number, number] {
+    return [this.dPosition, this.oPosition]
+  }
+  get temperamentRotation() {
+    return Math.round(Math.atan2(...this.temperamentPosition) * 180/Math.PI *100)/100
+  }
+
   get positionSTNF() {
     return (
       (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
+    )
+  }
+  get positionSFNT() {
+    return (
+      (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
     )
   }
 
@@ -266,7 +290,7 @@ export class OPT512 {
           // this.sideOfNiSe,
           // this.sideOfSiNe,
           // this.sideOfTiFe,
-          // ...this.type,
+          ...this.type,
         ].map(sideToDistance),
       ].map(Number))
     )
@@ -276,11 +300,11 @@ export class OPT512 {
   }
 
   get rawActivation() {
-    return this.functions.reduce((aaa, fn) => aaa + fn.activation, 0)
+    return this.functions.reduce((aaa, fn) => aaa + fn?.activation, 0)
   }
 
   static getAll(): OPT512[] {
-    return Array(511)
+    return Array(512)
       .fill(0)
       .map((_, i) => OPT512.fromTypeNumber(i))
   }
@@ -736,6 +760,9 @@ abstract class OPAnimal extends OPPart {
     return (letterO + letterD) as any // TODO(tom): remove any once we upgrade to the latest TS
   }
   readonly code: OPAnimalType
+  get name() {
+    return this.constructor.name
+  }
   readonly focus: OPFocusType
   get index(): number {
     return this.opType.animalCodes.indexOf(this.code)
@@ -761,6 +788,12 @@ abstract class OPAnimal extends OPPart {
       (this.flipSideIsLast ? 0.5 : 0) +
       0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
     )
+  }
+  get temperament() {
+    return `${this.observer.code}${this.decider.code}`
+  }
+  get label() {
+    return `${this.sex} ${this.temperament} ${this.name}`
   }
 }
 abstract class Info extends OPAnimal {
@@ -826,6 +859,9 @@ const activationCodeReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
 export abstract class OPFn extends OPPart {
+  get label() {
+    return this.fullCode
+  }
   code = "X"
   get saviorCode() {
     const {
@@ -878,17 +914,24 @@ export abstract class OPFn extends OPPart {
         animals: [a1, a2, a3, a4],
       },
     } = this
+
+    index
+
     return [
       // savior,
-      this.isPairActive && fA1.index === 0 && sex === "m" && index === 0, // M double pair activated 1st
-      this.isPairActive && fA1.index === 0 && sex === "m" && index === 1, // M double pair activated 2nd
-      this.isPairActive && fA1.index === 0 && sex === "f" && index === 0, // F double pair activated 1st
-      this.isPairActive && fA1.index === 0 && sex === "f" && index === 1, // F double pair activated 2nd
+      // this.isPairActive && fA1.index === 0 && sex === "m" && index === 0, // M double pair activated 1st
+      // this.isPairActive && fA1.index === 0 && sex === "m" && index === 1, // M double pair activated 2nd
+      // this.isPairActive && fA1.index === 0 && sex === "f" && index === 0, // F double pair activated 1st
+      // this.isPairActive && fA1.index === 0 && sex === "f" && index === 1, // F double pair activated 2nd
 
-      9 - fA1.index,
-      2 - this.gapBetweenAnimals,
-      sex === "m",
-      9 - index,
+      
+      1+index,
+      1+fA1.index,
+      1+fA2.index,
+      // 2 - this.gapBetweenAnimals,
+      // sex === "m",
+
+      // { info: -1, energy: 1 }[fA1.kind] ?? 0,
 
       // this.isPairActive && fA1.index === 1 && index === 2 && sex === "m",
       // this.isPairActive && fA1.index === 1 && index === 2 && sex === "f",
@@ -1094,30 +1137,34 @@ export const sideToDistance = (side: number | boolean): number =>
     ? [0, -1, 1][side + 1] || 0
     : 0
 
-if (process.env.NODE_ENV !== "production") {
-  const assert = (test: () => boolean, message?: string) => {
-    console.log(
-      test.toString().replace(/^function \(\) {\s+|[;]|return\s+|\s*\}$/g, ""),
-    )
-    console.assert(test(), message)
-  }
-  const Tom = OPT512.from("fffesepbcs")
-  const Britt = OPT512.from("mmfisisbpc")
+// if (process.env.NODE_ENV !== "production") {
+//   const assert = (test: () => boolean, message?: string) => {
+//     console.log(
+//       test.toString().replace(/^function \(\) {\s+|[;]|return\s+|\s*\}$/g, ""),
+//     )
+//     console.assert(test(), message)
+//   }
+//   const Tom = OPT512.from("fffesepbcs")
+//   const Britt = OPT512.from("mmfisisbpc")
 
-  assert(() => Tom.functions[0].activation > 0)
-  assert(() => Britt.functions[0].activation > 0)
+//   assert(() => Tom.functions[0].activation > 0)
+//   assert(() => Britt.functions[0].activation > 0)
 
-  assert(() => Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
-  assert(() => Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
+//   assert(() => Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
+//   assert(() => Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
 
-  assert(() => Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
+//   assert(() => Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
 
-  console.log({
-    "B.f": Britt.feeling.activation,
-    "B.f+": JSON.stringify(Britt.feeling.activationDetails),
+//   console.log({
+//     "B.f": Britt.feeling.activation,
+//     "B.f+": JSON.stringify(Britt.feeling.activationDetails),
 
-    "T.f": Tom.feeling.activation,
-    "T.f+": JSON.stringify(Tom.feeling.activationDetails),
-  })
-  console.log("yay")
-}
+//     "T.f": Tom.feeling.activation,
+//     "T.f+": JSON.stringify(Tom.feeling.activationDetails),
+//   })
+//   console.log("yay")
+
+//   Britt.feeling.activation
+
+// }
+
