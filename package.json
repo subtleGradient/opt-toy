@@ -4,7 +4,8 @@
   "private": true,
   "prettier": {
     "trailingComma": "all",
-    "semi": false
+    "semi": false,
+    "printWidth": 120
   },
   "main": "./components/opt-toy/index.tsx",
   "scripts": {

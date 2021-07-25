@@ -1,18 +1,7 @@
-import {
-  OPT512Maybe,
-  NamedCOINS,
-  BoolMaybe,
-  isBool,
-  cleanCoinText,
-  BLANK_TYPE,
-  parseCoinText,
-} from "./Coin"
+import { OPT512Maybe, NamedCOINS, BoolMaybe, isBool, cleanCoinText, BLANK_TYPE, parseCoinText } from "./Coin"
 import { sortBy } from "./sortBy"
 import getRandomInt from "./getRandomInt"
-import {
-  euclideanDistance,
-  euclideanDistanceSquared,
-} from "./euclideanDistance"
+import { euclideanDistance, euclideanDistanceSquared } from "./euclideanDistance"
 
 export {
   // OPT512Maybe,
@@ -213,10 +202,8 @@ export class OPT512 {
   }
   get sortValue() {
     return (
-      sideToDistance(this.type[NamedCOINS.coinNS.index]) *
-        (this.type[NamedCOINS.coinOD.index] ? 10 : 100) +
-      sideToDistance(this.type[NamedCOINS.coinFT.index]) *
-        (this.type[NamedCOINS.coinOD.index] ? 100 : 10) +
+      sideToDistance(this.type[NamedCOINS.coinNS.index]) * (this.type[NamedCOINS.coinOD.index] ? 10 : 100) +
+      sideToDistance(this.type[NamedCOINS.coinFT.index]) * (this.type[NamedCOINS.coinOD.index] ? 100 : 10) +
       sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
     )
   }
@@ -225,30 +212,26 @@ export class OPT512 {
     return this.De.rawActivation - this.Di.rawActivation
   }
   get dRotation() {
-    return Math.round(Math.atan2(this.De.rawActivation, this.Di.rawActivation) * 180/Math.PI *100)/100
+    return Math.round(((Math.atan2(this.De.rawActivation, this.Di.rawActivation) * 180) / Math.PI) * 100) / 100
   }
   get oPosition() {
     return this.Oe.rawActivation - this.Oi.rawActivation
   }
   get oRotation() {
-    return Math.round(Math.atan2(this.Oe.rawActivation, this.Oi.rawActivation) * 180/Math.PI *100)/100
+    return Math.round(((Math.atan2(this.Oe.rawActivation, this.Oi.rawActivation) * 180) / Math.PI) * 100) / 100
   }
   get temperamentPosition(): [number, number] {
     return [this.dPosition, this.oPosition]
   }
   get temperamentRotation() {
-    return Math.round(Math.atan2(...this.temperamentPosition) * 180/Math.PI *100)/100
+    return Math.round(((Math.atan2(...this.temperamentPosition) * 180) / Math.PI) * 100) / 100
   }
 
   get positionSTNF() {
-    return (
-      (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
-    )
+    return (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
   }
   get positionSFNT() {
-    return (
-      (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
-    )
+    return (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
   }
 
   private _position: number[]
@@ -325,24 +308,16 @@ export class OPT512 {
     return this.nullCount === 0
   }
   get fmS(): OPSexType {
-    return ["f", "m", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])
-    ] as OPSexType
+    return ["f", "m", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])] as OPSexType
   }
   get fmDe(): OPSexType {
-    return ["f", "m", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
-    ] as OPSexType
+    return ["f", "m", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])] as OPSexType
   }
   get odLetter(): OPODLetterType {
-    return ["O", "D", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ] as OPODLetterType
+    return ["O", "D", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])] as OPODLetterType
   }
   get dLetter(): OPDLetterType {
-    return ["F", "T", "D"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
-    ] as OPDLetterType
+    return ["F", "T", "D"][maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])] as OPDLetterType
   }
   set dLetter(letter: OPDLetterType) {
     this.edit()
@@ -361,9 +336,7 @@ export class OPT512 {
     }
   }
   get oLetter(): OPOLetterType {
-    return ["N", "S", "O"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])
-    ] as OPOLetterType
+    return ["N", "S", "O"][maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])] as OPOLetterType
   }
   set oLetter(letter: OPOLetterType) {
     this.edit()
@@ -383,9 +356,7 @@ export class OPT512 {
   }
 
   get dFocus(): OPFocusType {
-    return ["i", "e", "x"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])
-    ] as OPFocusType
+    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])] as OPFocusType
   }
   set dFocus(letter: OPFocusType) {
     this.edit()
@@ -405,9 +376,7 @@ export class OPT512 {
   }
 
   get oFocus(): OPFocusType {
-    return ["i", "e", "x"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])
-    ] as OPFocusType
+    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])] as OPFocusType
   }
   set oFocus(letter: OPFocusType) {
     this.edit()
@@ -426,29 +395,52 @@ export class OPT512 {
     }
   }
 
+  /** @deprecated use energyActivation or infoActivation instead */
   get a2Focus(): OPFocusType {
-    return ["i", "e", "x"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinA2ie.index])
-    ] as any
+    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinEnAct.index])] as any
   }
+  /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a2FocusBool() {
-    return this.type[NamedCOINS.coinA2ie.index]
+    return this.type[NamedCOINS.coinEnAct.index]
   }
+  /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a3FocusBool() {
-    return this.type[NamedCOINS.coinA3ie.index]
+    return this.type[NamedCOINS.coinInAct.index]
   }
+  /** @deprecated use energyActivationBool or infoActivationBool instead */
   set a2FocusBool(side: BoolMaybe) {
     this.edit()
-    this.type[NamedCOINS.coinA2ie.index] = side
+    this.type[NamedCOINS.coinEnAct.index] = side
   }
+  /** @deprecated use energyActivationBool or infoActivationBool instead */
   set a3FocusBool(side: BoolMaybe) {
     this.edit()
-    this.type[NamedCOINS.coinA3ie.index] = side
+    this.type[NamedCOINS.coinInAct.index] = side
   }
+  /** @deprecated use energyActivation or infoActivation instead */
   get a3Focus(): "i" | "e" | "x" {
-    return ["i", "e", "x"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinA3ie.index])
-    ] as any
+    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinInAct.index])] as any
+  }
+
+  get energyActivation(): OPFocusType {
+    return ["i", "e", "x"][maybeBoolToIndex(this.energyActivationBool)] as any
+  }
+  get infoActivation(): OPFocusType {
+    return ["i", "e", "x"][maybeBoolToIndex(this.infoActivationBool)] as any
+  }
+  get energyActivationBool() {
+    return this.type[NamedCOINS.coinEnAct.index]
+  }
+  get infoActivationBool() {
+    return this.type[NamedCOINS.coinInAct.index]
+  }
+  set energyActivationBool(side: BoolMaybe) {
+    this.edit()
+    this.type[NamedCOINS.coinEnAct.index] = side
+  }
+  set infoActivationBool(side: BoolMaybe) {
+    this.edit()
+    this.type[NamedCOINS.coinInAct.index] = side
   }
   get DTFxei(): DTFxei {
     return `${this.dLetter}${this.dFocus}` as any
@@ -457,14 +449,10 @@ export class OPT512 {
     return `${this.oLetter}${this.oFocus}` as any
   }
   get S1() {
-    return [this.OSNxei, this.DTFxei, this.DTFxei][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ]
+    return [this.OSNxei, this.DTFxei, this.DTFxei][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])]
   }
   get S2() {
-    return [this.DTFxei, this.OSNxei, this.OSNxei][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ]
+    return [this.DTFxei, this.OSNxei, this.OSNxei][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])]
   }
   get D1() {
     return Flipped[this.S2] || this.S2
@@ -594,16 +582,12 @@ export class OPT512 {
     return AnimalCodeToAnimalLetter[this.A1Code] || "?"
   }
   get A2(): OPAnimalType {
-    return (
-      AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
-    )
+    // FIXME: uses deprecated coins
+    return AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
   }
   get A3(): OPAnimalType {
-    return (
-      AnimalLetterFocusCodeToAnimalLetters[
-        `${this.A1}${this.A2}${this.a3Focus}`
-      ] || "?"
-    )
+    // FIXME: uses deprecated coins
+    return AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.A2}${this.a3Focus}`] || "?"
   }
   get A4(): OPAnimalType {
     return MissingAnimal[[this.A1, this.A2, this.A3].sort().join("")] || "?"
@@ -615,17 +599,8 @@ export class OPT512 {
     return this.OP512
   }
   get OP512(): string {
-    const opt = this
-    const fmS = opt.fmS
-    const fmDe = opt.fmDe
-    const S1 = opt.S1
-    const S2 = opt.S2
-    const A1 = opt.A1
-    const A2 = opt.A2
-    const A3 = opt.A3
-    const A4 = opt.A4
-    // @ts-ignore
-    return cleanCoinText(`${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`)
+    const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = this
+    return `${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`
   }
   get sideOfEnergyInfo(): BoolMaybe {
     return {
@@ -782,12 +757,7 @@ abstract class OPAnimal extends OPPart {
     return this.flipSide.index === 3
   }
   get rawActivation() {
-    return (
-      2 -
-      this.index +
-      (this.flipSideIsLast ? 0.5 : 0) +
-      0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
-    )
+    return 2 - this.index + (this.flipSideIsLast ? 0.5 : 0) + 0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
   }
   get temperament() {
     return `${this.observer.code}${this.decider.code}`
@@ -852,11 +822,9 @@ const IndexActivationMap = {
   3: 1,
 }
 
-const activationReducer = (activation: number, { index }) =>
-  activation + IndexActivationMap[index]
+const activationReducer = (activation: number, { index }) => activation + IndexActivationMap[index]
 
-const activationCodeReducer = (activation: number, { index }) =>
-  activation + IndexActivationMap[index]
+const activationCodeReducer = (activation: number, { index }) => activation + IndexActivationMap[index]
 
 export abstract class OPFn extends OPPart {
   get label() {
@@ -881,11 +849,11 @@ export abstract class OPFn extends OPPart {
     return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation]
   }
   get gapBetweenAnimals(): 0 | 1 | 2 {
-    return (this.animals[1].index - this.animals[0].index - 1) as any
+    return (this.animals[1]?.index - this.animals[0]?.index - 1) as any
   }
   get activationDetails() {
     const {
-      opFn: { sex, index, grantStackIndex, savior },
+      opFn: { sex, index, grantStackIndex, savior } = {},
       animals: [fA1, fA2],
       opType: {
         animals: [a1, a2, a3, a4],
@@ -908,14 +876,12 @@ export abstract class OPFn extends OPPart {
 
   get rawActivation() {
     const {
-      opFn: { sex, index, grantStackIndex, savior },
+      opFn: { sex, index, grantStackIndex, savior } = {},
       animals: [fA1, fA2],
       opType: {
         animals: [a1, a2, a3, a4],
       },
     } = this
-
-    index
 
     return [
       // savior,
@@ -924,10 +890,9 @@ export abstract class OPFn extends OPPart {
       // this.isPairActive && fA1.index === 0 && sex === "f" && index === 0, // F double pair activated 1st
       // this.isPairActive && fA1.index === 0 && sex === "f" && index === 1, // F double pair activated 2nd
 
-      
-      1+index,
-      1+fA1.index,
-      1+fA2.index,
+      1 + index,
+      1 + fA1?.index,
+      1 + fA2?.index,
       // 2 - this.gapBetweenAnimals,
       // sex === "m",
 
@@ -1026,9 +991,7 @@ export abstract class OPFn extends OPPart {
     return animals.sort(sortByIndex)
   }
   get opFn() {
-    return this.opType.opFunctions.filter(
-      ({ letter }) => letter === this.code,
-    )[0]
+    return this.opType.opFunctions.filter(({ letter }) => letter === this.code)[0]
   }
   get fullCode() {
     const { sex, code, focus } = this
@@ -1080,8 +1043,7 @@ class Sensing extends ObserverFn {
   }
 }
 
-const maybeBoolToIndex = (value: BoolMaybe) =>
-  !isBool(value) ? 2 : value ? 1 : 0
+const maybeBoolToIndex = (value: BoolMaybe) => (!isBool(value) ? 2 : value ? 1 : 0)
 
 const AnimalCodeToAnimalLetter = {
   OiDi: "S",
@@ -1090,6 +1052,9 @@ const AnimalCodeToAnimalLetter = {
   OeDe: "P",
 }
 
+/**
+ * @deprecated
+ */
 const AnimalLetterFocusCodeToAnimalLetters = {
   Si: "C",
   Ci: "S",
@@ -1118,53 +1083,38 @@ const AnimalLetterFocusCodeToAnimalLetters = {
 }
 
 function typeNumberToCoins(typeNumber: number | string): OPT512Maybe {
-  return typeNumber
-    .toString(2)
-    .padStart(9, "0")
-    .split("")
-    .map(Number)
-    .map(Boolean) as OPT512Maybe
+  return typeNumber.toString(2).padStart(9, "0").split("").map(Number).map(Boolean) as OPT512Maybe
 }
 
 export const sideToDistance = (side: number | boolean): number =>
-  side === true
-    ? 1
-    : side === false
-    ? -1
-    : side == null
-    ? 0
-    : typeof side === "number"
-    ? [0, -1, 1][side + 1] || 0
-    : 0
+  side === true ? 1 : side === false ? -1 : side == null ? 0 : typeof side === "number" ? [0, -1, 1][side + 1] || 0 : 0
 
-// if (process.env.NODE_ENV !== "production") {
-//   const assert = (test: () => boolean, message?: string) => {
-//     console.log(
-//       test.toString().replace(/^function \(\) {\s+|[;]|return\s+|\s*\}$/g, ""),
-//     )
-//     console.assert(test(), message)
-//   }
-//   const Tom = OPT512.from("fffesepbcs")
-//   const Britt = OPT512.from("mmfisisbpc")
+if (process.env.NODE_ENV !== "production") {
+  for (const type of OPT512.getAll()) {
+    const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = type
+    console.log(type.OP512)
+    type.type, parseCoinText(type.OP512) //?
+  }
 
-//   assert(() => Tom.functions[0].activation > 0)
-//   assert(() => Britt.functions[0].activation > 0)
+  const Tom = OPT512.from("fffesepbcs")
+  const Britt = OPT512.from("mmfisisbpc")
 
-//   assert(() => Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
-//   assert(() => Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
+  console.assert(Tom.functions[0].activation > 0)
+  console.assert(Britt.functions[0].activation > 0)
 
-//   assert(() => Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
+  console.assert(Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
+  console.assert(Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
 
-//   console.log({
-//     "B.f": Britt.feeling.activation,
-//     "B.f+": JSON.stringify(Britt.feeling.activationDetails),
+  console.assert(Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
 
-//     "T.f": Tom.feeling.activation,
-//     "T.f+": JSON.stringify(Tom.feeling.activationDetails),
-//   })
-//   console.log("yay")
+  // console.log({
+  //   "B.f": Britt.feeling.activation,
+  //   "B.f+": JSON.stringify(Britt.feeling.activationDetails),
 
-//   Britt.feeling.activation
+  //   "T.f": Tom.feeling.activation,
+  //   "T.f+": JSON.stringify(Tom.feeling.activationDetails),
+  // })
+  // console.log("yay")
 
-// }
-
+  Britt.feeling.activation
+}
