@@ -66,6 +66,8 @@ const MissingAnimal = {
   CPS: "B" as "B",
   BCS: "P" as "P",
 }
+const FocusCodes = ["i", "e", "x"] as OPFocusType[]
+
 export class OPT512 {
   edit() {
     for (const key in this) {
@@ -396,8 +398,8 @@ export class OPT512 {
   }
 
   /** @deprecated use energyActivation or infoActivation instead */
-  get a2Focus(): OPFocusType {
-    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinEnAct.index])] as any
+  get a2Focus() {
+    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinEnAct.index])]
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a2FocusBool() {
@@ -418,15 +420,15 @@ export class OPT512 {
     this.type[NamedCOINS.coinInAct.index] = side
   }
   /** @deprecated use energyActivation or infoActivation instead */
-  get a3Focus(): "i" | "e" | "x" {
-    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinInAct.index])] as any
+  get a3Focus() {
+    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinInAct.index])]
   }
 
-  get energyActivation(): OPFocusType {
-    return ["i", "e", "x"][maybeBoolToIndex(this.energyActivationBool)] as any
+  get energyActivation() {
+    return FocusCodes[maybeBoolToIndex(this.energyActivationBool)]
   }
-  get infoActivation(): OPFocusType {
-    return ["i", "e", "x"][maybeBoolToIndex(this.infoActivationBool)] as any
+  get infoActivation() {
+    return FocusCodes[maybeBoolToIndex(this.infoActivationBool)]
   }
   get energyActivationBool() {
     return this.type[NamedCOINS.coinEnAct.index]
