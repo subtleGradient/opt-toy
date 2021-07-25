@@ -357,8 +357,8 @@ export class OPT512 {
     }
   }
 
-  get dFocus(): OPFocusType {
-    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])] as OPFocusType
+  get dFocus() {
+    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])]
   }
   set dFocus(letter: OPFocusType) {
     this.edit()
@@ -377,12 +377,12 @@ export class OPT512 {
     }
   }
 
-  get oFocus(): OPFocusType {
-    return ["i", "e", "x"][maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])] as OPFocusType
+  get oFocus() {
+    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])]
   }
   set oFocus(letter: OPFocusType) {
     this.edit()
-    switch (letter) {
+    switch (letter.toLowerCase()) {
       case "i":
         this.type[NamedCOINS.coinOiOe.index] = false
         break
