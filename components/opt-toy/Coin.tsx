@@ -180,16 +180,6 @@ export const NamedCOINS = {
         )
       },
     } as RegExpish,
-    clean: (type) =>
-      type
-        .replace(/[/()]/g, "")
-        .replace(
-          /^.*?-?([PBCS]?)([PBCS]?)([PBCS]?)([PBCS]?)$/i,
-          (_, A1 = "?", A2 = "?", A3 = "?", A4 = "?") =>
-            `${A1.toUpperCase()}${A2.toUpperCase()}${!A3 ? "" : `/${A3.toUpperCase()}`}${
-              !A4 ? "" : `(${A4.toUpperCase()})`
-            }`,
-        ),
   },
   coinInAct: {
     index: -1,
@@ -198,8 +188,30 @@ export const NamedCOINS = {
     heads: "Extroverted Info",
     tails: "Info Introverted",
     ...ParsableCoinDefault,
-    testHeads: /-(B(P.S|S.P)|C[PS].B|[PS]C)/i,
-    testTails: /-(C(P.S|S.P)|B[PS].C|[PS]B)/i,
+    testHeads: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(BPS|BSP|B[SP?][SP?]C)/.test(animals) || // Blay first & Cleep last
+          /^(CPB|CSB)/.test(animals) || // Cleep with activated Blay
+          /^(PB)/.test(animals) || // Plast Blay
+          /^(SB)/.test(animals) || // Sonsume Blay
+          false
+        )
+      },
+    } as RegExpish,
+    testTails: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(CPS|CSP|C[SP?][SP?]B)/.test(animals) || // Cleep first & Blay last
+          /^(B[SP?]C|BS[C?]P|BP[C?]S)/.test(animals) || // Blay with activated Cleep
+          /^(PC)/.test(animals) || // Plast Cleep
+          /^(SC)/.test(animals) || // Sonsume Cleep
+          false
+        )
+      },
+    } as RegExpish,
   },
   coinFT: {
     index: -1,
@@ -277,46 +289,3 @@ export const parseCoinText = (type: string): OPT512Maybe =>
     opTypeArray[COIN.index] = COIN.parse(type)
     return opTypeArray
   }, BLANK_TYPE.slice(0) as OPT512Maybe)
-
-if (process.env.NODE_ENV !== "production") {
-  console.assert(parseCoinText("fffesepbcs")[NamedCOINS.coinEnAct.index] /*? */ === true)
-  console.assert(parseCoinText("fffesepbc")[NamedCOINS.coinEnAct.index] /*? */ === true)
-  console.assert(parseCoinText("fffesepbs")[NamedCOINS.coinEnAct.index] /*? */ === false)
-
-  parseCoinText("fffesepbcs") //?
-  parseCoinText("FF-Fe/Se-PB/C(S)") //?
-
-  console.assert(NamedCOINS.coinDefm.clean("fse/mfe") === "M")
-  console.assert(NamedCOINS.coinDefm.clean("ffi/msi") === "M")
-  console.assert(NamedCOINS.coinDefm.clean("mfe/fse") === "M")
-  console.assert(NamedCOINS.coinDefm.clean("msi/ffi") === "M")
-  console.assert(NamedCOINS.coinDefm.clean("fse/ffe") === "F")
-  console.assert(NamedCOINS.coinDefm.clean("mfi/msi") === "F")
-  console.assert(NamedCOINS.coinDefm.clean("ffe/fse") === "F")
-  console.assert(NamedCOINS.coinDefm.clean("msi/mfi") === "F")
-  console.assert(NamedCOINS.coinDefm.clean("mmfisisbpc") === "M")
-
-  console.assert(NamedCOINS.coinSfm.clean("mfe/fse") === "F")
-  console.assert(NamedCOINS.coinSfm.clean("mfe/mse") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffe/mse") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffi/msi") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffi/fsi") === "F")
-  console.assert(NamedCOINS.coinSfm.clean("mfi/fsi") === "F")
-
-  console.assert(NamedCOINS.coinSfm.clean("mfe/mne") === "F")
-  console.assert(NamedCOINS.coinSfm.clean("mfe/fne") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffe/fne") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffi/fni") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("ffi/mni") === "F")
-  console.assert(NamedCOINS.coinSfm.clean("mfi/mni") === "F")
-  console.assert(NamedCOINS.coinSfm.clean("mmfisisbpc") === "M")
-  console.assert(NamedCOINS.coinSfm.clean("fmsifisbpc") === "F")
-
-  console.assert(NamedCOINS.coinEnAct.clean("fffesepbcs") === "PB/C(S)")
-  console.assert(NamedCOINS.coinOD.clean("fffesepbcs") === "Fe/Se")
-
-  console.assert(cleanCoinText("fffesepbcs") === "FF-Fe/Se-PB/C(S)")
-  console.assert(cleanCoinText("mmfisisbpc") === "MM-Fi/Si-SB/P(C)")
-  console.assert(cleanCoinText(cleanCoinText("fffesepbcs")) /*? */ === "FF-Fe/Se-PB/C(S)")
-  console.assert(cleanCoinText(cleanCoinText("mmfisisbpc")) /*? */ === "MM-Fi/Si-SB/P(C)")
-}

@@ -115,6 +115,88 @@ describe("NamedCOINS", () => {
     })
   })
 
+
+  describe("coinInAct", () => {
+    it("exists", () => {
+      expect(NamedCOINS.coinInAct).toBeDefined()
+    })
+    describe("parse function", () => {
+      it("parses heads", () => {
+        expect(NamedCOINS.coinInAct.parse("BPS")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("BSP")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("BPSC")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("BSPC")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("fffesepbcs")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("FF-Fe/Se-BP/S(C)")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("FF-Fi/Si-BP/S(C)")).toBe(true)
+        expect(NamedCOINS.coinInAct.parse("sdkfjhsdkfjhdskjh-BP/S(C)")).toBe(true)
+      })
+      describe("Blast first & Consume last", () => {
+        it("parses as heads", () => {
+          expect(NamedCOINS.coinInAct.parse("BPS")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("BSP")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("B??C")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("B(C)")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("B(C")).toBe(true)
+        })
+      })
+      describe("Blast with activated Consume", () => {
+        it("parses as tails", () => {
+          expect(NamedCOINS.coinInAct.parse("BPC")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("BSC")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("B?C")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("B?C?")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("BS?P")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("BP?S")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("B/C")).toBe(false)
+        })
+      })
+
+      describe("Consume first & Blast last", () => {
+        it("parses as tails", () => {
+          expect(NamedCOINS.coinInAct.parse("CPS")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("CSP")).toBe(false)
+        })
+      })
+      describe("Consume with activated Blast", () => {
+        it("parses as heads", () => {
+          expect(NamedCOINS.coinInAct.parse("CPB")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("CSB")).toBe(true)
+        })
+      })
+
+      describe("Plast Blast", () => {
+        it("parses as heads", () => {
+          expect(NamedCOINS.coinInAct.parse("PB")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("PBC")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("PBS")).toBe(true)
+        })
+      })
+      describe("Plast Consume", () => {
+        it("parses as tails", () => {
+          expect(NamedCOINS.coinInAct.parse("PC")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("PCS")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("PCB")).toBe(false)
+        })
+      })
+
+      describe("Sonsume Blast", () => {
+        it("parses as heads", () => {
+          expect(NamedCOINS.coinInAct.parse("SB")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("SBP")).toBe(true)
+          expect(NamedCOINS.coinInAct.parse("SBC")).toBe(true)
+        })
+      })
+      describe("Sonsume Consume", () => {
+        it("parses as tails", () => {
+          expect(NamedCOINS.coinInAct.parse("SC")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("SCP")).toBe(false)
+          expect(NamedCOINS.coinInAct.parse("SCB")).toBe(false)
+        })
+      })
+    })
+  })
+
   describe("coinDefm", () => {
     it("exists", () => {
       expect(NamedCOINS.coinDefm).toBeDefined()
