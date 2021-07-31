@@ -14,6 +14,7 @@ export function OPTypeBinaryForm({
   if (!type) type = BLANK_TYPE
   const opType = new OPT512(type)
   return (
+    // <SVG_OP_Bubble color="red" width={128} children="Fe" />
     <div
       className="OPTypeBinaryForm"
       style={{
@@ -34,18 +35,36 @@ export function OPTypeBinaryForm({
           </tr>
         </tbody>
         <tbody>
-          {type.map((coinSide, coinIndex) => (
-            <CoinSideVirtual
-              key={coinIndex}
-              side={coinSide}
-              coin={COINS[coinIndex]}
-              onFlip={(side) => {
-                const newType = type.slice(0) as OPT512Maybe
-                newType[coinIndex] = side
-                onChange(newType)
-              }}
-            />
-          ))}
+          {type.map((coinSide, coinIndex) => {
+            const lastCoin = COINS[coinIndex - 1]
+            return (
+              <React.Fragment key={coinIndex}>
+                {lastCoin?.title !== COINS[coinIndex].title && (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        borderTop: "1px solid black",
+                      }}
+                    >
+                      {COINS[coinIndex].title}
+                    </td>
+                  </tr>
+                )}
+                <CoinSideVirtual
+                  side={coinSide}
+                  coin={COINS[coinIndex]}
+                  onFlip={(side) => {
+                    const newType = type.slice(0) as OPT512Maybe
+                    newType[coinIndex] = side
+                    onChange(newType)
+                  }}
+                />
+              </React.Fragment>
+            )
+          })}
         </tbody>
 
         <tbody style={{ background: "#ddd" }}>
@@ -72,6 +91,7 @@ export function OPTypeBinaryForm({
           <CoinSideVirtual
             side={opType.sideOfEnergyInfo}
             coin={{
+              description: "Dominant",
               heads: "Info",
               tails: "Energy",
             }}
@@ -92,8 +112,8 @@ export function OPTypeBinaryForm({
           />
           <CoinSideVirtual2
             side={opType.sideOfSFNT}
-            tails="SF"
-            heads="NT"
+            tails="NT"
+            heads="SF"
             edge={"OD"}
             onFlipWithXx={(OOO, DDD) => {
               opType.oLetter = OOO
@@ -149,15 +169,22 @@ export function OPTypeBinaryForm({
         </tbody>
       </table>
     </div>
-    // <SVG_OP_Bubble color="red" width={128} children="Fe" />
   )
 }
 
-function CoinSideVirtual2({ side, heads, tails, edge, onFlipWithXx }) {
+function CoinSideVirtual2({
+  description = "",
+  side,
+  heads,
+  tails,
+  edge,
+  onFlipWithXx,
+}) {
   return (
     <CoinSideVirtual
       side={side}
       coin={{
+        description,
         heads,
         tails,
       }}

@@ -56,9 +56,12 @@ type ParsableCoinType = typeof ParsableCoinDefault
 export interface Coin extends ParsableCoinType {
   index: number
   short: string
+  title: string
   description: string
   heads: string
   tails: string
+  headsDetail: string
+  tailsDetail: string
   clean?: (type: string) => string
 }
 
@@ -77,9 +80,12 @@ export const NamedCOINS = {
   coinSfm: {
     index: -1,
     short: "coinSfm",
-    description: "Info Modality",
-    heads: "masculine S",
-    tails: "N masculine",
+    title: "Masculine",
+    description: "Info",
+    heads: "mS",
+    tails: "mN",
+    headsDetail: "masculine Sensory and feminine iNtuition",
+    tailsDetail: "masculine iNtuition and feminine Sensory",
     ...ParsableCoinDefault,
     // prettier-ignore
     testHeads: { test: (type: string) => 
@@ -99,9 +105,14 @@ export const NamedCOINS = {
   coinDefm: {
     index: -1,
     short: "coinDefm",
-    description: "Masculine Energy Modality",
-    heads: "masculine De",
-    tails: "Di masculine",
+    title: "Masculine",
+    description: "Energy",
+    heads: "mDe",
+    tails: "mDi",
+    headsDetail:
+      "masculine Extroverted Decider function (either mFe or mTe) and feminine Di (either fFi or fTi)",
+    tailsDetail:
+      "masculine Introverted Decider function (either mFi or mTi) and feminine De (either fFe or fTe)",
     ...ParsableCoinDefault,
     // prettier-ignore
     testHeads: { test: (type: string) => 
@@ -121,9 +132,12 @@ export const NamedCOINS = {
   coinOD: {
     index: -1,
     short: "coinOD",
-    description: "OD",
-    heads: "Energy polar",
-    tails: "polar Info",
+    title: "",
+    description: "Polarity",
+    heads: "Energy",
+    tails: "Info",
+    headsDetail: `Polar Energy — aka "Single Decider" and "Double Observer"`,
+    tailsDetail: `Polar Info — aka "Single Observer" and "Double Decider"`,
     clean: (type) =>
       type
         .replace(/[?()/-]/g, "")
@@ -141,9 +155,12 @@ export const NamedCOINS = {
   coinDiDe: {
     index: -1,
     short: "coinDiDe",
-    description: "Savior Decider Focus",
-    heads: "De Energy",
-    tails: "Energy Di",
+    title: "Direction",
+    description: "Energy",
+    heads: "De",
+    headsDetail: "Energy directed Extrovertedly to Connections",
+    tails: "Di",
+    tailsDetail: "Energy directed Introvertedly to Significance",
     ...ParsableCoinDefault,
     testHeads: /[mf]?[DTF]e/i,
     testTails: /[mf]?[DTF]i/i,
@@ -151,9 +168,12 @@ export const NamedCOINS = {
   coinOiOe: {
     index: -1,
     short: "coinOiOe",
-    description: "Savior Observer Focus",
-    heads: "Oe Gather",
-    tails: "Organize Oi",
+    title: "Direction",
+    description: "Info",
+    heads: "Oe",
+    headsDetail: "Info directed Extrovertedly to Gather new",
+    tails: "Oi",
+    tailsDetail: "Info directed Introvertedly to Organize old",
     ...ParsableCoinDefault,
     testHeads: /[mf]?[OSN]e/i,
     testTails: /[mf]?[OSN]i/i,
@@ -162,9 +182,10 @@ export const NamedCOINS = {
   coinA2ie: {
     index: -1,
     short: "coinA2ie",
+    title: "",
     description: "S2 Animal Focus",
-    heads: "A2 Extroverted",
-    tails: "Introverted A2",
+    heads: "A2 E",
+    tails: "I A2",
     ...ParsableCoinDefault,
     testHeads: /-([SP]B|[CB]P)/i,
     testTails: /-([SP]C|[CB]S)/i,
@@ -173,9 +194,10 @@ export const NamedCOINS = {
   coinA3ie: {
     index: -1,
     short: "coinA3ie",
+    title: "",
     description: "Activated Demon Animal Focus",
-    heads: "A3 Extroverted",
-    tails: "Introverted A3",
+    heads: "A3 E",
+    tails: "I A3",
     ...ParsableCoinDefault,
     testHeads: /[PB]{2}\/C|[CS]{2}\/P|[CP]{2}\/B|[SB]{2}\/P/,
     testTails: /[PB]{2}\/S|[CS]{2}\/B|[CP]{2}\/S|[SB]{2}\/C/,
@@ -183,9 +205,12 @@ export const NamedCOINS = {
   coinEnAct: {
     index: -1,
     short: "coinEnAct",
-    description: "Energy Activation",
-    heads: "Activated E Energy",
-    tails: "Energy I Activated",
+    title: "Activation",
+    description: "Energy",
+    heads: "EE",
+    tails: "II",
+    headsDetail: `Activated Double Extroverted Energy (Play)`,
+    tailsDetail: `Activated Double Introverted Energy (Sleep)`,
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -215,9 +240,12 @@ export const NamedCOINS = {
   coinInAct: {
     index: -1,
     short: "coinInAct",
-    description: "Info Activation",
-    heads: "Activated E Info",
-    tails: "Info I Activated",
+    title: "Activation",
+    description: "Info",
+    heads: "Oi De",
+    tails: "Oe Di",
+    headsDetail: `Activated Extroverted Info (Blast)`,
+    tailsDetail: `Activated Introverted Info (Consume)`,
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -247,9 +275,12 @@ export const NamedCOINS = {
   coinFT: {
     index: -1,
     short: "coinFT",
-    description: "Savior Decider Letter",
-    heads: "T>F Energy",
-    tails: "Energy F>T",
+    title: "Style",
+    description: "Energy",
+    heads: "T > F",
+    tails: "F > T",
+    headsDetail: ``,
+    tailsDetail: ``,
     ...ParsableCoinDefault,
     testHeads: /T[xei]/,
     testTails: /F[xei]/,
@@ -257,9 +288,12 @@ export const NamedCOINS = {
   coinNS: {
     index: -1,
     short: "coinNS",
-    description: "Savior Observer Letter",
-    heads: "S>N Info",
-    tails: "Info N>S",
+    title: "Style",
+    description: "Info",
+    heads: "S > N",
+    tails: "N > S",
+    headsDetail: ``,
+    tailsDetail: ``,
     ...ParsableCoinDefault,
     testHeads: /S[xei]/,
     testTails: /N[xei]/,
@@ -268,14 +302,19 @@ export const NamedCOINS = {
 let COIN_INDEX = -1
 export const COINS: Coin[] = []
 COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
-COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
+
 COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
-COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
+COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
+
 COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
-COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
+COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
+
 COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
+COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
+
 COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+
 /*
 Introvert / Femmine:    Observers, Sleep, Consume, Feeling, Intuition
 Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing

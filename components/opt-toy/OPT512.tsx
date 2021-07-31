@@ -677,7 +677,7 @@ export class OPT512 {
     return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
   }
   private get animalString(): any {
-    return ActivationsToAnimalsString[this.activationStack]
+    return ActivationsToAnimalsString[this.activationStack] ?? "?"
   }
   private get animalLetters(): any {
     return extractAnimalsFromOP512(this.animalString)

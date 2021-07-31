@@ -128,7 +128,14 @@ describe("OPT512", () => {
 
   describe("partial types", () => {
     describe("rendering", () => {
-
+      it("must not render undefined", () => {
+        const types = [
+          new OPT512(null)
+        ]
+        for (const opType of types) {
+          expect(opType.OPSCode).not.toMatch(/undefined/)
+        }
+      })
     })
   })
 

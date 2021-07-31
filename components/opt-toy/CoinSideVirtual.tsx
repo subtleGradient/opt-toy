@@ -1,21 +1,24 @@
-import * as React from "react";
-import { BoolMaybe, isBool } from "./Coin";
+import * as React from "react"
+import { BoolMaybe, isBool } from "./Coin"
 export function CoinSideVirtual({
-  coin: { heads, tails },
+  coin: { description, heads, tails, headsDetail = "", tailsDetail = "" },
   side,
   onFlip,
 }: {
   coin: {
-    heads: string;
-    tails: string;
-  };
-  side: BoolMaybe;
-  onFlip: (side: BoolMaybe) => void;
+    description: string
+    heads: string
+    tails: string
+    headsDetail?: string
+    tailsDetail?: string
+  }
+  side: BoolMaybe
+  onFlip: (side: BoolMaybe) => void
 }) {
   return (
     <tr>
       <td style={{ textAlign: "right" }}>
-        <label>
+        <label style={{ display: "block" }} title={tailsDetail}>
           <span
             style={
               (isBool(side) &&
@@ -28,24 +31,21 @@ export function CoinSideVirtual({
           <input
             type="radio"
             checked={isBool(side) && !side}
-            onChange={e => onFlip(!e.currentTarget.checked)}
+            onChange={(e) => onFlip(false)}
+            onClick={(e) => onFlip(false)}
           />
         </label>
       </td>
-      <td>
-        <input
-          type="radio"
-          checked={!isBool(side)}
-          style={{ opacity: isBool(side) ? 1 : 0.1 }}
-          onChange={e => e.currentTarget.checked && onFlip(null)}
-        />
+      <td style={{ textAlign: "center", fontSize: "75%" }}>
+        <div onClick={() => onFlip(null)}>{description}</div>
       </td>
       <td>
-        <label>
+        <label style={{ display: "block" }} title={headsDetail}>
           <input
             type="radio"
             checked={isBool(side) && !!side}
-            onChange={e => onFlip(e.currentTarget.checked)}
+            onChange={(e) => onFlip(true)}
+            onClick={(e) => onFlip(true)}
           />
           <span
             style={
@@ -59,5 +59,5 @@ export function CoinSideVirtual({
         </label>
       </td>
     </tr>
-  );
+  )
 }
