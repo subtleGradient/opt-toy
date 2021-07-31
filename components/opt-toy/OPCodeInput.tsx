@@ -16,19 +16,19 @@ export function OPCodeInput({
   let [isEditing, setIsEditing] = React.useState(false)
   let [inputValue, setInputValue] = React.useState("")
 
-  useEffect(() => {
-    setInputValue(defaultValue)
-  }, [defaultValue, isEditing])
-
   const nextType = OPT512.fromDirtyCoinText(inputValue)
+
   useEffect(() => {
-    if (nextType.isEmpty) return
+    if (opType.type.toString() === nextType.type.toString()) return
+    if (isEditing) return
+    setInputValue(defaultValue)
+  }, [defaultValue, isEditing, ...nextType.type, ...opType.type])
+
+  useEffect(() => {
+    if (nextType.nullCount >= 7) return
     console.log(nextType + "")
     onChange(nextType)
   }, [...nextType.type])
-  // if (!isEditing) value = inputTypeText
-  // if (type == null) type = value
-  // else value = inputTypeText
 
   return (
     <input
