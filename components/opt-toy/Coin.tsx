@@ -68,8 +68,9 @@ export const extractAnimalsFromOP512 = (type: string) =>
     .toUpperCase()
     .replace(/[^a-z?(/]/gi, "")
     .replace(/.*?([PBCS?(/]+)$/g, "$1")
-    .replace(/^([PBCS])[/]([PBCS])$/g, "$1?$2")
+    .replace(/^([PBCS])[/]([PBCS]+)$/g, "$1?$2")
     .replace(/^([PBCS])[(]([PBCS])$/g, "$1??$2")
+    .replace(/^([PBCS])([PBCS?])[(]([PBCS])$/g, "$1$2?$3")
     .replace(/[(/]/g, "")
 
 export const NamedCOINS = {
