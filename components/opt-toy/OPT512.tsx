@@ -136,7 +136,7 @@ export class OPT512 {
   }
 
   static from(typeCode: string): OPT512 {
-    return new OPT512(parseCoinText(cleanCoinText(typeCode)))
+    return new OPT512(parseCoinText(typeCode))
   }
   static fromDirtyCoinText(typeCode: string): OPT512 {
     return OPT512.from(typeCode)

@@ -3,7 +3,7 @@ import useUndo from "use-undo"
 import { AOPActivationSpectrums } from "./AOPActivationSpectrums"
 import AOPActivationTable from "./AOPActivationTable"
 import { betweenX } from "./between"
-import { BLANK_TYPE, cleanCoinText, OPT512Maybe, parseCoinText } from "./Coin"
+import { BLANK_TYPE, OPT512Maybe, parseCoinText } from "./Coin"
 import OPActivationTable from "./OPActivationTable"
 import { OPCodeInput } from "./OPCodeInput"
 import { OPTGraph } from "./opt128-svgr"
@@ -79,7 +79,7 @@ export const TypeThing: FC<TypeThingProps> = ({
   useEffect(() => {
     opTypeActions.reset({
       name: String(defaultType.split(SEPARATOR)[1] || ""),
-      type: parseCoinText(cleanCoinText(defaultType.split(SEPARATOR)[0])),
+      type: parseCoinText(defaultType.split(SEPARATOR)[0]),
     })
   }, [])
 
@@ -89,7 +89,7 @@ export const TypeThing: FC<TypeThingProps> = ({
     type: BLANK_TYPE,
   })
   const opTypeInstance = new OPT512(opType.present.type)
-  const typeText = opTypeInstance.OP512
+  const typeText = opTypeInstance.OPSCode
 
   useEffect(() => {
     if (opType.past.length === 0) return
@@ -189,8 +189,8 @@ export const TypeThing: FC<TypeThingProps> = ({
               <OPCodeInput
                 style={{ font: "inherit", textAlign: "center" }}
                 onClick={(e) => e.stopPropagation()}
-                coins={opTypeInstance.type}
-                onParsed={(type) => {
+                opType={opTypeInstance}
+                onChange={({ type }) => {
                   opTypeActions.set({ name: opType.present.name, type })
                 }}
               />
@@ -207,7 +207,9 @@ export const TypeThing: FC<TypeThingProps> = ({
           </div>
         )}
         <AOPActivationTable op512={opTypeInstance} />
-        {opTypeInstance.isFull && <AOPActivationSpectrums op512={opTypeInstance} />}
+        {opTypeInstance.isFull && (
+          <AOPActivationSpectrums op512={opTypeInstance} />
+        )}
         <div style={{ height: betweenX(8, 16) }}></div>
       </div>
       {isOpen && (

@@ -303,17 +303,9 @@ const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
 
 export const isBool = (value: BoolMaybe) => value === true || value === false
 
+/** @deprecated */
 export const cleanCoinText = (value: string = ""): string => {
   return value
-  // const [fmS, fmDe, od, animals] = [
-  //   NamedCOINS.coinSfm.clean(value),
-  //   NamedCOINS.coinDefm.clean(value),
-  //   NamedCOINS.coinOD.clean(value),
-  //   NamedCOINS.coinEnAct.clean(value),
-  // ]
-  // return `${fmS}${fmDe}${fmS && fmDe ? "-" : ""}${od}${
-  //   animals ? "-" : ""
-  // }${animals}`
 }
 
 const parserCoins = COINS.filter((COIN) => typeof COIN.parse === "function")

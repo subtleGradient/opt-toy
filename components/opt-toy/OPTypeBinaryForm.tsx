@@ -39,7 +39,7 @@ export function OPTypeBinaryForm({
               key={coinIndex}
               side={coinSide}
               coin={COINS[coinIndex]}
-              onFlip={side => {
+              onFlip={(side) => {
                 const newType = type.slice(0) as OPT512Maybe
                 newType[coinIndex] = side
                 onChange(newType)
@@ -74,10 +74,6 @@ export function OPTypeBinaryForm({
             coin={{
               heads: "Info",
               tails: "Energy",
-            }}
-            onFlip={side => {
-              opType.a3FocusBool = side == null ? null : !opType.a3FocusBool
-              onChange(opType.type)
             }}
           />
           <CoinSideVirtual2
