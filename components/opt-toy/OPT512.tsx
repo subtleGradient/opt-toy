@@ -6,6 +6,7 @@ import {
   cleanCoinText,
   BLANK_TYPE,
   parseCoinText,
+  extractAnimalsFromOP512,
 } from "./Coin"
 import { sortBy } from "./sortBy"
 import getRandomInt from "./getRandomInt"
@@ -656,19 +657,19 @@ export class OPT512 {
     return this.letters.indexOf("N")
   }
   get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] {
-    return [this.A1, this.A2, this.A3, this.A4]
+    return this.animalLetters.split("")
   }
   get PlayIndex() {
-    return this.animalCodes.indexOf("P")
+    return this.animalLetters.indexOf("P")
   }
   get BlastIndex() {
-    return this.animalCodes.indexOf("B")
+    return this.animalLetters.indexOf("B")
   }
   get ConsumeIndex() {
-    return this.animalCodes.indexOf("C")
+    return this.animalLetters.indexOf("C")
   }
   get SleepIndex() {
-    return this.animalCodes.indexOf("S")
+    return this.animalLetters.indexOf("S")
   }
 
   get A1Code() {
@@ -680,21 +681,32 @@ export class OPT512 {
   private get activationStack() {
     return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
   }
+  private get animalString(): any {
+    return ActivationsToAnimalStack[this.activationStack]
+  }
+  private get animalLetters(): any {
+    return extractAnimalsFromOP512(this.animalString)
+  }
   get A2(): OPAnimalType {
-    return ActivationsToAnimalStack[this.activationStack][1]
+    return this.animalLetters[1] ?? "?"
   }
   get A3(): OPAnimalType {
-    return ActivationsToAnimalStack[this.activationStack][2]
+    return this.animalLetters[2] ?? "?"
   }
   get A4(): OPAnimalType {
-    return ActivationsToAnimalStack[this.activationStack][3]
+    return this.animalLetters[3] ?? "?"
   }
   toString() {
-    return this.OP512
+    return this.OPSCode
   }
   valueOf() {
-    return this.OP512
+    return this.toString()
   }
+  get OPSCode(): string {
+    const { fmS, fmDe, S1, S2, animalString } = this
+    return `${fmS}${fmDe}-${S1}/${S2}-${animalString})`
+  }
+  /** @deprecated use toString instead */
   get OP512(): string {
     const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = this
     return `${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`
