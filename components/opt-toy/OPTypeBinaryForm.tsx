@@ -75,6 +75,9 @@ export function OPTypeBinaryForm({
               heads: "Info",
               tails: "Energy",
             }}
+            onFlip={(side) => {
+              console.warn("modifying sideOfEnergyInfo Not implemented")
+            }}
           />
           <CoinSideVirtual2
             side={opType.sideOfNFST}
@@ -158,7 +161,7 @@ function CoinSideVirtual2({ side, heads, tails, edge, onFlipWithXx }) {
         heads,
         tails,
       }}
-      onFlip={side => {
+      onFlip={(side) => {
         onFlipWithXx(
           !isBool(side) ? edge[0] : side ? heads[0] : tails[0],
           !isBool(side) ? edge[1] : side ? heads[1] : tails[1],
