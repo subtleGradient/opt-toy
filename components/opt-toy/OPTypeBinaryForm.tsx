@@ -43,11 +43,16 @@ export function OPTypeBinaryForm({
                   <tr>
                     <td
                       colSpan={3}
-                      style={{
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        borderTop: "1px solid black",
-                      }}
+                      style={
+                        lastCoin && {
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          borderTop: "8px solid white",
+                          padding: "2px",
+                          background: "#eee",
+                          fontSize: "85%",
+                        }
+                      }
                     >
                       {COINS[coinIndex].title}
                     </td>
