@@ -63,7 +63,7 @@ export interface Coin extends ParsableCoinType {
 }
 
 export const extractAnimalsFromOP512 = (type: string) =>
-  type
+  String(type)
     .trim()
     .toUpperCase()
     .replace(/[^a-z?(/]/gi, "")
@@ -141,8 +141,8 @@ export const NamedCOINS = {
     index: -1,
     short: "coinDiDe",
     description: "Savior Decider Focus",
-    heads: "De Tribe",
-    tails: "Identity Di",
+    heads: "De Energy",
+    tails: "Energy Di",
     ...ParsableCoinDefault,
     testHeads: /[mf]?[DTF]e/i,
     testTails: /[mf]?[DTF]i/i,
@@ -183,8 +183,8 @@ export const NamedCOINS = {
     index: -1,
     short: "coinEnAct",
     description: "Energy Activation",
-    heads: "Extroverted Energy",
-    tails: "Energy Introverted",
+    heads: "Activated E Energy",
+    tails: "Energy I Activated",
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -215,8 +215,8 @@ export const NamedCOINS = {
     index: -1,
     short: "coinInAct",
     description: "Info Activation",
-    heads: "Extroverted Info",
-    tails: "Info Introverted",
+    heads: "Activated E Info",
+    tails: "Info I Activated",
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -247,8 +247,8 @@ export const NamedCOINS = {
     index: -1,
     short: "coinFT",
     description: "Savior Decider Letter",
-    heads: "Thinking",
-    tails: "Feeling",
+    heads: "T>F Energy",
+    tails: "Energy F>T",
     ...ParsableCoinDefault,
     testHeads: /T[xei]/,
     testTails: /F[xei]/,
@@ -257,8 +257,8 @@ export const NamedCOINS = {
     index: -1,
     short: "coinNS",
     description: "Savior Observer Letter",
-    heads: "Sensing",
-    tails: "iNtuition",
+    heads: "S>N Info",
+    tails: "Info N>S",
     ...ParsableCoinDefault,
     testHeads: /S[xei]/,
     testTails: /N[xei]/,
