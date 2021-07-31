@@ -1122,38 +1122,3 @@ function typeNumberToCoins(typeNumber: number | string): OPT512Maybe {
 
 export const sideToDistance = (side: number | boolean): number =>
   side === true ? 1 : side === false ? -1 : side == null ? 0 : typeof side === "number" ? [0, -1, 1][side + 1] || 0 : 0
-
-if (process.env.NODE_ENV !== "production") {
-  for (const type of OPT512.getAll()) {
-    const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = type
-    type.type.join(""), parseCoinText(type.OP512).join("") //?
-    // console.assert(type.type.join("") === parseCoinText(type.OP512).join(""))
-    if (type.type.join("") !== parseCoinText(type.OP512).join("")) {
-      console.log(type.OP512, 'BROKEN')
-      // console.log(...type.type)
-      // console.log(...parseCoinText(type.OP512))
-    }
-  }
-
-  // const Tom = OPT512.from("fffesepbcs")
-  // const Britt = OPT512.from("mmfisisbpc")
-
-  // console.assert(Tom.functions[0].activation > 0)
-  // console.assert(Britt.functions[0].activation > 0)
-
-  // console.assert(Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
-  // console.assert(Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
-
-  // console.assert(Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
-
-  // console.log({
-  //   "B.f": Britt.feeling.activation,
-  //   "B.f+": JSON.stringify(Britt.feeling.activationDetails),
-
-  //   "T.f": Tom.feeling.activation,
-  //   "T.f+": JSON.stringify(Tom.feeling.activationDetails),
-  // })
-  // console.log("yay")
-
-  // Britt.feeling.activation
-}
