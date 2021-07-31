@@ -1,5 +1,9 @@
 import { describe, it, expect, test } from "@jest/globals"
-import { OPT512 } from "./OPT512"
+import { extractAnimalsFromOP512 } from "./Coin"
+import { ActivationsToAnimalStack, FocusCodes, maybeBoolToIndex, NamedCOINS, OPT512, parseCoinText } from "./OPT512"
+const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm } = NamedCOINS
+
+const uniq = (item: unknown, index: number, items: unknown[]): boolean => items.indexOf(item) === index
 // import { OPT512 } from "./OPT512"
 // import { sortBy, sorterize } from "./sortBy"
 
@@ -64,5 +68,140 @@ import { OPT512 } from "./OPT512"
 describe("OPT512", () => {
   it("exists", () => {
     expect(OPT512).toBeDefined()
+  })
+
+  describe("cloning", () => {
+    describe("ActivationsToAnimalStack", () => {
+      const animalStacks512 = OPT512.getAll()
+        .map((o) => o.toString())
+        .map((it) => extractAnimalsFromOP512(it))
+        .filter(uniq)
+      it("includes partial animal stacks", () => {
+        const animalStacks = [
+          ...animalStacks512,
+          "P",
+          "B",
+          "C",
+          "S",
+
+          "P(S)",
+          "B(C)",
+          "C(B)",
+          "S(P)",
+
+          "P/S",
+          "B/C",
+          "C/B",
+          "S/P",
+
+          "PB",
+          "BP",
+          "CS",
+          "SC",
+
+          "PC",
+          "BS",
+          "CP",
+          "SB",
+        ]
+        for (const animals of animalStacks) {
+          expect(Object.values(ActivationsToAnimalStack)).toContain(animals)
+        }
+      })
+      it("includes partial activation stacks", () => {
+        /*prettier-ignore*/
+        const animalStacks =
+          "PBCS".split("").map(PBCS => 
+          "xie".split('').map(xieIn => 
+          "xie".split('').map(xieEn => `${PBCS} ${xieEn}Energy ${xieIn}Info`))).flat(9)
+
+        for (const animals of animalStacks) {
+          expect(Object.keys(ActivationsToAnimalStack)).toContain(animals)
+        }
+      })
+
+      it("includes all stacks", () => {
+        for (const animals of animalStacks512) {
+          expect(Object.values(ActivationsToAnimalStack)).toContain(animals)
+        }
+      })
+
+      it("has unique values", () => {
+        expect(Object.values(ActivationsToAnimalStack).filter(uniq).length).toEqual(
+          Object.keys(ActivationsToAnimalStack).length,
+        )
+      })
+      it("has values that match its keys", () => {
+        for (const activationStack in ActivationsToAnimalStack) {
+          if (Object.prototype.hasOwnProperty.call(ActivationsToAnimalStack, activationStack)) {
+            const animals = ActivationsToAnimalStack[activationStack]
+            const [A1, energyActivation, infoActivation] = activationStack.split(" ")
+            expect(A1).toEqual(animals[0])
+            expect(animals + " Energy: " + energyActivation[0]).toEqual(
+              animals + " Energy: " + FocusCodes[maybeBoolToIndex(coinEnAct.parse(animals))],
+            )
+            expect(animals + " Info: " + infoActivation[0]).toEqual(
+              animals + " Info: " + FocusCodes[maybeBoolToIndex(coinInAct.parse(animals))],
+            )
+          }
+        }
+      })
+    })
+
+    describe("parseCoinText", () => {
+      it("must clone all types properly", () => {
+        for (const type of OPT512.getAll()) {
+          const parsed = parseCoinText(type.toString())
+          const clone = new OPT512(parsed)
+
+          expect(clone.toString()).toEqual(type.toString())
+          expect(clone.type).toEqual(parsed)
+
+          expect(clone.fmS).toEqual(type.fmS)
+          expect(clone.fmDe).toEqual(type.fmDe)
+          expect(clone.S1).toEqual(type.S1)
+          expect(clone.S2).toEqual(type.S2)
+          expect(clone.A1).toEqual(type.A1)
+          expect(clone.A2).toEqual(type.A2)
+          expect(clone.A3).toEqual(type.A3)
+          expect(clone.A4).toEqual(type.A4)
+
+          expect(type.type[coinOD.index]).toEqual(coinOD.parse(type.toString()))
+          expect(type.type[coinDiDe.index]).toEqual(coinDiDe.parse(type.toString()))
+          expect(type.type[coinOiOe.index]).toEqual(coinOiOe.parse(type.toString()))
+          expect(type.type[coinFT.index]).toEqual(coinFT.parse(type.toString()))
+          expect(type.type[coinNS.index]).toEqual(coinNS.parse(type.toString()))
+          expect(type.type[coinEnAct.index]).toEqual(coinEnAct.parse(type.toString()))
+          // @ts-expect-error
+          expect(type.activationStack + type.type[coinInAct.index])
+            // @ts-expect-error
+            .toEqual(type.activationStack + coinInAct.parse(type.toString()))
+          expect(type.type[coinSfm.index]).toEqual(coinSfm.parse(type.toString()))
+          expect(type.type[coinDefm.index]).toEqual(coinDefm.parse(type.toString()))
+
+          expect(clone.type[coinOD.index]).toEqual(coinOD.parse(clone.toString()))
+          expect(clone.type[coinDiDe.index]).toEqual(coinDiDe.parse(clone.toString()))
+          expect(clone.type[coinOiOe.index]).toEqual(coinOiOe.parse(clone.toString()))
+          expect(clone.type[coinFT.index]).toEqual(coinFT.parse(clone.toString()))
+          expect(clone.type[coinNS.index]).toEqual(coinNS.parse(clone.toString()))
+          expect(clone.type[coinEnAct.index]).toEqual(coinEnAct.parse(clone.toString()))
+          expect(clone.type[coinInAct.index]).toEqual(coinInAct.parse(clone.toString()))
+          expect(clone.type[coinSfm.index]).toEqual(coinSfm.parse(clone.toString()))
+          expect(clone.type[coinDefm.index]).toEqual(coinDefm.parse(clone.toString()))
+
+          expect("" + type + clone.type[coinOD.index]).toEqual("" + type + type.type[coinOD.index])
+          expect("" + type + clone.type[coinDiDe.index]).toEqual("" + type + type.type[coinDiDe.index])
+          expect("" + type + clone.type[coinOiOe.index]).toEqual("" + type + type.type[coinOiOe.index])
+          expect("" + type + clone.type[coinFT.index]).toEqual("" + type + type.type[coinFT.index])
+          expect("" + type + clone.type[coinNS.index]).toEqual("" + type + type.type[coinNS.index])
+          expect("" + type + clone.type[coinEnAct.index]).toEqual("" + type + type.type[coinEnAct.index])
+          expect("" + type + clone.type[coinInAct.index]).toEqual("" + type + type.type[coinInAct.index])
+          expect("" + type + clone.type[coinSfm.index]).toEqual("" + type + type.type[coinSfm.index])
+          expect("" + type + clone.type[coinDefm.index]).toEqual("" + type + type.type[coinDefm.index])
+
+          expect(clone.type).toEqual(type.type)
+        }
+      })
+    })
   })
 })

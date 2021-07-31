@@ -1,6 +1,16 @@
 export type BoolMaybe = 0 | 1 | true | false | undefined | null
 
-type OPT512Type = [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean]
+type OPT512Type = [
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+  boolean,
+]
 
 export type OPT512Maybe = [
   BoolMaybe,
@@ -14,7 +24,17 @@ export type OPT512Maybe = [
   BoolMaybe,
 ]
 
-export const BLANK_TYPE: OPT512Maybe = [null, null, null, null, null, null, null, null, null]
+export const BLANK_TYPE: OPT512Maybe = [
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+]
 
 type RegExpish = {
   test: (type: string) => boolean
@@ -42,7 +62,7 @@ export interface Coin extends ParsableCoinType {
   clean?: (type: string) => string
 }
 
-const extractAnimalsFromOP512 = (type: string) =>
+export const extractAnimalsFromOP512 = (type: string) =>
   type
     .trim()
     .toUpperCase()
@@ -59,16 +79,21 @@ export const NamedCOINS = {
     description: "Info Modality",
     heads: "masculine S",
     tails: "N masculine",
-    clean: (type: string) =>
-      type
-        .replace(/[?/()-]/g, "")
-        .replace(/^([FM])[FM?](?![iex]).*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
-        .replace(/^.*([FM])S[ie].*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
-        .replace(/^.*([FM])N[ie].*$/i, (_, FM) => ({ F: "M", M: "F" }[FM.toUpperCase()] || "?"))
-        .replace(/[^FM]/g, ""),
     ...ParsableCoinDefault,
-    testHeads: /^M[FM]|mS|fN/,
-    testTails: /^F[FM]|fS|mN/,
+    // prettier-ignore
+    testHeads: { test: (type: string) => 
+      /^M[FM?](?![ie])/i.test(type) ||
+      /fN/i.test(type) ||
+      /mS([ie]|\b)/i.test(type) ||
+      false
+    },
+    // prettier-ignore
+    testTails: { test: (type: string) => 
+      /^F[FM?](?![ie])/i.test(type) ||
+      /mN/i.test(type) ||
+      /fS([ie]|\b)/i.test(type) ||
+      false
+    },
   },
   coinDefm: {
     index: -1,
@@ -76,16 +101,21 @@ export const NamedCOINS = {
     description: "Masculine Energy Modality",
     heads: "masculine De",
     tails: "Di masculine",
-    clean: (type) =>
-      type
-        .replace(/[?/()-]/g, "")
-        .replace(/^[FM?]([FM])(?![iex]).*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
-        .replace(/^.*([FM])[FT]e.*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
-        .replace(/^.*([FM])[FT]i.*$/i, (_, FM) => ({ F: "M", M: "F" }[FM.toUpperCase()] || "?"))
-        .replace(/[^FM]/g, ""),
     ...ParsableCoinDefault,
-    testHeads: /^[FM]M|m[DTF]e|f[DTF]i/,
-    testTails: /^[FM]F|f[DTF]e|m[DTF]i/,
+    // prettier-ignore
+    testHeads: { test: (type: string) => 
+      /f[DTF]i/i.test(type) ||
+      /m[DTF]e/i.test(type) ||
+      /^[FM?]M/i.test(type) ||
+      false
+    },
+    // prettier-ignore
+    testTails: { test: (type: string) => 
+      /m[DTF]i/i.test(type) ||
+      /f[DTF]e/i.test(type) ||
+      /^[FM?]F(?![ie])/i.test(type) ||
+      false
+    },
   },
   coinOD: {
     index: -1,
@@ -161,7 +191,7 @@ export const NamedCOINS = {
         const animals = extractAnimalsFromOP512(type)
         return (
           /^(PBC|PCB|P[CB?][CB?]S)/.test(animals) || // Play first & Sleep last
-          /^(SBP|SCP)/.test(animals) || // Sleep with activated Play
+          /^(SBP|SCP|S[?]P|SC[?]B|SB[?]C)/.test(animals) || // Sleep with activated Play
           /^(BP)/.test(animals) || // Blast Play
           /^(CP)/.test(animals) || // Consume Play
           false
@@ -173,7 +203,7 @@ export const NamedCOINS = {
         const animals = extractAnimalsFromOP512(type)
         return (
           /^(SBC|SCB|S[CB?][CB?]P)/.test(animals) || // Sleep first & Play last
-          /^(P[CB?]S|PC[S?]B|PB[S?]C)/.test(animals) || // Play with activated Sleep
+          /^(PBS|PCS|P[?]S|PC[?]B|PB[?]C)/.test(animals) || // Play with activated Sleep
           /^(BS)/.test(animals) || // Blast Sleep
           /^(CS)/.test(animals) || // Consume Sleep
           false
@@ -192,10 +222,10 @@ export const NamedCOINS = {
       test: (type: string) => {
         const animals = extractAnimalsFromOP512(type)
         return (
-          /^(BPS|BSP|B[SP?][SP?]C)/.test(animals) || // Blay first & Cleep last
-          /^(CPB|CSB)/.test(animals) || // Cleep with activated Blay
-          /^(PB)/.test(animals) || // Plast Blay
-          /^(SB)/.test(animals) || // Sonsume Blay
+          /^(BPS|BSP|B[SP?][SP?]C)/.test(animals) || // Blast first & Consume last
+          /^(CPB|CSB|C[?]B|CP[?]S|CS[?]P)/.test(animals) || // Consume with activated Blast
+          /^(PB)/.test(animals) || // Plast Blast
+          /^(SB)/.test(animals) || // Sonsume Blast
           false
         )
       },
@@ -204,10 +234,10 @@ export const NamedCOINS = {
       test: (type: string) => {
         const animals = extractAnimalsFromOP512(type)
         return (
-          /^(CPS|CSP|C[SP?][SP?]B)/.test(animals) || // Cleep first & Blay last
-          /^(B[SP?]C|BS[C?]P|BP[C?]S)/.test(animals) || // Blay with activated Cleep
-          /^(PC)/.test(animals) || // Plast Cleep
-          /^(SC)/.test(animals) || // Sonsume Cleep
+          /^(CPS|CSP|C[SP?][SP?]B)/.test(animals) || // Consume first & Blast last
+          /^(BSC|BPC|B[?]C|BS[?]P|BP[?]S)/.test(animals) || // Blast with activated Consume
+          /^(PC)/.test(animals) || // Plast Consume
+          /^(SC)/.test(animals) || // Sonsume Consume
           false
         )
       },
@@ -253,8 +283,11 @@ Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
  */
 
 const numberToType = (number: number): OPT512Type => {
-  if (number < 0 || number > 511) throw new RangeError("expected a number between 0 and 511")
-  const [c0, c1, c2, c3, c4, c5, c6, c7, c8] = (Math.min(Math.max(number, 0), 511) + 0b1000000000)
+  if (number < 0 || number > 511)
+    throw new RangeError("expected a number between 0 and 511")
+  const [c0, c1, c2, c3, c4, c5, c6, c7, c8] = (
+    Math.min(Math.max(number, 0), 511) + 0b1000000000
+  )
     .toString(2)
     .split("")
     .slice(1)

@@ -1,7 +1,18 @@
-import { OPT512Maybe, NamedCOINS, BoolMaybe, isBool, cleanCoinText, BLANK_TYPE, parseCoinText } from "./Coin"
+import {
+  OPT512Maybe,
+  NamedCOINS,
+  BoolMaybe,
+  isBool,
+  cleanCoinText,
+  BLANK_TYPE,
+  parseCoinText,
+} from "./Coin"
 import { sortBy } from "./sortBy"
 import getRandomInt from "./getRandomInt"
-import { euclideanDistance, euclideanDistanceSquared } from "./euclideanDistance"
+import {
+  euclideanDistance,
+  euclideanDistanceSquared,
+} from "./euclideanDistance"
 
 export {
   // OPT512Maybe,
@@ -66,13 +77,13 @@ const MissingAnimal = {
   CPS: "B" as "B",
   BCS: "P" as "P",
 }
-const FocusCodes = ["i", "e", "x"] as OPFocusType[]
+export const FocusCodes = ["i", "e", "x"] as OPFocusType[]
 
-const ActivationsToAnimalStack = {
+export const ActivationsToAnimalStack = {
   "B eEnergy eInfo": "BPSC",
   "B iEnergy eInfo": "BSPC",
-  "B eEnergy iInfo": "BPSC",
-  "B iEnergy iInfo": "BSPC",
+  "B eEnergy iInfo": "BPCS",
+  "B iEnergy iInfo": "BSCP",
 
   "C eEnergy eInfo": "CPBS",
   "C iEnergy eInfo": "CSBP",
@@ -88,6 +99,31 @@ const ActivationsToAnimalStack = {
   "S iEnergy eInfo": "SBCP",
   "S eEnergy iInfo": "SCPB",
   "S iEnergy iInfo": "SCBP",
+
+  "P xEnergy xInfo": "P",
+  "B xEnergy xInfo": "B",
+  "C xEnergy xInfo": "C",
+  "S xEnergy xInfo": "S",
+
+  "P xEnergy eInfo": "PB",
+  "P xEnergy iInfo": "PC",
+  "S xEnergy eInfo": "SB",
+  "S xEnergy iInfo": "SC",
+
+  "B eEnergy xInfo": "BP",
+  "B iEnergy xInfo": "BS",
+  "C eEnergy xInfo": "CP",
+  "C iEnergy xInfo": "CS",
+
+  "S eEnergy xInfo": "S/P",
+  "P iEnergy xInfo": "P/S",
+  "B xEnergy iInfo": "B/C",
+  "C xEnergy eInfo": "C/B",
+
+  "P eEnergy xInfo": "P(S)",
+  "S iEnergy xInfo": "S(P)",
+  "B xEnergy eInfo": "B(C)",
+  "C xEnergy iInfo": "C(B)",
 }
 
 export class OPT512 {
@@ -226,8 +262,10 @@ export class OPT512 {
   }
   get sortValue() {
     return (
-      sideToDistance(this.type[NamedCOINS.coinNS.index]) * (this.type[NamedCOINS.coinOD.index] ? 10 : 100) +
-      sideToDistance(this.type[NamedCOINS.coinFT.index]) * (this.type[NamedCOINS.coinOD.index] ? 100 : 10) +
+      sideToDistance(this.type[NamedCOINS.coinNS.index]) *
+        (this.type[NamedCOINS.coinOD.index] ? 10 : 100) +
+      sideToDistance(this.type[NamedCOINS.coinFT.index]) *
+        (this.type[NamedCOINS.coinOD.index] ? 100 : 10) +
       sideToDistance(this.type[NamedCOINS.coinOD.index]) * 1000
     )
   }
@@ -236,26 +274,46 @@ export class OPT512 {
     return this.De.rawActivation - this.Di.rawActivation
   }
   get dRotation() {
-    return Math.round(((Math.atan2(this.De.rawActivation, this.Di.rawActivation) * 180) / Math.PI) * 100) / 100
+    return (
+      Math.round(
+        ((Math.atan2(this.De.rawActivation, this.Di.rawActivation) * 180) /
+          Math.PI) *
+          100,
+      ) / 100
+    )
   }
   get oPosition() {
     return this.Oe.rawActivation - this.Oi.rawActivation
   }
   get oRotation() {
-    return Math.round(((Math.atan2(this.Oe.rawActivation, this.Oi.rawActivation) * 180) / Math.PI) * 100) / 100
+    return (
+      Math.round(
+        ((Math.atan2(this.Oe.rawActivation, this.Oi.rawActivation) * 180) /
+          Math.PI) *
+          100,
+      ) / 100
+    )
   }
   get temperamentPosition(): [number, number] {
     return [this.dPosition, this.oPosition]
   }
   get temperamentRotation() {
-    return Math.round(((Math.atan2(...this.temperamentPosition) * 180) / Math.PI) * 100) / 100
+    return (
+      Math.round(
+        ((Math.atan2(...this.temperamentPosition) * 180) / Math.PI) * 100,
+      ) / 100
+    )
   }
 
   get positionSTNF() {
-    return (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
+    return (
+      (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
+    )
   }
   get positionSFNT() {
-    return (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
+    return (
+      (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
+    )
   }
 
   private _position: number[]
@@ -332,16 +390,24 @@ export class OPT512 {
     return this.nullCount === 0
   }
   get fmS(): OPSexType {
-    return ["f", "m", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])] as OPSexType
+    return ["F", "M", "?"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])
+    ] as OPSexType
   }
   get fmDe(): OPSexType {
-    return ["f", "m", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])] as OPSexType
+    return ["F", "M", "?"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
+    ] as OPSexType
   }
   get odLetter(): OPODLetterType {
-    return ["O", "D", "?"][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])] as OPODLetterType
+    return ["O", "D", "?"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
+    ] as OPODLetterType
   }
   get dLetter(): OPDLetterType {
-    return ["F", "T", "D"][maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])] as OPDLetterType
+    return ["F", "T", "D"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
+    ] as OPDLetterType
   }
   set dLetter(letter: OPDLetterType) {
     this.edit()
@@ -360,7 +426,9 @@ export class OPT512 {
     }
   }
   get oLetter(): OPOLetterType {
-    return ["N", "S", "O"][maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])] as OPOLetterType
+    return ["N", "S", "O"][
+      maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])
+    ] as OPOLetterType
   }
   set oLetter(letter: OPOLetterType) {
     this.edit()
@@ -473,10 +541,14 @@ export class OPT512 {
     return `${this.oLetter}${this.oFocus}` as any
   }
   get S1() {
-    return [this.OSNxei, this.DTFxei, this.DTFxei][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])]
+    return [this.OSNxei, this.DTFxei, this.DTFxei][
+      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
+    ]
   }
   get S2() {
-    return [this.DTFxei, this.OSNxei, this.OSNxei][maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])]
+    return [this.DTFxei, this.OSNxei, this.OSNxei][
+      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
+    ]
   }
   get D1() {
     return Flipped[this.S2] || this.S2
@@ -609,22 +681,13 @@ export class OPT512 {
     return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
   }
   get A2(): OPAnimalType {
-    try {
-      return ActivationsToAnimalStack[this.activationStack][1]
-    } catch (e) {
-      // console.error(
-      //   this.activationStack, //?
-      // )
-    }
-    // FIXME: uses deprecated coins
-    return AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
+    return ActivationsToAnimalStack[this.activationStack][1]
   }
   get A3(): OPAnimalType {
-    // FIXME: uses deprecated coins
-    return AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.A2}${this.a3Focus}`] || "?"
+    return ActivationsToAnimalStack[this.activationStack][2]
   }
   get A4(): OPAnimalType {
-    return MissingAnimal[[this.A1, this.A2, this.A3].sort().join("")] || "?"
+    return ActivationsToAnimalStack[this.activationStack][3]
   }
   toString() {
     return this.OP512
@@ -791,7 +854,12 @@ abstract class OPAnimal extends OPPart {
     return this.flipSide.index === 3
   }
   get rawActivation() {
-    return 2 - this.index + (this.flipSideIsLast ? 0.5 : 0) + 0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
+    return (
+      2 -
+      this.index +
+      (this.flipSideIsLast ? 0.5 : 0) +
+      0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
+    )
   }
   get temperament() {
     return `${this.observer.code}${this.decider.code}`
@@ -856,9 +924,11 @@ const IndexActivationMap = {
   3: 1,
 }
 
-const activationReducer = (activation: number, { index }) => activation + IndexActivationMap[index]
+const activationReducer = (activation: number, { index }) =>
+  activation + IndexActivationMap[index]
 
-const activationCodeReducer = (activation: number, { index }) => activation + IndexActivationMap[index]
+const activationCodeReducer = (activation: number, { index }) =>
+  activation + IndexActivationMap[index]
 
 export abstract class OPFn extends OPPart {
   get label() {
@@ -1025,7 +1095,9 @@ export abstract class OPFn extends OPPart {
     return animals.sort(sortByIndex)
   }
   get opFn() {
-    return this.opType.opFunctions.filter(({ letter }) => letter === this.code)[0]
+    return this.opType.opFunctions.filter(
+      ({ letter }) => letter === this.code,
+    )[0]
   }
   get fullCode() {
     const { sex, code, focus } = this
@@ -1077,7 +1149,8 @@ class Sensing extends ObserverFn {
   }
 }
 
-const maybeBoolToIndex = (value: BoolMaybe) => (!isBool(value) ? 2 : value ? 1 : 0)
+export const maybeBoolToIndex = (value: BoolMaybe) =>
+  !isBool(value) ? 2 : value ? 1 : 0
 
 const AnimalCodeToAnimalLetter = {
   OiDi: "S",
@@ -1117,8 +1190,21 @@ const AnimalLetterFocusCodeToAnimalLetters = {
 }
 
 function typeNumberToCoins(typeNumber: number | string): OPT512Maybe {
-  return typeNumber.toString(2).padStart(9, "0").split("").map(Number).map(Boolean) as OPT512Maybe
+  return typeNumber
+    .toString(2)
+    .padStart(9, "0")
+    .split("")
+    .map(Number)
+    .map(Boolean) as OPT512Maybe
 }
 
 export const sideToDistance = (side: number | boolean): number =>
-  side === true ? 1 : side === false ? -1 : side == null ? 0 : typeof side === "number" ? [0, -1, 1][side + 1] || 0 : 0
+  side === true
+    ? 1
+    : side === false
+    ? -1
+    : side == null
+    ? 0
+    : typeof side === "number"
+    ? [0, -1, 1][side + 1] || 0
+    : 0
