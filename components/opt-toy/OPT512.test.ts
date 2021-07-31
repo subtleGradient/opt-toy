@@ -70,6 +70,66 @@ describe("OPT512", () => {
     expect(OPT512).toBeDefined()
   })
 
+  describe("setters", () => {
+    let opType: OPT512
+    beforeEach(() => (opType = OPT512.random()))
+    describe("dLetter", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        expect(opType.dLetter).not.toEqual("D")
+        opType.dLetter = "D";expect(opType.dLetter).toEqual("D")
+        opType.dLetter = "T";expect(opType.dLetter).toEqual("T")
+        opType.dLetter = "F";expect(opType.dLetter).toEqual("F")
+      })
+    })
+    describe("oLetter", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        opType.oLetter = "O";expect(opType.oLetter).toEqual("O")
+        opType.oLetter = "S";expect(opType.oLetter).toEqual("S")
+        opType.oLetter = "N";expect(opType.oLetter).toEqual("N")
+      })
+    })
+    describe("dFocus", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        opType.dFocus = "e";expect(opType.dFocus).toBe("e")
+        opType.dFocus = "i";expect(opType.dFocus).toBe("i")
+        opType.dFocus = "x";expect(opType.dFocus).toBe("x")
+        opType.dFocus = "?";expect(opType.dFocus).toBe("x")
+      })
+    })
+    describe("oFocus", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        opType.oFocus = "e";expect(opType.oFocus).toBe("e")
+        opType.oFocus = "i";expect(opType.oFocus).toBe("i")
+        opType.oFocus = "x";expect(opType.oFocus).toBe("x")
+        opType.oFocus = "?";expect(opType.oFocus).toBe("x")
+      })
+    })
+    describe("energyActivationBool", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        opType.energyActivationBool = null; expect(opType.energyActivationBool).toBe(null)
+        opType.energyActivationBool = true; expect(opType.energyActivationBool).toBe(true)
+        opType.energyActivationBool = false; expect(opType.energyActivationBool).toBe(false)
+      })
+    })
+    describe("infoActivationBool", () => {
+      // prettier-ignore
+      it("can be set", () => {
+        opType.infoActivationBool = null; expect(opType.infoActivationBool).toBe(null)
+        opType.infoActivationBool = true; expect(opType.infoActivationBool).toBe(true)
+        opType.infoActivationBool = false; expect(opType.infoActivationBool).toBe(false)
+      })
+    })
+  })
+
+  describe("partial types", () => {
+    describe("rendering", () => {})
+  })
+
   describe("cloning", () => {
     describe("ActivationsToAnimalStack", () => {
       const animalStacks512 = OPT512.getAll()

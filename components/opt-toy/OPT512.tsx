@@ -130,7 +130,7 @@ export const ActivationsToAnimalStack = {
 export class OPT512 {
   edit() {
     for (const key in this) {
-      if (key.charAt(0) !== "_") continue
+      if (!key.startsWith("memo_")) continue
       delete this[key]
     }
   }
@@ -317,11 +317,11 @@ export class OPT512 {
     )
   }
 
-  private _position: number[]
+  private memo_position: number[]
   get position() {
     return (
-      this._position ||
-      (this._position = [
+      this.memo_position ||
+      (this.memo_position = [
         this.sIndex,
         this.tIndex,
         this.nIndex,
@@ -494,21 +494,19 @@ export class OPT512 {
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a2FocusBool() {
-    return this.type[NamedCOINS.coinEnAct.index]
+    return null
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a3FocusBool() {
-    return this.type[NamedCOINS.coinInAct.index]
+    return null
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   set a2FocusBool(side: BoolMaybe) {
     this.edit()
-    this.type[NamedCOINS.coinEnAct.index] = side
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   set a3FocusBool(side: BoolMaybe) {
     this.edit()
-    this.type[NamedCOINS.coinInAct.index] = side
   }
   /** @deprecated use energyActivation or infoActivation instead */
   get a3Focus() {
@@ -572,9 +570,9 @@ export class OPT512 {
   get isJumper() {
     return this.dFocus === "x" ? null : this.dFocus === this.oFocus
   }
-  private _opFunctions: OP4Fns
+  private memo_opFunctions: OP4Fns
   get opFunctions(): OP4Fns {
-    if (this._opFunctions) return this._opFunctions
+    if (this.memo_opFunctions) return this.memo_opFunctions
     const sex = {
       Si: this.fmS,
       Se: this.fmS,
@@ -638,7 +636,7 @@ export class OPT512 {
       s2.grantStackIndex = 2
     }
     const [fn1, fn2, fn3, fn4] = fns
-    return (this._opFunctions = [fn1, fn2, fn3, fn4])
+    return (this.memo_opFunctions = [fn1, fn2, fn3, fn4])
   }
 
   get letters() {
