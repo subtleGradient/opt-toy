@@ -80,26 +80,23 @@ const MissingAnimal = {
 }
 export const FocusCodes = ["i", "e", "x"] as OPFocusType[]
 
-export const ActivationsToAnimalStack = {
-  "B eEnergy eInfo": "BPSC",
-  "B iEnergy eInfo": "BSPC",
-  "B eEnergy iInfo": "BPCS",
-  "B iEnergy iInfo": "BSCP",
-
-  "C eEnergy eInfo": "CPBS",
-  "C iEnergy eInfo": "CSBP",
-  "C eEnergy iInfo": "CPSB",
-  "C iEnergy iInfo": "CSPB",
-
-  "P eEnergy eInfo": "PBCS",
-  "P iEnergy eInfo": "PBSC",
-  "P eEnergy iInfo": "PCBS",
-  "P iEnergy iInfo": "PCSB",
-
-  "S eEnergy eInfo": "SBPC",
-  "S iEnergy eInfo": "SBCP",
-  "S eEnergy iInfo": "SCPB",
-  "S iEnergy iInfo": "SCBP",
+export const ActivationsToAnimalsString = {
+  "B eEnergy eInfo": "BP/S(C)",
+  "B iEnergy eInfo": "BS/P(C)",
+  "B eEnergy iInfo": "BP/C(S)",
+  "B iEnergy iInfo": "BS/C(P)",
+  "C eEnergy eInfo": "CP/B(S)",
+  "C iEnergy eInfo": "CS/B(P)",
+  "C eEnergy iInfo": "CP/S(B)",
+  "C iEnergy iInfo": "CS/P(B)",
+  "P eEnergy eInfo": "PB/C(S)",
+  "P iEnergy eInfo": "PB/S(C)",
+  "P eEnergy iInfo": "PC/B(S)",
+  "P iEnergy iInfo": "PC/S(B)",
+  "S eEnergy eInfo": "SB/P(C)",
+  "S iEnergy eInfo": "SB/C(P)",
+  "S eEnergy iInfo": "SC/P(B)",
+  "S iEnergy iInfo": "SC/B(P)",
 
   "P xEnergy xInfo": "P",
   "B xEnergy xInfo": "B",
@@ -680,7 +677,7 @@ export class OPT512 {
     return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
   }
   private get animalString(): any {
-    return ActivationsToAnimalStack[this.activationStack]
+    return ActivationsToAnimalsString[this.activationStack]
   }
   private get animalLetters(): any {
     return extractAnimalsFromOP512(this.animalString)
@@ -701,9 +698,14 @@ export class OPT512 {
     return this.toString()
   }
   get OPSCode(): string {
-    const { fmS, fmDe, S1, S2, animalString } = this
-    return `${fmS}${fmDe}-${S1}/${S2}-${animalString})`
+    const { sexString, S1, S2, animalString } = this
+    return `${sexString}${S1}/${S2}-${animalString}`
   }
+  private get sexString() {
+    const { fmS, fmDe } = this
+    return fmS === "?" && fmDe === "?" ? "" : `${fmS}${fmDe}-`
+  }
+
   /** @deprecated use toString instead */
   get OP512(): string {
     const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = this

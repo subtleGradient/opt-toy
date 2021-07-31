@@ -14,7 +14,7 @@ const isSSR = typeof window === "undefined"
 
 function OPTypeBinaryText({ type }: { type: OPT512Maybe }) {
   const opt = new OPT512(type)
-  return <span>{opt.OP512}</span>
+  return <span>{opt.OPSCode}</span>
 }
 
 const SEPARATOR = `!`

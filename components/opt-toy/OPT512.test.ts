@@ -1,6 +1,6 @@
 import { describe, it, expect, test } from "@jest/globals"
 import { extractAnimalsFromOP512 } from "./Coin"
-import { ActivationsToAnimalStack, FocusCodes, maybeBoolToIndex, NamedCOINS, OPT512, parseCoinText } from "./OPT512"
+import { ActivationsToAnimalsString, FocusCodes, maybeBoolToIndex, NamedCOINS, OPT512, parseCoinText } from "./OPT512"
 const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm } = NamedCOINS
 
 const uniq = (item: unknown, index: number, items: unknown[]): boolean => items.indexOf(item) === index
@@ -127,7 +127,9 @@ describe("OPT512", () => {
   })
 
   describe("partial types", () => {
-    describe("rendering", () => {})
+    describe("rendering", () => {
+
+    })
   })
 
   describe("cloning", () => {
@@ -165,7 +167,7 @@ describe("OPT512", () => {
           "SB",
         ]
         for (const animals of animalStacks) {
-          expect(Object.values(ActivationsToAnimalStack)).toContain(animals)
+          expect(Object.values(ActivationsToAnimalsString)).toContain(animals)
         }
       })
       it("includes partial activation stacks", () => {
@@ -176,25 +178,25 @@ describe("OPT512", () => {
           "xie".split('').map(xieEn => `${PBCS} ${xieEn}Energy ${xieIn}Info`))).flat(9)
 
         for (const animals of animalStacks) {
-          expect(Object.keys(ActivationsToAnimalStack)).toContain(animals)
+          expect(Object.keys(ActivationsToAnimalsString)).toContain(animals)
         }
       })
 
       it("includes all stacks", () => {
         for (const animals of animalStacks512) {
-          expect(Object.values(ActivationsToAnimalStack)).toContain(animals)
+          expect(Object.values(ActivationsToAnimalsString)).toContain(animals)
         }
       })
 
       it("has unique values", () => {
-        expect(Object.values(ActivationsToAnimalStack).filter(uniq).length).toEqual(
-          Object.keys(ActivationsToAnimalStack).length,
+        expect(Object.values(ActivationsToAnimalsString).filter(uniq).length).toEqual(
+          Object.keys(ActivationsToAnimalsString).length,
         )
       })
       it("has values that match its keys", () => {
-        for (const activationStack in ActivationsToAnimalStack) {
-          if (Object.prototype.hasOwnProperty.call(ActivationsToAnimalStack, activationStack)) {
-            const animals = ActivationsToAnimalStack[activationStack]
+        for (const activationStack in ActivationsToAnimalsString) {
+          if (Object.prototype.hasOwnProperty.call(ActivationsToAnimalsString, activationStack)) {
+            const animals = ActivationsToAnimalsString[activationStack]
             const [A1, energyActivation, infoActivation] = activationStack.split(" ")
             expect(A1).toEqual(animals[0])
             expect(animals + " Energy: " + energyActivation[0]).toEqual(
