@@ -20,22 +20,37 @@ type RegExpish = {
   test: (type: string) => boolean
 }
 
-class Coin {
+const ParsableCoinDefault = {
+  testHeads: /./ as RegExpish,
+  testTails: /./ as RegExpish,
+  parse(type: string) {
+    const isHeads = this.testHeads.test(type)
+    const isTails = this.testTails.test(type)
+    if (isHeads && isTails) return null
+    return isHeads ? true : isTails ? false : null
+  },
+}
+
+type ParsableCoinType = typeof ParsableCoinDefault
+
+export interface Coin extends ParsableCoinType {
   index: number
   short: string
   description: string
   heads: string
   tails: string
   clean?: (type: string) => string
-  testHeads: RegExpish
-  testTails: RegExpish
-  parse(type: string) {
-    const isHeads = this.testHeads.test(type)
-    const isTails = this.testTails.test(type)
-    if (isHeads && isTails) return null
-    return isHeads ? true : isTails ? false : null
-  }
 }
+
+const extractAnimalsFromOP512 = (type: string) =>
+  type
+    .trim()
+    .toUpperCase()
+    .replace(/[^a-z?(/]/gi, "")
+    .replace(/.*?([PBCS?(/]+)$/g, "$1")
+    .replace(/^([PBCS])[/]([PBCS])$/g, "$1?$2")
+    .replace(/^([PBCS])[(]([PBCS])$/g, "$1??$2")
+    .replace(/[(/]/g, "")
 
 export const NamedCOINS = {
   coinSfm: {
@@ -51,9 +66,9 @@ export const NamedCOINS = {
         .replace(/^.*([FM])S[ie].*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
         .replace(/^.*([FM])N[ie].*$/i, (_, FM) => ({ F: "M", M: "F" }[FM.toUpperCase()] || "?"))
         .replace(/[^FM]/g, ""),
+    ...ParsableCoinDefault,
     testHeads: /^M[FM]|mS|fN/,
     testTails: /^F[FM]|fS|mN/,
-    parse: Coin.prototype.parse,
   },
   coinDefm: {
     index: -1,
@@ -68,9 +83,9 @@ export const NamedCOINS = {
         .replace(/^.*([FM])[FT]e.*$/i, (_, FM) => `${(FM || "?").toUpperCase()}`)
         .replace(/^.*([FM])[FT]i.*$/i, (_, FM) => ({ F: "M", M: "F" }[FM.toUpperCase()] || "?"))
         .replace(/[^FM]/g, ""),
+    ...ParsableCoinDefault,
     testHeads: /^[FM]M|m[DTF]e|f[DTF]i/,
     testTails: /^[FM]F|f[DTF]e|m[DTF]i/,
-    parse: Coin.prototype.parse,
   },
   coinOD: {
     index: -1,
@@ -88,9 +103,9 @@ export const NamedCOINS = {
             `${f1od.toUpperCase()}${f1xie.toLowerCase()}/${f2od.toUpperCase()}${f2xie.toLowerCase()}`,
         )
         .replace(/^(?![DTF][xie]\/[OSN][xie]|[OSN][xie]\/[DTF][xie]).*$/, ""),
+    ...ParsableCoinDefault,
     testHeads: /(^|-)[mf]?[DTF][xei]|[mf]?[DTF][xei]\//i,
     testTails: /(^|-)[mf]?[OSN][xei]|[mf]?[OSN][xei]\//i,
-    parse: Coin.prototype.parse,
   },
   coinDiDe: {
     index: -1,
@@ -98,9 +113,9 @@ export const NamedCOINS = {
     description: "Savior Decider Focus",
     heads: "De Tribe",
     tails: "Identity Di",
+    ...ParsableCoinDefault,
     testHeads: /[mf]?[DTF]e/i,
     testTails: /[mf]?[DTF]i/i,
-    parse: Coin.prototype.parse,
   },
   coinOiOe: {
     index: -1,
@@ -108,9 +123,9 @@ export const NamedCOINS = {
     description: "Savior Observer Focus",
     heads: "Oe Gather",
     tails: "Organize Oi",
+    ...ParsableCoinDefault,
     testHeads: /[mf]?[OSN]e/i,
     testTails: /[mf]?[OSN]i/i,
-    parse: Coin.prototype.parse,
   },
   /** @deprecated Use coin coinEnAct instead */
   coinA2ie: {
@@ -119,9 +134,9 @@ export const NamedCOINS = {
     description: "S2 Animal Focus",
     heads: "A2 Extroverted",
     tails: "Introverted A2",
+    ...ParsableCoinDefault,
     testHeads: /-([SP]B|[CB]P)/i,
     testTails: /-([SP]C|[CB]S)/i,
-    parse: Coin.prototype.parse,
   },
   /** @deprecated Use coin coinInAct instead */
   coinA3ie: {
@@ -130,9 +145,9 @@ export const NamedCOINS = {
     description: "Activated Demon Animal Focus",
     heads: "A3 Extroverted",
     tails: "Introverted A3",
+    ...ParsableCoinDefault,
     testHeads: /[PB]{2}\/C|[CS]{2}\/P|[CP]{2}\/B|[SB]{2}\/P/,
     testTails: /[PB]{2}\/S|[CS]{2}\/B|[CP]{2}\/S|[SB]{2}\/C/,
-    parse: Coin.prototype.parse,
   },
   coinEnAct: {
     index: -1,
@@ -140,31 +155,31 @@ export const NamedCOINS = {
     description: "Energy Activation",
     heads: "Extroverted Energy",
     tails: "Energy Introverted",
+    ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
-        const cleanType = type.toUpperCase().replace(/[^a-z]/gi, "")
+        const animals = extractAnimalsFromOP512(type)
         return (
-          /PBC|PCB/.test(cleanType) || // Play first & Sleep last
-          /SBP|SCP/.test(cleanType) || // Sleep with activated Play
-          /BP/.test(cleanType) || // Blast Play
-          /CP/.test(cleanType) || // Consume Play
+          /^(PBC|PCB|P[CB?][CB?]S)/.test(animals) || // Play first & Sleep last
+          /^(SBP|SCP)/.test(animals) || // Sleep with activated Play
+          /^(BP)/.test(animals) || // Blast Play
+          /^(CP)/.test(animals) || // Consume Play
           false
         )
       },
     } as RegExpish,
     testTails: {
       test: (type: string) => {
-        const cleanType = type.toUpperCase().replace(/[^a-z]/gi, "")
+        const animals = extractAnimalsFromOP512(type)
         return (
-          /SBC|SCB/.test(cleanType) || // Sleep first & Play last
-          /PBS|PCS/.test(cleanType) || // Play with activated Sleep
-          /BS/.test(cleanType) || // Blast Sleep
-          /CS/.test(cleanType) || // Consume Sleep
+          /^(SBC|SCB|S[CB?][CB?]P)/.test(animals) || // Sleep first & Play last
+          /^(P[CB?]S|PC[S?]B|PB[S?]C)/.test(animals) || // Play with activated Sleep
+          /^(BS)/.test(animals) || // Blast Sleep
+          /^(CS)/.test(animals) || // Consume Sleep
           false
         )
       },
     } as RegExpish,
-    parse: Coin.prototype.parse,
     clean: (type) =>
       type
         .replace(/[/()]/g, "")
@@ -182,9 +197,9 @@ export const NamedCOINS = {
     description: "Info Activation",
     heads: "Extroverted Info",
     tails: "Info Introverted",
+    ...ParsableCoinDefault,
     testHeads: /-(B(P.S|S.P)|C[PS].B|[PS]C)/i,
     testTails: /-(C(P.S|S.P)|B[PS].C|[PS]B)/i,
-    parse: Coin.prototype.parse,
   },
   coinFT: {
     index: -1,
@@ -192,9 +207,9 @@ export const NamedCOINS = {
     description: "Savior Decider Letter",
     heads: "Thinking",
     tails: "Feeling",
+    ...ParsableCoinDefault,
     testHeads: /T[xei]/,
     testTails: /F[xei]/,
-    parse: Coin.prototype.parse,
   },
   coinNS: {
     index: -1,
@@ -202,9 +217,9 @@ export const NamedCOINS = {
     description: "Savior Observer Letter",
     heads: "Sensing",
     tails: "iNtuition",
+    ...ParsableCoinDefault,
     testHeads: /S[xei]/,
     testTails: /N[xei]/,
-    parse: Coin.prototype.parse,
   },
 }
 let COIN_INDEX = -1

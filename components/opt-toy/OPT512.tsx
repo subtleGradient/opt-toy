@@ -68,6 +68,28 @@ const MissingAnimal = {
 }
 const FocusCodes = ["i", "e", "x"] as OPFocusType[]
 
+const ActivationsToAnimalStack = {
+  "B eEnergy eInfo": "BPSC",
+  "B iEnergy eInfo": "BSPC",
+  "B eEnergy iInfo": "BPSC",
+  "B iEnergy iInfo": "BSPC",
+
+  "C eEnergy eInfo": "CPBS",
+  "C iEnergy eInfo": "CSBP",
+  "C eEnergy iInfo": "CPSB",
+  "C iEnergy iInfo": "CSPB",
+
+  "P eEnergy eInfo": "PBCS",
+  "P iEnergy eInfo": "PBSC",
+  "P eEnergy iInfo": "PCBS",
+  "P iEnergy iInfo": "PCSB",
+
+  "S eEnergy eInfo": "SBPC",
+  "S iEnergy eInfo": "SBCP",
+  "S eEnergy iInfo": "SCPB",
+  "S iEnergy iInfo": "SCBP",
+}
+
 export class OPT512 {
   edit() {
     for (const key in this) {
@@ -399,7 +421,7 @@ export class OPT512 {
 
   /** @deprecated use energyActivation or infoActivation instead */
   get a2Focus() {
-    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinEnAct.index])]
+    return FocusCodes[maybeBoolToIndex(this.a2FocusBool)]
   }
   /** @deprecated use energyActivationBool or infoActivationBool instead */
   get a2FocusBool() {
@@ -421,7 +443,7 @@ export class OPT512 {
   }
   /** @deprecated use energyActivation or infoActivation instead */
   get a3Focus() {
-    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinInAct.index])]
+    return FocusCodes[maybeBoolToIndex(this.a3FocusBool)]
   }
 
   get energyActivation() {
@@ -583,7 +605,17 @@ export class OPT512 {
   get A1(): OPAnimalType {
     return AnimalCodeToAnimalLetter[this.A1Code] || "?"
   }
+  private get activationStack() {
+    return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
+  }
   get A2(): OPAnimalType {
+    try {
+      return ActivationsToAnimalStack[this.activationStack][1]
+    } catch (e) {
+      // console.error(
+      //   this.activationStack, //?
+      // )
+    }
     // FIXME: uses deprecated coins
     return AnimalLetterFocusCodeToAnimalLetters[`${this.A1}${this.a2Focus}`] || "?"
   }
@@ -1094,20 +1126,25 @@ export const sideToDistance = (side: number | boolean): number =>
 if (process.env.NODE_ENV !== "production") {
   for (const type of OPT512.getAll()) {
     const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = type
-    console.log(type.OP512)
-    type.type, parseCoinText(type.OP512) //?
+    type.type.join(""), parseCoinText(type.OP512).join("") //?
+    // console.assert(type.type.join("") === parseCoinText(type.OP512).join(""))
+    if (type.type.join("") !== parseCoinText(type.OP512).join("")) {
+      console.log(type.OP512, 'BROKEN')
+      // console.log(...type.type)
+      // console.log(...parseCoinText(type.OP512))
+    }
   }
 
-  const Tom = OPT512.from("fffesepbcs")
-  const Britt = OPT512.from("mmfisisbpc")
+  // const Tom = OPT512.from("fffesepbcs")
+  // const Britt = OPT512.from("mmfisisbpc")
 
-  console.assert(Tom.functions[0].activation > 0)
-  console.assert(Britt.functions[0].activation > 0)
+  // console.assert(Tom.functions[0].activation > 0)
+  // console.assert(Britt.functions[0].activation > 0)
 
-  console.assert(Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
-  console.assert(Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
+  // console.assert(Tom.feeling.activation > Tom.thinking.activation, "tF > tT")
+  // console.assert(Tom.feeling.activation > Britt.feeling.activation, "tF > bF")
 
-  console.assert(Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
+  // console.assert(Britt.feeling.activation < Britt.thinking.activation, "bF < bT")
 
   // console.log({
   //   "B.f": Britt.feeling.activation,
@@ -1118,5 +1155,5 @@ if (process.env.NODE_ENV !== "production") {
   // })
   // console.log("yay")
 
-  Britt.feeling.activation
+  // Britt.feeling.activation
 }
