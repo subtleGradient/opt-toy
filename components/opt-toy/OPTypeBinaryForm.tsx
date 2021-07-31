@@ -40,23 +40,31 @@ export function OPTypeBinaryForm({
             return (
               <React.Fragment key={coinIndex}>
                 {lastCoin?.title !== COINS[coinIndex].title && (
-                  <tr>
-                    <td
-                      colSpan={3}
-                      style={
-                        lastCoin && {
-                          textAlign: "center",
-                          fontWeight: "bold",
-                          borderTop: "8px solid white",
-                          padding: "2px",
-                          background: "#eee",
-                          fontSize: "85%",
+                  <>
+                    <tr>
+                      <td colSpan={3} style={{ paddingTop: 8 }} />
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={3}
+                        style={
+                          lastCoin && {
+                            textAlign: "center",
+                            fontWeight: "bold",
+                            // borderTop: "8px solid white",
+                            padding: "2px",
+                            background: "#DDD",
+                            fontSize: "85%",
+                            borderRadius: 999,
+                            borderBottomRightRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }
                         }
-                      }
-                    >
-                      {COINS[coinIndex].title}
-                    </td>
-                  </tr>
+                      >
+                        {COINS[coinIndex].title}
+                      </td>
+                    </tr>
+                  </>
                 )}
                 <CoinSideVirtual
                   side={coinSide}

@@ -18,7 +18,15 @@ export function CoinSideVirtual({
   return (
     <tr>
       <td style={{ textAlign: "right" }}>
-        <label style={{ display: "block" }} title={tailsDetail}>
+        <label
+          style={{
+            display: "block",
+            ...(isBool(side) && !side && { background: "#eee", color: "#000" }),
+            borderRadius: 999,
+            padding: "0 2px",
+          }}
+          title={tailsDetail}
+        >
           <span
             style={
               (isBool(side) &&
@@ -36,11 +44,26 @@ export function CoinSideVirtual({
           />
         </label>
       </td>
-      <td style={{ textAlign: "center", fontSize: "75%" }}>
+      <td
+        style={{
+          textAlign: "center",
+          fontSize: "75%",
+          // background: "#efefef",
+          // borderRadius: 999,
+        }}
+      >
         <div onClick={() => onFlip(null)}>{description}</div>
       </td>
       <td>
-        <label style={{ display: "block" }} title={headsDetail}>
+        <label
+          style={{
+            display: "block",
+            ...(!!side && { background: "#eee", color: "#000" }),
+            borderRadius: 999,
+            padding: "0 2px",
+          }}
+          title={headsDetail}
+        >
           <input
             type="radio"
             checked={isBool(side) && !!side}
