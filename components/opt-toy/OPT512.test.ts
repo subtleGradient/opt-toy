@@ -129,9 +129,7 @@ describe("OPT512", () => {
   describe("partial types", () => {
     describe("rendering", () => {
       it("must not render undefined", () => {
-        const types = [
-          new OPT512(null)
-        ]
+        const types = [new OPT512(null)]
         for (const opType of types) {
           expect(opType.OPSCode).not.toMatch(/undefined/)
         }
@@ -143,7 +141,8 @@ describe("OPT512", () => {
     describe("ActivationsToAnimalStack", () => {
       const animalStacks512 = OPT512.getAll()
         .map((o) => o.toString())
-        .map((it) => extractAnimalsFromOP512(it))
+        .map((it) => extractAnimalsFromOP512(it).split(""))
+        .map(([A, B, C, D]) => `${A}${B}/${C}(${D})`)
         .filter(uniq)
       it("includes partial animal stacks", () => {
         const animalStacks = [
