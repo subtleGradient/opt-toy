@@ -73,7 +73,7 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
                       opFn,
                     }) => (
                       <tr key={code}>
-                        <td title={activation + 1 + ''}>{activation1or2}</td>
+                        <td title={activation + 1 + ""}>{activation1or2}</td>
                         {showSex && (
                           <td
                             title={{ f: "feminine", m: "masculine" }[opFn?.sex]}
@@ -101,7 +101,7 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {op512.animalStack.map(({ code, index }) => (
+                  {op512.animals.map(({ code, index }) => (
                     <tr key={code}>
                       <td
                         title={

@@ -724,11 +724,9 @@ export abstract class OPFn extends OPPart {
   get label() { return this.fullCode } // prettier-ignore
   code = "X"
   get saviorCode() {
-    const {
-      opFn: { index },
-      animals: [a1],
-    } = this
-    switch (a1.index) {
+    const { opFn, animals } = this
+    const { index } = opFn || {}
+    switch (animals[0]?.index) {
       case 0:
         return ["S1", "S2", "ERROR", "ERROR", "ERROR"][index]
       case 1: //return 'A1'
@@ -741,13 +739,14 @@ export abstract class OPFn extends OPPart {
   get gapBetweenAnimals(): 0 | 1 | 2 { return (this.animals[1]?.index - this.animals[0]?.index - 1) as any } // prettier-ignore
   get activationDetails() {
     const {
-      opFn: { sex, index, grantStackIndex, savior } = {},
+      opFn,
       animals: [fA1, fA2],
       opType: {
         animals: [a1, a2, a3, a4],
       },
       gapBetweenAnimals,
     } = this
+    const { sex, index, grantStackIndex } = opFn || {}
     return {
       index,
       grantStackIndex,
@@ -760,12 +759,13 @@ export abstract class OPFn extends OPPart {
 
   get rawActivation() {
     const {
-      opFn: { sex, index, grantStackIndex, savior } = {},
+      opFn,
       animals: [fA1, fA2],
       opType: {
         animals: [a1, a2, a3, a4],
       },
     } = this
+    const { sex, index, grantStackIndex, savior } = opFn || {}
 
     return [
       // savior,
@@ -874,10 +874,11 @@ export abstract class OPFn extends OPPart {
     }
     return animals.sort(sortByIndex)
   }
-  get opFn() {
-    return this.opType.opFunctions.filter(
-      ({ letter }) => letter === this.code,
-    )[0]
+  get opFn(): OPFunctionType | null {
+    return (
+      this.opType.opFunctions.filter(({ letter }) => letter === this.code)[0] ||
+      null
+    )
   }
   get fullCode() {
     const { sex, code, focus } = this
