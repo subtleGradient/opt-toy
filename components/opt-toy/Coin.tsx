@@ -295,8 +295,8 @@ export const NamedCOINS = {
     headsDetail: ``,
     tailsDetail: ``,
     ...ParsableCoinDefault,
-    testHeads: /[mf]?S[xei]/,
-    testTails: /[mf]?N[xei]/,
+    testHeads: /[mf]?S[xei]/i,
+    testTails: /[mf]?N[xei]/i,
   },
 }
 let COIN_INDEX = -1

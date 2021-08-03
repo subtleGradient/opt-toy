@@ -136,6 +136,7 @@ describe("NamedCOINS", () => {
         expect(coinNS.parse("Dx/Si")).toBe(true)
         expect(coinNS.parse("fSi")).toBe(true)
         expect(coinNS.parse("mSi")).toBe(true)
+        expect(coinNS.parse("si")).toBe(true)
       })
       it("parses as tails", () => {
         expect(coinNS.parse("Ne/Dx")).toBe(false)
@@ -146,6 +147,7 @@ describe("NamedCOINS", () => {
         expect(coinNS.parse("Dx/Ni")).toBe(false)
         expect(coinNS.parse("fNi")).toBe(false)
         expect(coinNS.parse("mNi")).toBe(false)
+        expect(coinNS.parse("ni")).toBe(false)
       })
     })
   })
