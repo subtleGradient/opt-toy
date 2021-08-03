@@ -65,15 +65,9 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
                 </thead>
                 <tbody>
                   {op512.functions.map(
-                    ({
-                      code,
-                      activation1or2,
-                      activation,
-                      saviorCode,
-                      opFn,
-                    }) => (
+                    ({ code, activation1or2, saviorCode, opFn }) => (
                       <tr key={code}>
-                        <td title={activation + 1 + ""}>{activation1or2}</td>
+                        <td>{activation1or2}</td>
                         {showSex && (
                           <td
                             title={{ f: "feminine", m: "masculine" }[opFn?.sex]}

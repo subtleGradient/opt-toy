@@ -607,40 +607,14 @@ const Flipped = {
   De: "Di" as "Di",
 }
 
-const rawActivations = [
-  7206,
-  7207,
-  7216,
-  7217,
-  8106,
-  8107,
-  8116,
-  8117,
-  8206,
-  8207,
-  8216,
-  8217,
-  ,
-  9008,
-  9009,
-  9018,
-  9019,
-  9108,
-  9109,
-  9118,
-  9119,
-  19208,
-  109209,
-  1009218,
-  10009219,
-]
-
 export abstract class OPPart {
   readonly code: string
   constructor(public opType: OPT512) {}
   abstract get flipSide(): OPPart
   abstract get rawActivation(): number
-  get activation() { return rawActivations.indexOf(this.rawActivation) } // prettier-ignore
+  /** @deprecated*/
+  get activation() { return -1 } // prettier-ignore
+  /** @deprecated*/
   get activationDistance() { return this.activation - 12 } // prettier-ignore
 }
 
@@ -735,25 +709,17 @@ export abstract class OPFn extends OPPart {
         return index
     }
   }
-  get activation1or2() { return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation] } // prettier-ignore
-  get gapBetweenAnimals(): 0 | 1 | 2 { return (this.animals[1]?.index - this.animals[0]?.index - 1) as any } // prettier-ignore
-  get activationDetails() {
-    const {
-      opFn,
-      animals: [fA1, fA2],
-      opType: {
-        animals: [a1, a2, a3, a4],
-      },
-      gapBetweenAnimals,
-    } = this
-    const { sex, index, grantStackIndex } = opFn || {}
-    return {
-      index,
-      grantStackIndex,
-      sex,
-      gapBetweenAnimals,
-    }
+  get activation1or2() {
+    const [A1, A2] = this.animals
+    const [A1i, A2i] = [
+      (this.opType.animals as OPAnimal[]).indexOf(A1),
+      (this.opType.animals as OPAnimal[]).indexOf(A2),
+    ]
+    if (A1i === -1 || A2i === -1) return
+    return A1i === 3 || A2i === 3 ? 1 : 2
   }
+  get gapBetweenAnimals(): 0 | 1 | 2 { return (this.animals[1]?.index - this.animals[0]?.index - 1) as any } // prettier-ignore
+
   get isPolar() { return this.gapBetweenAnimals === 2 } // prettier-ignore
   get isPairActive() { return this.gapBetweenAnimals === 0 } // prettier-ignore
 
