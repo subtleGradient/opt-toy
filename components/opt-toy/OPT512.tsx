@@ -25,32 +25,66 @@ export {
   parseCoinText,
 }
 
-type OPODLetterType = "O" | "D" | "?"
-type OPDLetterType = "F" | "T" | "D"
-type OPOLetterType = "N" | "S" | "O"
+function codeForBoolMaybe<
+  Tails extends string,
+  Heads extends string,
+  Edge extends string,
+>(
+  values: readonly [tails: Tails, heads: Heads, edge: Edge],
+  side: BoolMaybe,
+): Tails | Heads | Edge {
+  return values[maybeBoolToIndex(side)]
+}
+
 type OPLetterType = OPDLetterType | OPOLetterType | OPODLetterType
-type OPFocusType = "i" | "e" | "x" | "?"
-type OPSexType = "f" | "m" | "?"
-type OPAnimalType = "P" | "B" | "C" | "S" | "?"
+type OPAnimalType = OPInfoType | OPEnergyType
 type OPCodeLetter = OPLetterType | OPFocusType | OPSexType
+
+type OPODLetterType    = "O"| "D"| "?" // prettier-ignore
+type OPDLetterType     = "F"| "T"| "D" // prettier-ignore
+type OPOLetterType     = "N"| "S"| "O" // prettier-ignore
+type OPFocusType       = "i"| "e"| "x" | "?" // prettier-ignore
+type OPSexType         = "f"| "m"| "?" // prettier-ignore
+type OPEnergyType      = "S"| "P"| "?" // prettier-ignore
+type OPInfoType        = "C"| "B"| "?" // prettier-ignore
+
+const OPODLetterCodes = ["O", "D", "?"] as const // prettier-ignore
+const OPDLetterCodes  = ["F", "T", "D"] as const // prettier-ignore
+const OPOLetterCodes  = ["N", "S", "O"] as const // prettier-ignore
+const OPFocusCodes    = ["i", "e", "x"] as const // prettier-ignore
+const OPSexCodes      = ["f", "m", "?"] as const // prettier-ignore
+const OPEnergyCodes   = ["S", "P", "?"] as const // prettier-ignore
+const OPInfoCodes     = ["C", "B", "?"] as const // prettier-ignore
+
+/** @deprecated use OPFocusCodes instead */
+export const FocusCodes = OPFocusCodes
+
+const getOPODLetterCodeForCoinEdge = (side: BoolMaybe) => codeForBoolMaybe(OPODLetterCodes, side) // prettier-ignore
+const getOPDLetterCodeForCoinEdge  = (side: BoolMaybe) => codeForBoolMaybe(OPDLetterCodes,  side) // prettier-ignore
+const getOPOLetterCodeForCoinEdge  = (side: BoolMaybe) => codeForBoolMaybe(OPOLetterCodes,  side) // prettier-ignore
+const getOPFocusCodeForCoinEdge    = (side: BoolMaybe) => codeForBoolMaybe(OPFocusCodes,    side) // prettier-ignore
+const getOPSexCodeForCoinEdge      = (side: BoolMaybe) => codeForBoolMaybe(OPSexCodes,      side) // prettier-ignore
+const getOPEnergyCodeForCoinEdge   = (side: BoolMaybe) => codeForBoolMaybe(OPEnergyCodes,   side) // prettier-ignore
+const getOPInfoCodeForCoinEdge     = (side: BoolMaybe) => codeForBoolMaybe(OPInfoCodes,     side) // prettier-ignore
 
 const OPCodeLetterToSide: { [F in OPCodeLetter]: BoolMaybe } = {
   "?": null,
   x: null,
+
   e: true,
   i: false,
 
-  D: 1,
-  O: 0,
+  D: null,
+  O: null,
 
-  T: 1,
-  F: 0,
+  T: true,
+  F: false,
 
-  S: 1,
-  N: 0,
+  S: true,
+  N: false,
 
-  m: 1,
-  f: 0,
+  m: true,
+  f: false,
 }
 
 export interface OPFunctionType {
@@ -78,7 +112,6 @@ const MissingAnimal = {
   CPS: "B" as "B",
   BCS: "P" as "P",
 }
-export const FocusCodes = ["i", "e", "x"] as OPFocusType[]
 
 export const ActivationsToAnimalsString = {
   "B eEnergy eInfo": "BP/S(C)",
@@ -132,32 +165,18 @@ export class OPT512 {
     }
   }
 
-  static from(typeCode: string): OPT512 {
-    return new OPT512(parseCoinText(typeCode))
-  }
-  static fromDirtyCoinText(typeCode: string): OPT512 {
-    return OPT512.from(typeCode)
-  }
-  static fromCoinText(typeCode: string): OPT512 {
-    return new OPT512(parseCoinText(typeCode))
-  }
+  static from(typeCode: string): OPT512 { return new OPT512(parseCoinText(typeCode)) } // prettier-ignore
+  static fromDirtyCoinText(typeCode: string): OPT512 { return OPT512.from(typeCode) } // prettier-ignore
+  static fromCoinText(typeCode: string): OPT512 { return new OPT512(parseCoinText(typeCode)) } // prettier-ignore
 
-  get eDecider() {
-    return this.deciders.find((Dx) => Dx.focus === "e") || this.deciders[0]
-  }
-  get iDecider() {
-    return this.deciders.find((Dx) => Dx.focus === "i") || this.deciders[1]
-  }
+  get eDecider() { return this.deciders.find((Dx) => Dx.focus === "e") || this.deciders[0] } // prettier-ignore
+  get iDecider() { return this.deciders.find((Dx) => Dx.focus === "i") || this.deciders[1] } // prettier-ignore
   get deciders() {
     const { feeling, thinking } = this
     return [feeling, thinking].sort(sortByIndex)
   }
-  get eObserver() {
-    return this.observers.find((Ox) => Ox.focus === "e") || this.observers[0]
-  }
-  get iObserver() {
-    return this.observers.find((Ox) => Ox.focus === "i") || this.observers[1]
-  }
+  get eObserver() { return this.observers.find((Ox) => Ox.focus === "e") || this.observers[0] } // prettier-ignore
+  get iObserver() { return this.observers.find((Ox) => Ox.focus === "i") || this.observers[1] } // prettier-ignore
   get observers() {
     const { intuition, sensing } = this
     return [intuition, sensing].sort(sortByIndex)
@@ -176,18 +195,10 @@ export class OPT512 {
   readonly intuition = this.N
   readonly feeling = this.F
 
-  get Di(): Thinking | Feeling {
-    return this[this.codeDi[0]]
-  }
-  get De(): Thinking | Feeling {
-    return this[this.codeDe[0]]
-  }
-  get Oi(): Sensing | iNtuition {
-    return this[this.codeOi[0]]
-  }
-  get Oe(): Sensing | iNtuition {
-    return this[this.codeOe[0]]
-  }
+  get Di(): Thinking | Feeling { return this[this.codeDi[0]] } // prettier-ignore
+  get De(): Thinking | Feeling { return this[this.codeDe[0]] } // prettier-ignore
+  get Oi(): Sensing | iNtuition { return this[this.codeOi[0]] } // prettier-ignore
+  get Oe(): Sensing | iNtuition { return this[this.codeOe[0]] } // prettier-ignore
 
   get animalStack() {
     const { play, blast, consume, sleep, A1 } = this
@@ -220,44 +231,24 @@ export class OPT512 {
     const index = animals.findIndex((animal) => animal.letters === letters)
     return animals[index]
   }
-  get ST() {
-    return this.getAnimalByLetters("ST")
-  }
-  get SF() {
-    return this.getAnimalByLetters("SF")
-  }
-  get NT() {
-    return this.getAnimalByLetters("NT")
-  }
-  get NF() {
-    return this.getAnimalByLetters("NF")
-  }
+  get ST() { return this.getAnimalByLetters("ST") } // prettier-ignore
+  get SF() { return this.getAnimalByLetters("SF") } // prettier-ignore
+  get NT() { return this.getAnimalByLetters("NT") } // prettier-ignore
+  get NF() { return this.getAnimalByLetters("NF") } // prettier-ignore
 
   constructor(public type: OPT512Maybe) {
     this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe
   }
-  toJSON() {
-    return this.type
-  }
-  static fromJSON(type: OPT512Maybe) {
-    return new OPT512(type)
-  }
+  toJSON() { return this.type } // prettier-ignore
+  static fromJSON(type: OPT512Maybe) { return new OPT512(type) } // prettier-ignore
 
-  get typeNumber() {
-    return parseInt(this.type.map(Number).reverse().join(""), 2)
-  }
-  get typeNumberString() {
-    return this.type.map(Number).reverse().join("")
-  }
-  getComplimentType(): OPT512 {
-    return OPT512.fromTypeNumber(this.typeNumber ^ 0b111111111)
-  }
-  static fromTypeNumber(typeNumber: number): OPT512 {
-    return new OPT512(typeNumberToCoins(typeNumber))
-  }
-  static random() {
-    return OPT512.fromTypeNumber(getRandomInt(0, 0b111111111))
-  }
+  get typeNumber() { return parseInt(this.typeNumberString, 2) } // prettier-ignore
+  get typeNumberString() { return this.type.map(Number).reverse().join("") } // prettier-ignore
+  getComplimentType(): OPT512 { return OPT512.fromTypeNumber(this.typeNumber ^ 0b111111111) } // prettier-ignore
+  static fromTypeNumber(typeNumber: number): OPT512 { return new OPT512(typeNumberToCoins(typeNumber)) } // prettier-ignore
+  static random() { return OPT512.fromTypeNumber(getRandomInt(0, 0b111111111)) } // prettier-ignore
+
+  /** @deprecated*/
   get sortValue() {
     return (
       sideToDistance(this.type[NamedCOINS.coinNS.index]) *
@@ -268,9 +259,9 @@ export class OPT512 {
     )
   }
 
-  get dPosition() {
-    return this.De.rawActivation - this.Di.rawActivation
-  }
+  /** @deprecated*/
+  get dPosition() { return this.De.rawActivation - this.Di.rawActivation } // prettier-ignore
+  /** @deprecated*/
   get dRotation() {
     return (
       Math.round(
@@ -280,9 +271,9 @@ export class OPT512 {
       ) / 100
     )
   }
-  get oPosition() {
-    return this.Oe.rawActivation - this.Oi.rawActivation
-  }
+  /** @deprecated*/
+  get oPosition() { return this.Oe.rawActivation - this.Oi.rawActivation } // prettier-ignore
+  /** @deprecated*/
   get oRotation() {
     return (
       Math.round(
@@ -292,9 +283,9 @@ export class OPT512 {
       ) / 100
     )
   }
-  get temperamentPosition(): [number, number] {
-    return [this.dPosition, this.oPosition]
-  }
+  /** @deprecated*/
+  get temperamentPosition(): [number, number] { return [this.dPosition, this.oPosition] } // prettier-ignore
+  /** @deprecated*/
   get temperamentRotation() {
     return (
       Math.round(
@@ -303,11 +294,13 @@ export class OPT512 {
     )
   }
 
+  /** @deprecated*/
   get positionSTNF() {
     return (
       (4 - this.ST.rawActivation) * 100 + (4 - this.NF.rawActivation) * -100
     )
   }
+  /** @deprecated*/
   get positionSFNT() {
     return (
       (4 - this.SF.rawActivation) * 100 + (4 - this.NT.rawActivation) * -100
@@ -315,6 +308,7 @@ export class OPT512 {
   }
 
   private memo_position: number[]
+  /** @deprecated*/
   get position() {
     return (
       this.memo_position ||
@@ -358,13 +352,11 @@ export class OPT512 {
       ].map(Number))
     )
   }
-  static getCoinDistanceBetween(a: OPT512, b: OPT512) {
-    return euclideanDistance(a?.position, b?.position)
-  }
+  /** @deprecated*/
+  static getCoinDistanceBetween(a: OPT512, b: OPT512) { return euclideanDistance(a?.position, b?.position) } // prettier-ignore
 
-  get rawActivation() {
-    return this.functions.reduce((aaa, fn) => aaa + fn?.activation, 0)
-  }
+  /** @deprecated*/
+  get rawActivation() { return this.functions.reduce((aaa, fn) => aaa + fn?.activation, 0) } // prettier-ignore
 
   static getAll(): OPT512[] {
     return Array(512)
@@ -372,201 +364,67 @@ export class OPT512 {
       .map((_, i) => OPT512.fromTypeNumber(i))
   }
 
-  get eCount() {
-    return this.type.filter((it) => it === true).length
-  }
-  get iCount() {
-    return this.type.filter((it) => it === false).length
-  }
-  get nullCount() {
-    return this.type.filter((it) => it == null).length
-  }
-  get isEmpty() {
-    return this.nullCount === this.type.length
-  }
-  get isFull() {
-    return this.nullCount === 0
-  }
-  get fmS(): OPSexType {
-    return ["F", "M", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinSfm.index])
-    ] as OPSexType
-  }
-  get fmDe(): OPSexType {
-    return ["F", "M", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinDefm.index])
-    ] as OPSexType
-  }
-  get odLetter(): OPODLetterType {
-    return ["O", "D", "?"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ] as OPODLetterType
-  }
-  get dLetter(): OPDLetterType {
-    return ["F", "T", "D"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinFT.index])
-    ] as OPDLetterType
-  }
-  set dLetter(letter: OPDLetterType) {
-    this.edit()
-    switch (letter) {
-      case "F":
-        this.type[NamedCOINS.coinFT.index] = false
-        break
+  get eCount() { return this.type.filter((it) => it === true).length } // prettier-ignore
+  get iCount() { return this.type.filter((it) => it === false).length } // prettier-ignore
+  get nullCount() { return this.type.filter((it) => it == null).length } // prettier-ignore
+  get isEmpty() { return this.nullCount === this.type.length } // prettier-ignore
+  get isFull() { return this.nullCount === 0 } // prettier-ignore
+  get fmS(): OPSexType { return getOPSexCodeForCoinEdge(this.type[NamedCOINS.coinSfm.index]) } // prettier-ignore
+  get fmDe() { return getOPSexCodeForCoinEdge(this.type[NamedCOINS.coinDefm.index]) } // prettier-ignore
 
-      case "T":
-        this.type[NamedCOINS.coinFT.index] = true
-        break
+  get odLetter() { return getOPODLetterCodeForCoinEdge(this.type[NamedCOINS.coinOD.index]) } // prettier-ignore
+  set odLetter(letter: OPODLetterType) { this.edit(); this.type[NamedCOINS.coinOD.index] = OPCodeLetterToSide[letter] } // prettier-ignore
 
-      case "D":
-      default:
-        this.type[NamedCOINS.coinFT.index] = null
-    }
-  }
-  get oLetter(): OPOLetterType {
-    return ["N", "S", "O"][
-      maybeBoolToIndex(this.type[NamedCOINS.coinNS.index])
-    ] as OPOLetterType
-  }
-  set oLetter(letter: OPOLetterType) {
-    this.edit()
-    switch (letter) {
-      case "N":
-        this.type[NamedCOINS.coinNS.index] = false
-        break
+  get dLetter() { return getOPDLetterCodeForCoinEdge(this.type[NamedCOINS.coinFT.index]) } // prettier-ignore
+  set dLetter(letter: OPDLetterType) { this.edit(); this.type[NamedCOINS.coinFT.index] = OPCodeLetterToSide[letter] } // prettier-ignore
 
-      case "S":
-        this.type[NamedCOINS.coinNS.index] = true
-        break
+  get oLetter(): OPOLetterType { return getOPOLetterCodeForCoinEdge(this.type[NamedCOINS.coinNS.index]) } // prettier-ignore
+  set oLetter(letter: OPOLetterType) { this.edit(); this.type[NamedCOINS.coinNS.index] = OPCodeLetterToSide[letter] } // prettier-ignore
 
-      case "O":
-      default:
-        this.type[NamedCOINS.coinNS.index] = null
-    }
-  }
+  get dFocus() { return getOPFocusCodeForCoinEdge(this.type[NamedCOINS.coinDiDe.index]) } // prettier-ignore
+  set dFocus(letter: OPFocusType) { this.edit(); this.type[NamedCOINS.coinDiDe.index] = OPCodeLetterToSide[letter] } // prettier-ignore
 
-  get dFocus() {
-    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinDiDe.index])]
-  }
-  set dFocus(letter: OPFocusType) {
-    this.edit()
-    switch (letter) {
-      case "i":
-        this.type[NamedCOINS.coinDiDe.index] = false
-        break
-
-      case "e":
-        this.type[NamedCOINS.coinDiDe.index] = true
-        break
-
-      case "x":
-      default:
-        this.type[NamedCOINS.coinDiDe.index] = null
-    }
-  }
-
-  get oFocus() {
-    return FocusCodes[maybeBoolToIndex(this.type[NamedCOINS.coinOiOe.index])]
-  }
-  set oFocus(letter: OPFocusType) {
-    this.edit()
-    switch (letter.toLowerCase()) {
-      case "i":
-        this.type[NamedCOINS.coinOiOe.index] = false
-        break
-
-      case "e":
-        this.type[NamedCOINS.coinOiOe.index] = true
-        break
-
-      case "x":
-      default:
-        this.type[NamedCOINS.coinOiOe.index] = null
-    }
-  }
+  get oFocus() { return getOPFocusCodeForCoinEdge(this.type[NamedCOINS.coinOiOe.index]) } // prettier-ignore
+  set oFocus(letter: OPFocusType) { this.edit(); this.type[NamedCOINS.coinOiOe.index] = OPCodeLetterToSide[letter] } // prettier-ignore
 
   /** @deprecated use energyActivation or infoActivation instead */
-  get a2Focus() {
-    return FocusCodes[maybeBoolToIndex(this.a2FocusBool)]
-  }
+  get a2Focus() { return getOPFocusCodeForCoinEdge(this.a2FocusBool) } // prettier-ignore
   /** @deprecated use energyActivationBool or infoActivationBool instead */
-  get a2FocusBool() {
-    return null
-  }
+  get a2FocusBool() { return null } // prettier-ignore
   /** @deprecated use energyActivationBool or infoActivationBool instead */
-  get a3FocusBool() {
-    return null
-  }
+  get a3FocusBool() { return null } // prettier-ignore
   /** @deprecated use energyActivationBool or infoActivationBool instead */
-  set a2FocusBool(side: BoolMaybe) {
-    this.edit()
-  }
+  set a2FocusBool(side: BoolMaybe) { this.edit() } // prettier-ignore
   /** @deprecated use energyActivationBool or infoActivationBool instead */
-  set a3FocusBool(side: BoolMaybe) {
-    this.edit()
-  }
+  set a3FocusBool(side: BoolMaybe) { this.edit() } // prettier-ignore
   /** @deprecated use energyActivation or infoActivation instead */
-  get a3Focus() {
-    return FocusCodes[maybeBoolToIndex(this.a3FocusBool)]
-  }
+  get a3Focus() { return getOPFocusCodeForCoinEdge(this.a3FocusBool) } // prettier-ignore
 
-  get energyActivation() {
-    return FocusCodes[maybeBoolToIndex(this.energyActivationBool)]
-  }
-  get infoActivation() {
-    return FocusCodes[maybeBoolToIndex(this.infoActivationBool)]
-  }
-  get energyActivationBool() {
-    return this.type[NamedCOINS.coinEnAct.index]
-  }
-  get infoActivationBool() {
-    return this.type[NamedCOINS.coinInAct.index]
-  }
-  set energyActivationBool(side: BoolMaybe) {
-    this.edit()
-    this.type[NamedCOINS.coinEnAct.index] = side
-  }
-  set infoActivationBool(side: BoolMaybe) {
-    this.edit()
-    this.type[NamedCOINS.coinInAct.index] = side
-  }
-  get DTFxei(): DTFxei {
-    return `${this.dLetter}${this.dFocus}` as any
-  }
-  get OSNxei(): OSNxei {
-    return `${this.oLetter}${this.oFocus}` as any
-  }
-  get S1() {
-    return [this.OSNxei, this.DTFxei, this.DTFxei][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ]
-  }
-  get S2() {
-    return [this.DTFxei, this.OSNxei, this.OSNxei][
-      maybeBoolToIndex(this.type[NamedCOINS.coinOD.index])
-    ]
-  }
-  get D1() {
-    return Flipped[this.S2] || this.S2
-  }
-  get D2() {
-    return Flipped[this.S1] || this.S1
-  }
-  get codeDe(): "De" | "Te" | "Fe" {
-    return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus]
-  }
-  get codeDi(): "Di" | "Ti" | "Fi" {
-    return Flipped[this.codeDe]
-  }
-  get codeOe(): "Oe" | "Se" | "Ne" {
-    return { e: this.OSNxei, i: Flipped[this.OSNxei] }[this.oFocus]
-  }
-  get codeOi(): "Oi" | "Si" | "Ni" {
-    return Flipped[this.codeOe]
-  }
-  get isJumper() {
-    return this.dFocus === "x" ? null : this.dFocus === this.oFocus
-  }
+  get energyActivation() { return getOPFocusCodeForCoinEdge(this.energyActivationBool) } // prettier-ignore
+  get energyActivationBool() { return this.type[NamedCOINS.coinEnAct.index] } // prettier-ignore
+  set energyActivation(letter: OPFocusType) { this.energyActivationBool = OPCodeLetterToSide[letter] } // prettier-ignore
+  set energyActivationBool(side: BoolMaybe) { this.edit(); this.type[NamedCOINS.coinEnAct.index] = side } // prettier-ignore
+
+  get infoActivation() { return getOPFocusCodeForCoinEdge(this.infoActivationBool) } // prettier-ignore
+  get infoActivationBool() { return this.type[NamedCOINS.coinInAct.index] } // prettier-ignore
+  set infoActivation(letter: OPFocusType) { this.infoActivationBool = OPCodeLetterToSide[letter] } // prettier-ignore
+  set infoActivationBool(side: BoolMaybe) { this.edit(); this.type[NamedCOINS.coinInAct.index] = side } // prettier-ignore
+
+  get DTFxei(): DTFxei { return `${this.dLetter}${this.dFocus}` as any } // prettier-ignore
+  get OSNxei(): OSNxei { return `${this.oLetter}${this.oFocus}` as any } // prettier-ignore
+
+  get S1() { return codeForBoolMaybe([this.OSNxei, this.DTFxei, this.DTFxei], this.type[NamedCOINS.coinOD.index]) } // prettier-ignore
+  get S2() { return codeForBoolMaybe([this.DTFxei, this.OSNxei, this.OSNxei], this.type[NamedCOINS.coinOD.index]) } // prettier-ignore
+  get D1() { return Flipped[this.S2] || this.S2 } // prettier-ignore
+  get D2() { return Flipped[this.S1] || this.S1 } // prettier-ignore
+
+  get codeDe(): "De" | "Te" | "Fe" { return { e: this.DTFxei, i: Flipped[this.DTFxei] }[this.dFocus] } // prettier-ignore
+  get codeOe(): "Oe" | "Se" | "Ne" { return { e: this.OSNxei, i: Flipped[this.OSNxei] }[this.oFocus] } // prettier-ignore
+  get codeDi(): "Di" | "Ti" | "Fi" { return Flipped[this.codeDe] } // prettier-ignore
+  get codeOi(): "Oi" | "Si" | "Ni" { return Flipped[this.codeOe] } // prettier-ignore
+
+  get isJumper() { return this.dFocus === "x" ? null : this.dFocus === this.oFocus } // prettier-ignore
+
   private memo_opFunctions: OP4Fns
   get opFunctions(): OP4Fns {
     if (this.memo_opFunctions) return this.memo_opFunctions
@@ -636,74 +494,39 @@ export class OPT512 {
     return (this.memo_opFunctions = [fn1, fn2, fn3, fn4])
   }
 
-  get letters() {
-    return this.opFunctions.sort(sortByIndex).map((opFn) => opFn.letter[0])
-  }
-  get tIndex() {
-    return this.letters.indexOf("T")
-  }
-  get sIndex() {
-    return this.letters.indexOf("S")
-  }
-  get fIndex() {
-    return this.letters.indexOf("F")
-  }
-  get nIndex() {
-    return this.letters.indexOf("N")
-  }
-  get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] {
-    return this.animalLetters.split("")
-  }
-  get PlayIndex() {
-    return this.animalLetters.indexOf("P")
-  }
-  get BlastIndex() {
-    return this.animalLetters.indexOf("B")
-  }
-  get ConsumeIndex() {
-    return this.animalLetters.indexOf("C")
-  }
-  get SleepIndex() {
-    return this.animalLetters.indexOf("S")
-  }
+  get letters() { return this.opFunctions.sort(sortByIndex).map((opFn) => opFn.letter[0])  } // prettier-ignore
+  get tIndex() { return this.letters.indexOf("T")  } // prettier-ignore
+  get sIndex() { return this.letters.indexOf("S")  } // prettier-ignore
+  get fIndex() { return this.letters.indexOf("F")  } // prettier-ignore
+  get nIndex() { return this.letters.indexOf("N")  } // prettier-ignore
 
-  get A1Code() {
-    return `O${this.oFocus}D${this.dFocus}`
-  }
-  get A1(): OPAnimalType {
-    return AnimalCodeToAnimalLetter[this.A1Code] || "?"
-  }
-  private get activationStack() {
-    return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`
-  }
-  private get animalString(): any {
-    return ActivationsToAnimalsString[this.activationStack] ?? "?"
-  }
-  private get animalLetters(): any {
-    return extractAnimalsFromOP512(this.animalString)
-  }
-  get A2(): OPAnimalType {
-    return this.animalLetters[1] ?? "?"
-  }
-  get A3(): OPAnimalType {
-    return this.animalLetters[2] ?? "?"
-  }
-  get A4(): OPAnimalType {
-    return this.animalLetters[3] ?? "?"
-  }
-  toString() {
-    return this.OPSCode
-  }
-  valueOf() {
-    return this.toString()
-  }
+  get PlayIndex() { return this.animalLetters.indexOf("P")  } // prettier-ignore
+  get BlastIndex() { return this.animalLetters.indexOf("B")  } // prettier-ignore
+  get ConsumeIndex() { return this.animalLetters.indexOf("C")  } // prettier-ignore
+  get SleepIndex() { return this.animalLetters.indexOf("S")  } // prettier-ignore
+  get A1Code() { return `O${this.oFocus}D${this.dFocus}`  } // prettier-ignore
+
+  private get activationStack() { return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`  } // prettier-ignore
+  private get animalString(): any { return ActivationsToAnimalsString[this.activationStack] ?? "?"  } // prettier-ignore
+  private get animalLetters(): any { return extractAnimalsFromOP512(this.animalString)  } // prettier-ignore
+
+  get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] { return this.animalLetters.split("")  } // prettier-ignore
+
+  get A1(): OPAnimalType { return AnimalCodeToAnimalLetter[this.A1Code] || "?"  } // prettier-ignore
+  get A2(): OPAnimalType { return this.animalLetters[1] ?? "?"  } // prettier-ignore
+  get A3(): OPAnimalType { return this.animalLetters[2] ?? "?"  } // prettier-ignore
+  get A4(): OPAnimalType { return this.animalLetters[3] ?? "?"  } // prettier-ignore
+
+  toString() { return this.OPSCode  } // prettier-ignore
+  valueOf() { return this.toString()  } // prettier-ignore
+
   get OPSCode(): string {
     const { sexString, S1, S2, animalString } = this
     return `${sexString}${S1}/${S2}-${animalString}`
   }
   private get sexString() {
     const { fmS, fmDe } = this
-    return fmS === "?" && fmDe === "?" ? "" : `${fmS}${fmDe}-`
+    return fmS === "?" && fmDe === "?" ? "" : `${fmS}${fmDe}-`.toUpperCase()
   }
 
   /** @deprecated use toString instead */
@@ -711,14 +534,8 @@ export class OPT512 {
     const { fmS, fmDe, S1, S2, A1, A2, A3, A4 } = this
     return `${fmS}${fmDe}-${S1}/${S2}-${A1}${A2}/${A3}(${A4})`
   }
-  get sideOfEnergyInfo(): BoolMaybe {
-    return {
-      S: true,
-      C: false,
-      B: false,
-      P: true,
-    }[this.A4]
-  }
+
+  get sideOfEnergyInfo(): BoolMaybe { return { P:true, S:true, C:false, B:false }[this.A4] } // prettier-ignore
   get sideOfSiNe(): BoolMaybe {
     if (this.oLetter === "N" && this.oFocus === "e") return true
     if (this.oLetter === "S" && this.oFocus === "i") return false
@@ -749,13 +566,10 @@ export class OPT512 {
     if (this.oLetter === "N" && this.dLetter === "F") return false
     return null
   }
-
-  includesText(type: string) {
-    return this.toString().includes(type)
-  }
-  includesAnyText(...types: string[]) {
-    return types.findIndex((type) => this.includesText(type)) > -1
-  }
+  /** @deprecated*/
+  includesText(type: string) { return this.toString().includes(type) } // prettier-ignore
+  /** @deprecated*/
+  includesAnyText(...types: string[]) { return types.findIndex((type) => this.includesText(type)) > -1 } // prettier-ignore
 }
 
 const Flipped = {
@@ -826,12 +640,8 @@ export abstract class OPPart {
   constructor(public opType: OPT512) {}
   abstract get flipSide(): OPPart
   abstract get rawActivation(): number
-  get activation() {
-    return rawActivations.indexOf(this.rawActivation)
-  }
-  get activationDistance() {
-    return this.activation - 12
-  }
+  get activation() { return rawActivations.indexOf(this.rawActivation) } // prettier-ignore
+  get activationDistance() { return this.activation - 12 } // prettier-ignore
 }
 
 type AnimalFunctionPair = [Sensing | iNtuition, Thinking | Feeling]
@@ -844,27 +654,15 @@ abstract class OPAnimal extends OPPart {
     return (letterO + letterD) as any // TODO(tom): remove any once we upgrade to the latest TS
   }
   readonly code: OPAnimalType
-  get name() {
-    return this.constructor.name
-  }
+  get name() { return this.constructor.name } // prettier-ignore
   readonly focus: OPFocusType
-  get index(): number {
-    return this.opType.animalCodes.indexOf(this.code)
-  }
+  get index(): number { return this.opType.animalCodes.indexOf(this.code) } // prettier-ignore
   abstract get flipSide(): OPAnimal
   abstract get functions(): AnimalFunctionPair
-  get sex(): "MM" | "MF" | "FM" | "FF" {
-    return (this.observer.sex + this.decider.sex).toUpperCase() as any
-  }
-  get observer() {
-    return this.functions[0]
-  }
-  get decider() {
-    return this.functions[1]
-  }
-  get flipSideIsLast() {
-    return this.flipSide.index === 3
-  }
+  get sex(): "MM" | "MF" | "FM" | "FF" { return (this.observer.sex + this.decider.sex).toUpperCase() as any } // prettier-ignore
+  get observer() { return this.functions[0] } // prettier-ignore
+  get decider() { return this.functions[1] } // prettier-ignore
+  get flipSideIsLast() { return this.flipSide.index === 3 } // prettier-ignore
   get rawActivation() {
     return (
       2 -
@@ -873,59 +671,39 @@ abstract class OPAnimal extends OPPart {
       0.1 * ({ MM: 2, MF: 1, FM: -1, FF: -2 }[this.sex] ?? 0)
     )
   }
-  get temperament() {
-    return `${this.observer.code}${this.decider.code}`
-  }
-  get label() {
-    return `${this.sex} ${this.temperament} ${this.name}`
-  }
+  get temperament() { return `${this.observer.code}${this.decider.code}` } // prettier-ignore
+  get label() { return `${this.sex} ${this.temperament} ${this.name}` } // prettier-ignore
 }
-abstract class Info extends OPAnimal {
+abstract class InfoAnimal extends OPAnimal {
   kind = "info"
 }
-abstract class Energy extends OPAnimal {
+abstract class EnergyAnimal extends OPAnimal {
   kind = "energy"
 }
 
-class Blast extends Info {
+class Blast extends InfoAnimal {
   readonly code = "B" as "B"
   readonly focus = "e" as "e"
-  get flipSide() {
-    return this.opType.consume
-  }
-  get functions(): AnimalFunctionPair {
-    return [this.opType.iObserver, this.opType.eDecider]
-  }
+  get flipSide() { return this.opType.consume } // prettier-ignore
+  get functions(): AnimalFunctionPair { return [this.opType.iObserver, this.opType.eDecider] } // prettier-ignore
 }
-class Consume extends Info {
+class Consume extends InfoAnimal {
   readonly code = "C" as "C"
   readonly focus = "i" as "i"
-  get flipSide() {
-    return this.opType.blast
-  }
-  get functions(): AnimalFunctionPair {
-    return [this.opType.eObserver, this.opType.iDecider]
-  }
+  get flipSide() { return this.opType.blast } // prettier-ignore
+  get functions(): AnimalFunctionPair { return [this.opType.eObserver, this.opType.iDecider] } // prettier-ignore
 }
-class Play extends Energy {
+class Play extends EnergyAnimal {
   readonly code = "P" as "P"
   readonly focus = "e" as "e"
-  get flipSide() {
-    return this.opType.sleep
-  }
-  get functions(): AnimalFunctionPair {
-    return [this.opType.eObserver, this.opType.eDecider]
-  }
+  get flipSide() { return this.opType.sleep } // prettier-ignore
+  get functions(): AnimalFunctionPair { return [this.opType.eObserver, this.opType.eDecider] } // prettier-ignore
 }
-class Sleep extends Energy {
+class Sleep extends EnergyAnimal {
   readonly code = "S" as "S"
   readonly focus = "i" as "i"
-  get flipSide() {
-    return this.opType.play
-  }
-  get functions(): AnimalFunctionPair {
-    return [this.opType.iObserver, this.opType.iDecider]
-  }
+  get flipSide() { return this.opType.play } // prettier-ignore
+  get functions(): AnimalFunctionPair { return [this.opType.iObserver, this.opType.iDecider] } // prettier-ignore
 }
 
 const IndexActivationMap = {
@@ -943,9 +721,7 @@ const activationCodeReducer = (activation: number, { index }) =>
   activation + IndexActivationMap[index]
 
 export abstract class OPFn extends OPPart {
-  get label() {
-    return this.fullCode
-  }
+  get label() { return this.fullCode } // prettier-ignore
   code = "X"
   get saviorCode() {
     const {
@@ -961,12 +737,8 @@ export abstract class OPFn extends OPPart {
         return index
     }
   }
-  get activation1or2() {
-    return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation]
-  }
-  get gapBetweenAnimals(): 0 | 1 | 2 {
-    return (this.animals[1]?.index - this.animals[0]?.index - 1) as any
-  }
+  get activation1or2() { return { 0: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2 }[this.activation] } // prettier-ignore
+  get gapBetweenAnimals(): 0 | 1 | 2 { return (this.animals[1]?.index - this.animals[0]?.index - 1) as any } // prettier-ignore
   get activationDetails() {
     const {
       opFn: { sex, index, grantStackIndex, savior } = {},
@@ -983,12 +755,8 @@ export abstract class OPFn extends OPPart {
       gapBetweenAnimals,
     }
   }
-  get isPolar() {
-    return this.gapBetweenAnimals === 2
-  }
-  get isPairActive() {
-    return this.gapBetweenAnimals === 0
-  }
+  get isPolar() { return this.gapBetweenAnimals === 2 } // prettier-ignore
+  get isPairActive() { return this.gapBetweenAnimals === 0 } // prettier-ignore
 
   get rawActivation() {
     const {
@@ -1084,10 +852,10 @@ export abstract class OPFn extends OPPart {
       .reverse()
       .reduceRight((acc, value, index) => acc + value * 10 ** index, 0)
   }
-  get animals(): [Info, Energy] | [Energy, Info] | [] {
+  get animals(): [InfoAnimal, EnergyAnimal] | [EnergyAnimal, InfoAnimal] | [] {
     const { opFn, opType } = this
     const { play, blast, consume, sleep } = opType
-    let animals: [Info, Energy] | [Energy, Info] | []
+    let animals: [InfoAnimal, EnergyAnimal] | [EnergyAnimal, InfoAnimal] | []
     switch (opFn?.odLetter + opFn?.focus) {
       case "Oi":
         animals = [sleep, blast]
@@ -1115,15 +883,9 @@ export abstract class OPFn extends OPPart {
     const { sex, code, focus } = this
     return (sex === "?" ? "" : sex) + code + focus
   }
-  get sex() {
-    return this.opFn?.sex ?? "?"
-  }
-  get focus() {
-    return this.opFn?.focus ?? "?"
-  }
-  get index() {
-    return this.opFn?.index ?? -1
-  }
+  get sex() { return this.opFn?.sex ?? "?" } // prettier-ignore
+  get focus() { return this.opFn?.focus ?? "?" } // prettier-ignore
+  get index() { return this.opFn?.index ?? -1 } // prettier-ignore
 }
 abstract class DeciderFn extends OPFn {
   isObserver = false
@@ -1132,15 +894,11 @@ abstract class DeciderFn extends OPFn {
 }
 class Feeling extends DeciderFn {
   readonly code = "F"
-  get flipSide() {
-    return this.opType.thinking
-  }
+  get flipSide() { return this.opType.thinking } // prettier-ignore
 }
 class Thinking extends DeciderFn {
   readonly code = "T"
-  get flipSide() {
-    return this.opType.feeling
-  }
+  get flipSide() { return this.opType.feeling } // prettier-ignore
 }
 
 abstract class ObserverFn extends OPFn {
@@ -1150,15 +908,11 @@ abstract class ObserverFn extends OPFn {
 }
 class iNtuition extends ObserverFn {
   readonly code = "N"
-  get flipSide() {
-    return this.opType.sensing
-  }
+  get flipSide() { return this.opType.sensing } // prettier-ignore
 }
 class Sensing extends ObserverFn {
   readonly code = "S"
-  get flipSide() {
-    return this.opType.intuition
-  }
+  get flipSide() { return this.opType.intuition } // prettier-ignore
 }
 
 export const maybeBoolToIndex = (value: BoolMaybe) =>
