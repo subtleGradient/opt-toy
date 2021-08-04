@@ -12,24 +12,20 @@ export function OPCodeInput({
   onChange: (type: OPT512) => void
   style?: React.CSSProperties
 }) {
-  let defaultValue = opType.OPSCode
-  let [isEditing, setIsEditing] = React.useState(false)
+  const defaultValue = opType.OPSCode
+  const [isEditing, setIsEditing] = React.useState(false)
   let [inputValue, setInputValue] = React.useState("")
 
-  const nextType = OPT512.fromDirtyCoinText(inputValue)
-
   useEffect(() => {
-    if (opType.type.toString() === nextType.type.toString()) return
-    if (isEditing) return
-    setInputValue(defaultValue)
-  }, [defaultValue, isEditing, ...nextType.type, ...opType.type])
-
-  useEffect(() => {
+    const nextType = OPT512.fromCoinText(inputValue)
     if (nextType.nullCount >= 7) return
     console.log(nextType + "")
     onChange(nextType)
-  }, [...nextType.type])
+  }, [inputValue])
 
+  if (!isEditing) {
+    inputValue = defaultValue
+  }
   return (
     <input
       {...props}
