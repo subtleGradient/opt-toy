@@ -7,7 +7,7 @@ import { BLANK_TYPE, OPT512Maybe, parseCoinText } from "./Coin"
 import OPActivationTable from "./OPActivationTable"
 import { OPCodeInput } from "./OPCodeInput"
 import { OPTGraph } from "./opt128-svgr"
-import { OPT512 } from "./OPT512"
+import { cleanCoinText, OPT512 } from "./OPT512"
 import { OPTypeBinaryForm } from "./OPTypeBinaryForm"
 
 const isSSR = typeof window === "undefined"
@@ -38,7 +38,7 @@ const History = (props) => (
       redo
     </button>
     <button
-      key="reset"
+      key="clear"
       onClick={() =>
         props.opTypeActions.reset({
           name: "",
@@ -46,7 +46,7 @@ const History = (props) => (
         })
       }
     >
-      reset
+      clear
     </button>
   </div>
 )
@@ -68,45 +68,44 @@ export type TypeThingProps = {
   HTMLDivElement
 >
 
+type NameAndTypeText = {
+  name: string
+  typeText: string
+}
+
 export const TypeThing: FC<TypeThingProps> = ({
   selected = false,
-  defaultType,
+  defaultType: defaultTypeAndName,
   onClose = null,
   onChangeText = null,
   showOPTable = true,
   ...props
 }) => {
-  const defaultState = useMemo(
-    () =>
-      defaultType
-        ? {
-            name: String(defaultType.split(SEPARATOR)[1] || ""),
-            type: parseCoinText(defaultType.split(SEPARATOR)[0]),
-          }
-        : {
-            name: "loading...",
-            type: BLANK_TYPE,
-          },
-    [defaultType],
+  const defaultState = useMemo<NameAndTypeText>(
+    () => ({
+      name: String(defaultTypeAndName.split(SEPARATOR)[1] || ""),
+      typeText: defaultTypeAndName
+        ? cleanCoinText(defaultTypeAndName.split(SEPARATOR)[0])
+        : "",
+    }),
+    [defaultTypeAndName],
   )
-
-  const [opType, opTypeActions] = useUndo(defaultState)
-  useEffect(() => void opTypeActions.reset(defaultState), [defaultState])
-
-  const [isOpen, setIsOpen] = useState(selected)
-  const opTypeInstance = new OPT512(opType.present.type)
+  const [name, setName] = useState(defaultState.name)
+  const [type, setType] = useState<OPT512Maybe>(
+    () => OPT512.from(defaultState.typeText).type,
+  )
+  const opTypeInstance = new OPT512(type)
   const typeText = opTypeInstance.OPSCode
 
   useEffect(() => {
-    if (opType.past.length === 0) return
-    if (onChangeText) {
-      onChangeText(
-        `${typeText}${
-          opType.present.name ? SEPARATOR + opType.present.name : ""
-        }`,
-      )
-    }
-  }, [opType.present.name, typeText])
+    console.log(opTypeInstance)
+  }, [typeText, ...type])
+
+  useEffect(() => {
+    onChangeText?.(`${typeText}${name ? SEPARATOR + name : ""}`)
+  }, [name, typeText])
+
+  const [isOpen, setIsOpen] = useState(selected)
 
   const placeholderName = `${opTypeInstance.S1}/${opTypeInstance.S2}`
   return (
@@ -170,19 +169,12 @@ export const TypeThing: FC<TypeThingProps> = ({
               <input
                 style={{ font: "inherit", textAlign: "center", color: "#333" }}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(e) =>
-                  opTypeActions.set({
-                    type: opType.present.type,
-                    name: e.currentTarget.value,
-                  })
-                }
-                value={opType.present.name}
+                onChange={({ currentTarget: { value: name } }) => setName(name)}
+                value={name}
                 placeholder={placeholderName}
               />
             ) : (
-              <div style={{ padding: 3 }}>
-                {opType.present.name || placeholderName}
-              </div>
+              <div style={{ padding: 3 }}>{name || placeholderName}</div>
             )}
           </h3>
         </div>
@@ -196,13 +188,11 @@ export const TypeThing: FC<TypeThingProps> = ({
                 style={{ font: "inherit", textAlign: "center" }}
                 onClick={(e) => e.stopPropagation()}
                 opType={opTypeInstance}
-                onChange={({ type }) => {
-                  opTypeActions.set({ name: opType.present.name, type })
-                }}
+                onChange={(opType) => setType(opType.type)}
               />
             ) : (
               <div style={{ padding: 3 }}>
-                <OPTypeBinaryText type={opTypeInstance.type} />
+                <OPTypeBinaryText type={type} />
               </div>
             )}
           </h4>
@@ -230,8 +220,8 @@ export const TypeThing: FC<TypeThingProps> = ({
             }}
           >
             <Permalink typeText={typeText}></Permalink>
-            <Spacer />
-            <History opTypeActions={opTypeActions}></History>
+            {/* <Spacer /> */}
+            {/* <History opTypeActions={opTypeUndoActions}></History> */}
             <Spacer />
             {onClose && (
               <button onClick={onClose} title="Delete">
@@ -239,12 +229,7 @@ export const TypeThing: FC<TypeThingProps> = ({
               </button>
             )}
           </div>
-          <OPTypeBinaryForm
-            type={opType.present.type}
-            onChange={(type) => {
-              opTypeActions.set({ name: opType.present.name, type })
-            }}
-          />
+          <OPTypeBinaryForm type={type} onChange={setType} />
         </div>
       )}{" "}
     </div>
