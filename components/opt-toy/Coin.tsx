@@ -1,3 +1,5 @@
+import { OPT512 } from "./OPT512"
+
 export type BoolMaybe = 0 | 1 | true | false | undefined | null
 
 type OPT512Type = [
@@ -343,10 +345,8 @@ const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
 
 export const isBool = (value: BoolMaybe) => value === true || value === false
 
-/** @deprecated */
-export const cleanCoinText = (value: string = ""): string => {
-  return value
-}
+export const cleanCoinText = (text: string = ""): string =>
+  OPT512.fromCoinText(text).OPSCode
 
 const parserCoins = COINS.filter((COIN) => typeof COIN.parse === "function")
 export const parseCoinText = (type: string): OPT512Maybe =>
