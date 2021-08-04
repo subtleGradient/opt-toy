@@ -100,6 +100,7 @@ export interface OPFunctionType {
 
 type OP4Fns = [OPFunctionType, OPFunctionType, OPFunctionType, OPFunctionType]
 
+const filterByIndex = ({ index }) => index >= 0
 const sortByIndex = ({ index: a }, { index: b }) => sortBy(a, b)
 
 type DTFxei = "Dx" | "Tx" | "Fx" | "De" | "Te" | "Fe" | "Di" | "Ti" | "Fi"
@@ -173,17 +174,20 @@ export class OPT512 {
   get iDecider() { return this.deciders.find((Dx) => Dx.focus === "i") || this.deciders[1] } // prettier-ignore
   get deciders() {
     const { feeling, thinking } = this
-    return [feeling, thinking].sort(sortByIndex)
+    return [feeling, thinking].filter(filterByIndex).sort(sortByIndex)
   }
   get eObserver() { return this.observers.find((Ox) => Ox.focus === "e") || this.observers[0] } // prettier-ignore
   get iObserver() { return this.observers.find((Ox) => Ox.focus === "i") || this.observers[1] } // prettier-ignore
   get observers() {
     const { intuition, sensing } = this
-    return [intuition, sensing].sort(sortByIndex)
+    return [intuition, sensing].filter(filterByIndex).sort(sortByIndex)
   }
+  get functionStack() { return this.opFunctions.map(({ letter }) => this[letter]).filter(Boolean) } // prettier-ignore
   get functions() {
     const { feeling, thinking, intuition, sensing } = this
-    return [feeling, thinking, intuition, sensing].sort(sortByIndex)
+    return [feeling, thinking, intuition, sensing]
+      .filter(filterByIndex)
+      .sort(sortByIndex)
   }
   readonly S = new Sensing(this)
   readonly T = new Thinking(this)
@@ -217,7 +221,7 @@ export class OPT512 {
   }
   get animals() {
     const { play, sleep, blast, consume } = this
-    return [play, sleep, blast, consume].sort(sortByIndex)
+    return [play, sleep, blast, consume].filter(filterByIndex).sort(sortByIndex)
   }
 
   public readonly play = new Play(this)
@@ -655,25 +659,25 @@ abstract class EnergyAnimal extends OPAnimal {
   kind = "energy"
 }
 
-class Blast extends InfoAnimal {
+export class Blast extends InfoAnimal {
   readonly code = "B" as "B"
   readonly focus = "e" as "e"
   get flipSide() { return this.opType.consume } // prettier-ignore
   get functions(): AnimalFunctionPair { return [this.opType.iObserver, this.opType.eDecider] } // prettier-ignore
 }
-class Consume extends InfoAnimal {
+export class Consume extends InfoAnimal {
   readonly code = "C" as "C"
   readonly focus = "i" as "i"
   get flipSide() { return this.opType.blast } // prettier-ignore
   get functions(): AnimalFunctionPair { return [this.opType.eObserver, this.opType.iDecider] } // prettier-ignore
 }
-class Play extends EnergyAnimal {
+export class Play extends EnergyAnimal {
   readonly code = "P" as "P"
   readonly focus = "e" as "e"
   get flipSide() { return this.opType.sleep } // prettier-ignore
   get functions(): AnimalFunctionPair { return [this.opType.eObserver, this.opType.eDecider] } // prettier-ignore
 }
-class Sleep extends EnergyAnimal {
+export class Sleep extends EnergyAnimal {
   readonly code = "S" as "S"
   readonly focus = "i" as "i"
   get flipSide() { return this.opType.play } // prettier-ignore
@@ -859,11 +863,11 @@ abstract class DeciderFn extends OPFn {
   isDecider = true
   code = "D"
 }
-class Feeling extends DeciderFn {
+export class Feeling extends DeciderFn {
   readonly code = "F"
   get flipSide() { return this.opType.thinking } // prettier-ignore
 }
-class Thinking extends DeciderFn {
+export class Thinking extends DeciderFn {
   readonly code = "T"
   get flipSide() { return this.opType.feeling } // prettier-ignore
 }
@@ -873,11 +877,11 @@ abstract class ObserverFn extends OPFn {
   isDecider = false
   code = "O"
 }
-class iNtuition extends ObserverFn {
+export class iNtuition extends ObserverFn {
   readonly code = "N"
   get flipSide() { return this.opType.sensing } // prettier-ignore
 }
-class Sensing extends ObserverFn {
+export class Sensing extends ObserverFn {
   readonly code = "S"
   get flipSide() { return this.opType.intuition } // prettier-ignore
 }
