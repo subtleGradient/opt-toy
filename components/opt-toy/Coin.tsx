@@ -151,8 +151,8 @@ export const NamedCOINS = {
         )
         .replace(/^(?![DTF][xie]\/[OSN][xie]|[OSN][xie]\/[DTF][xie]).*$/, ""),
     ...ParsableCoinDefault,
-    testHeads: /(^|-)[mf]?[DTF][xei]|[mf]?[DTF][xei]\//i,
-    testTails: /(^|-)[mf]?[OSN][xei]|[mf]?[OSN][xei]\//i,
+    testHeads: /^([mf?][mf?]-?)?[mf]?[DTF][xei]/i,
+    testTails: /^([mf?][mf?]-?)?[mf]?[OSN][xei]/i,
   },
   coinDiDe: {
     index: -1,

@@ -37,6 +37,66 @@ describe("NamedCOINS", () => {
     })
   })
 
+  describe("coinOD", () => {
+    describe("parse function", () => {
+      it("parses as edge", () => {
+        expect(coinOD.parse("")).toBe(null)
+        expect(coinOD.parse("SB/P(S)")).toBe(null)
+        expect(coinOD.parse("FF-SB/P(S)")).toBe(null)
+      })
+      it("parses as heads", () => {
+        expect(coinOD.parse("Di")).toBe(true)
+        expect(coinOD.parse("Ti")).toBe(true)
+        expect(coinOD.parse("Fi")).toBe(true)
+        expect(coinOD.parse("De")).toBe(true)
+        expect(coinOD.parse("Te")).toBe(true)
+        expect(coinOD.parse("Fe")).toBe(true)
+
+        expect(coinOD.parse("fDi")).toBe(true)
+        expect(coinOD.parse("fTi")).toBe(true)
+        expect(coinOD.parse("fFi")).toBe(true)
+        expect(coinOD.parse("fDe")).toBe(true)
+        expect(coinOD.parse("fTe")).toBe(true)
+        expect(coinOD.parse("fFe")).toBe(true)
+
+        expect(coinOD.parse("mDi")).toBe(true)
+        expect(coinOD.parse("mTi")).toBe(true)
+        expect(coinOD.parse("mFi")).toBe(true)
+        expect(coinOD.parse("mDe")).toBe(true)
+        expect(coinOD.parse("mTe")).toBe(true)
+        expect(coinOD.parse("mFe")).toBe(true)
+
+        expect(coinOD.parse("fini")).toBe(true)
+        expect(coinOD.parse("fffini")).toBe(true)
+        expect(coinOD.parse("mffinisbp")).toBe(true)
+      })
+      it("parses as tails", () => {
+        expect(coinOD.parse("nifi")).toBe(false)
+        expect(coinOD.parse("ffnifi")).toBe(false)
+        expect(coinOD.parse("mfnifisbp")).toBe(false)
+
+        expect(coinOD.parse("Oi")).toBe(false)
+        expect(coinOD.parse("Si")).toBe(false)
+        expect(coinOD.parse("Ni")).toBe(false)
+        expect(coinOD.parse("Oe")).toBe(false)
+        expect(coinOD.parse("Se")).toBe(false)
+        expect(coinOD.parse("Ne")).toBe(false)
+        expect(coinOD.parse("fOi")).toBe(false)
+        expect(coinOD.parse("fSi")).toBe(false)
+        expect(coinOD.parse("fNi")).toBe(false)
+        expect(coinOD.parse("fOe")).toBe(false)
+        expect(coinOD.parse("fSe")).toBe(false)
+        expect(coinOD.parse("fNe")).toBe(false)
+        expect(coinOD.parse("mOi")).toBe(false)
+        expect(coinOD.parse("mSi")).toBe(false)
+        expect(coinOD.parse("mNi")).toBe(false)
+        expect(coinOD.parse("mOe")).toBe(false)
+        expect(coinOD.parse("mSe")).toBe(false)
+        expect(coinOD.parse("mNe")).toBe(false)
+      })
+    })
+  })
+
   describe("coinDiDe", () => {
     describe("parse function", () => {
       it("parses as heads", () => {
