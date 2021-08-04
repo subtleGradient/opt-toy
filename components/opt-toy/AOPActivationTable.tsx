@@ -76,7 +76,7 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
 
 } */
 
-        .AOPActivationTable .pair {
+        .AOPActivationTable .pair:not(:empty) {
           border: 2px solid blue;
         }
         .AOPActivationTable .pair.next {
@@ -92,8 +92,8 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
           margin-right: 4px;
         }
 
-        .AOPActivationTable .animal.index0 .pair,
-        .AOPActivationTable .animal.index1 .pair.previous {
+        .AOPActivationTable .animal.index0 .pair:not(:empty),
+        .AOPActivationTable .animal.index1 .pair.previous:not(:empty) {
           border-color: #fff;
           background: blue;
           color: white;
