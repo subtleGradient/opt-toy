@@ -166,9 +166,10 @@ export class OPT512 {
     }
   }
 
-  static from(typeCode: string): OPT512 { return new OPT512(parseCoinText(typeCode)) } // prettier-ignore
-  static fromDirtyCoinText(typeCode: string): OPT512 { return OPT512.from(typeCode) } // prettier-ignore
+  static from(typeCode: string): OPT512 { return OPT512.fromCoinText(typeCode) } // prettier-ignore
   static fromCoinText(typeCode: string): OPT512 { return new OPT512(parseCoinText(typeCode)) } // prettier-ignore
+  /** @deprecated */
+  static fromDirtyCoinText(typeCode: string): OPT512 { return OPT512.from(typeCode) } // prettier-ignore
 
   get eDecider() { return this.deciders.find((Dx) => Dx.focus === "e") || this.deciders[0] } // prettier-ignore
   get iDecider() { return this.deciders.find((Dx) => Dx.focus === "i") || this.deciders[1] } // prettier-ignore
