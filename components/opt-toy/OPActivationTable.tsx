@@ -64,7 +64,7 @@ export default function OPActivationTable({ op512 }: { op512: OPT512 }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {op512.functions.map(
+                  {op512.functionStack.map(
                     ({ code, activation1or2, saviorCode, opFn }) => (
                       <tr key={code}>
                         <td>{activation1or2}</td>
