@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, createContext } from "react"
+import React, { FC, useEffect, useState, createContext, useMemo } from "react"
 import useUndo from "use-undo"
 import { AOPActivationSpectrums } from "./AOPActivationSpectrums"
 import AOPActivationTable from "./AOPActivationTable"
@@ -76,18 +76,24 @@ export const TypeThing: FC<TypeThingProps> = ({
   showOPTable = true,
   ...props
 }) => {
-  useEffect(() => {
-    opTypeActions.reset({
-      name: String(defaultType.split(SEPARATOR)[1] || ""),
-      type: parseCoinText(defaultType.split(SEPARATOR)[0]),
-    })
-  }, [])
+  const defaultState = useMemo(
+    () =>
+      defaultType
+        ? {
+            name: String(defaultType.split(SEPARATOR)[1] || ""),
+            type: parseCoinText(defaultType.split(SEPARATOR)[0]),
+          }
+        : {
+            name: "loading...",
+            type: BLANK_TYPE,
+          },
+    [defaultType],
+  )
+
+  const [opType, opTypeActions] = useUndo(defaultState)
+  useEffect(() => void opTypeActions.reset(defaultState), [defaultState])
 
   const [isOpen, setIsOpen] = useState(selected)
-  const [opType, opTypeActions] = useUndo({
-    name: "loading...",
-    type: BLANK_TYPE,
-  })
   const opTypeInstance = new OPT512(opType.present.type)
   const typeText = opTypeInstance.OPSCode
 

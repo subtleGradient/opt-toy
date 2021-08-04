@@ -4,12 +4,16 @@ import { SVG_OP_Bubble, SVG_OP_Bubble_border } from "./SVG_OP_Bubble"
 import { bubbleTextStyle } from "./SVG_OP_BubbleText"
 import { OPFunctionType, OPT512 } from "./OPT512"
 import { download } from "../../util/download"
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup } from "react-dom/server"
+import { isSSR } from "../../util/constants"
 
 export const OPTGraph = forwardRef<
   SVGSVGElement,
   { opType: OPT512 } & React.SVGProps<SVGSVGElement>
 >(({ opType, ...props }, svgRef0) => {
+  if (isSSR) {
+    return null
+  }
   const svgRef = useRef<SVGSVGElement>()
   const { opFunctions } = opType
   const opAnimals = {
@@ -39,7 +43,10 @@ export const OPTGraph = forwardRef<
       onContextMenu={(e) => {
         download(
           opType.toString().replace(/[-/()]/g, "") + ".svg",
-          svgRef.current.outerHTML.replace(`</svg>`,`${renderToStaticMarkup(<Defs/>)}</svg>`),
+          svgRef.current.outerHTML.replace(
+            `</svg>`,
+            `${renderToStaticMarkup(<Defs />)}</svg>`,
+          ),
         )
       }}
     >

@@ -11,8 +11,12 @@ import {
   Thinking,
 } from "./OPT512"
 import { FC } from "react"
+import { isSSR } from "../../util/constants"
 
 export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
+  if (isSSR) {
+    return null
+  }
   const showSex = op512.fmDe !== "?" || op512.fmS !== "?"
   return (
     <div className="AOPActivationTable">
@@ -129,27 +133,27 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
 
 const AnimalColumn: FC<{
   code: string
-  Ox: Sensing | iNtuition
-  Dx: Thinking | Feeling
+  Ox?: Sensing | iNtuition
+  Dx?: Thinking | Feeling
   flipSideIsLast: boolean
   index: number
   showSex: boolean
-  next: Play | Sleep | Blast | Consume
-  previous: Play | Sleep | Blast | Consume
+  next?: Play | Sleep | Blast | Consume
+  previous?: Play | Sleep | Blast | Consume
 }> = ({ code, Ox, Dx, flipSideIsLast, index, showSex, next, previous }) => {
   return (
     <span
       key={code}
-      className={`animal ${Ox.sex + Dx.sex} ${code} ${
+      className={`animal ${Ox?.sex + Dx?.sex} ${code} ${
         flipSideIsLast && "flipSideIsLast"
       } index${index}`}
     >
       {showSex && (
-        <span className="part sex">{(Ox.sex + Dx.sex).toUpperCase()}</span>
+        <span className="part sex">{(Ox?.sex + Dx?.sex).toUpperCase()}</span>
       )}
       <span>
-        {Ox.code}
-        {Dx.code}
+        {Ox?.code}
+        {Dx?.code}
       </span>
       <span className={`aa`}>{code}</span>
       <span
@@ -157,18 +161,18 @@ const AnimalColumn: FC<{
           previous?.observer === Ox && "pair previous"
         }`}
       >
-        {showSex && <i>{Ox.sex}</i>}
-        {Ox.code}
-        {Ox.focus}
+        {showSex && <i>{Ox?.sex}</i>}
+        {Ox?.code}
+        {Ox?.focus}
       </span>
       <span
         className={`part o ${next?.decider === Dx && "pair next"} ${
           previous?.decider === Dx && "pair previous"
         }`}
       >
-        {showSex && <i>{Dx.sex}</i>}
-        {Dx.code}
-        {Dx.focus}
+        {showSex && <i>{Dx?.sex}</i>}
+        {Dx?.code}
+        {Dx?.focus}
       </span>
     </span>
   )

@@ -5,6 +5,7 @@ import { KnownTypes, SelectedTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
 import { TypeThing, TypeThingProps } from "./TypeThing"
 import { GlobalDefs } from "./OPBubbles4"
+import { isSSR } from "../../util/constants"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -183,13 +184,8 @@ const DragableTypeThing: FC<
 }
 
 export default function OptToyApp() {
-  const {
-    setOPTypeTextAtIndex,
-    typeIDs,
-    typeIDInsertBefore,
-    types,
-    addType,
-  } = useStuff()
+  const { setOPTypeTextAtIndex, typeIDs, typeIDInsertBefore, types, addType } =
+    useStuff()
   const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
   const showKnown = showKnowns.length > 0
   const [showSettings, setShowSettings] = useState(false)
@@ -265,27 +261,28 @@ export default function OptToyApp() {
           {showKnown && <KnownTypes addType={addType} />}
         </div>
 
-        <div
-          className="all-the-TypeThings"
-          style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
-        >
-          {types.map((defaultType, index) => (
-            <DragableTypeThing
-              key={typeIDs[index]}
-              tID={typeIDs[index]}
-              onDropOnto={typeIDInsertBefore}
-              {...{
-                onClose: () => void setOPTypeTextAtIndex(index, null),
-                onChangeText: (opTypeText: any) =>
-                  void setOPTypeTextAtIndex(index, opTypeText),
-                selected: types.length === 1,
-                defaultType,
-                showOPTable,
-              }}
-            />
-          ))}
-        </div>
-        
+        {!isSSR && (
+          <div
+            className="all-the-TypeThings"
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            {types.map((defaultType, index) => (
+              <DragableTypeThing
+                key={typeIDs[index]}
+                tID={typeIDs[index]}
+                onDropOnto={typeIDInsertBefore}
+                {...{
+                  onClose: () => void setOPTypeTextAtIndex(index, null),
+                  onChangeText: (opTypeText: any) =>
+                    void setOPTypeTextAtIndex(index, opTypeText),
+                  selected: types.length === 1,
+                  defaultType,
+                  showOPTable,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </SelectedTypes.Provider>
   )
