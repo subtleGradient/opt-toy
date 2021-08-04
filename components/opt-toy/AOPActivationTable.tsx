@@ -1,12 +1,22 @@
 import * as React from "react"
-import { OPT512 } from "./OPT512"
-import { betweenX } from "./between"
+import {
+  Blast,
+  Consume,
+  Feeling,
+  iNtuition,
+  OPT512,
+  Play,
+  Sensing,
+  Sleep,
+  Thinking,
+} from "./OPT512"
+import { FC } from "react"
 
 export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
   const showSex = op512.fmDe !== "?" || op512.fmS !== "?"
   return (
     <div className="AOPActivationTable">
-      <style jsx>{`
+      <style jsx global>{`
         .AOPActivationTable {
           box-sizing: border-box;
           font-size: 1em;
@@ -97,39 +107,69 @@ export default function AOPActivationTable({ op512 }: { op512: OPT512 }) {
           ]
 
           return (
-            <span
+            <AnimalColumn
               key={code}
-              className={`animal ${Ox.sex + Dx.sex} ${code} ${flipSideIsLast &&
-                "flipSideIsLast"} index${index}`}
-            >
-              <span className="part sex">
-                {showSex && (Ox.sex + Dx.sex).toUpperCase()}
-              </span>
-              <span>
-                {Ox.code}
-                {Dx.code}
-              </span>
-              <span className={`aa`}>{code}</span>
-              <span
-                className={`part o ${next?.observer === Ox &&
-                  "pair next"} ${previous?.observer === Ox && "pair previous"}`}
-              >
-                {showSex && <i>{Ox.sex}</i>}
-                {Ox.code}
-                {Ox.focus}
-              </span>
-              <span
-                className={`part o ${next?.decider === Dx &&
-                  "pair next"} ${previous?.decider === Dx && "pair previous"}`}
-              >
-                {showSex && <i>{Dx.sex}</i>}
-                {Dx.code}
-                {Dx.focus}
-              </span>
-            </span>
+              {...{
+                code,
+                Ox,
+                Dx,
+                flipSideIsLast,
+                index,
+                showSex,
+                next,
+                previous,
+              }}
+            />
           )
         },
       )}
     </div>
+  )
+}
+
+const AnimalColumn: FC<{
+  code: string
+  Ox: Sensing | iNtuition
+  Dx: Thinking | Feeling
+  flipSideIsLast: boolean
+  index: number
+  showSex: boolean
+  next: Play | Sleep | Blast | Consume
+  previous: Play | Sleep | Blast | Consume
+}> = ({ code, Ox, Dx, flipSideIsLast, index, showSex, next, previous }) => {
+  return (
+    <span
+      key={code}
+      className={`animal ${Ox.sex + Dx.sex} ${code} ${
+        flipSideIsLast && "flipSideIsLast"
+      } index${index}`}
+    >
+      {showSex && (
+        <span className="part sex">{(Ox.sex + Dx.sex).toUpperCase()}</span>
+      )}
+      <span>
+        {Ox.code}
+        {Dx.code}
+      </span>
+      <span className={`aa`}>{code}</span>
+      <span
+        className={`part o ${next?.observer === Ox && "pair next"} ${
+          previous?.observer === Ox && "pair previous"
+        }`}
+      >
+        {showSex && <i>{Ox.sex}</i>}
+        {Ox.code}
+        {Ox.focus}
+      </span>
+      <span
+        className={`part o ${next?.decider === Dx && "pair next"} ${
+          previous?.decider === Dx && "pair previous"
+        }`}
+      >
+        {showSex && <i>{Dx.sex}</i>}
+        {Dx.code}
+        {Dx.focus}
+      </span>
+    </span>
   )
 }
