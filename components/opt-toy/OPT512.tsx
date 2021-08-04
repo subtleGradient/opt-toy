@@ -693,8 +693,10 @@ abstract class OPFn extends OPPart {
     switch (animals[0]?.index) {
       case 0:
         return ["S1", "S2", "ERROR", "ERROR", "ERROR"][index]
-      case 1: //return 'A1'
-      case 2: //return 'A2'
+      case 1:
+        return "A"
+      case 2:
+        return "-"
       case 3:
         return index
     }
