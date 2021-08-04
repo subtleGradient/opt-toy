@@ -20,7 +20,8 @@ export function CoinSideVirtual({
       <td style={{ textAlign: "right" }}>
         <label
           style={{
-            display: "block",
+            display: "flex",
+            alignItems: "center",
             ...(isBool(side) && !side && { background: "#eee", color: "#000" }),
             borderRadius: 999,
             padding: "0 2px",
@@ -28,11 +29,12 @@ export function CoinSideVirtual({
           title={tailsDetail}
         >
           <span
-            style={
-              (isBool(side) &&
+            style={{
+              flex: 1,
+              ...((isBool(side) &&
                 (!side ? { fontWeight: "bold" } : { opacity: 0.5 })) ||
-              null
-            }
+                null),
+            }}
           >
             {tails}
           </span>
@@ -41,6 +43,7 @@ export function CoinSideVirtual({
             checked={isBool(side) && !side}
             onChange={(e) => onFlip(false)}
             onClick={(e) => onFlip(false)}
+            style={{ margin: "1px 2px" }}
           />
         </label>
       </td>
@@ -48,8 +51,6 @@ export function CoinSideVirtual({
         style={{
           textAlign: "center",
           fontSize: "75%",
-          // background: "#efefef",
-          // borderRadius: 999,
         }}
       >
         <div onClick={() => onFlip(null)}>{description}</div>
@@ -57,7 +58,8 @@ export function CoinSideVirtual({
       <td>
         <label
           style={{
-            display: "block",
+            display: "flex",
+            alignItems: "center",
             ...(!!side && { background: "#eee", color: "#000" }),
             borderRadius: 999,
             padding: "0 2px",
@@ -69,13 +71,15 @@ export function CoinSideVirtual({
             checked={isBool(side) && !!side}
             onChange={(e) => onFlip(true)}
             onClick={(e) => onFlip(true)}
+            style={{ margin: "1px 2px" }}
           />
           <span
-            style={
-              (isBool(side) &&
+            style={{
+              flex: 1,
+              ...((isBool(side) &&
                 (side ? { fontWeight: "bold" } : { opacity: 0.5 })) ||
-              null
-            }
+                null),
+            }}
           >
             {heads}
           </span>
