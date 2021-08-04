@@ -684,21 +684,7 @@ export class Sleep extends EnergyAnimal {
   get functions(): AnimalFunctionPair { return [this.opType.iObserver, this.opType.iDecider] } // prettier-ignore
 }
 
-const IndexActivationMap = {
-  "-1": 0,
-  0: 4,
-  1: 3,
-  2: 2,
-  3: 1,
-}
-
-const activationReducer = (activation: number, { index }) =>
-  activation + IndexActivationMap[index]
-
-const activationCodeReducer = (activation: number, { index }) =>
-  activation + IndexActivationMap[index]
-
-export abstract class OPFn extends OPPart {
+abstract class OPFn extends OPPart {
   get label() { return this.fullCode } // prettier-ignore
   code = "X"
   get saviorCode() {
