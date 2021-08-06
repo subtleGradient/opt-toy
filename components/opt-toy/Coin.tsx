@@ -92,15 +92,15 @@ export const NamedCOINS = {
     // prettier-ignore
     testHeads: { test: (type: string) => 
       /^M[FM?](?![ie])/i.test(type) ||
-      /fN/i.test(type) ||
-      /mS([ie]|\b)/i.test(type) ||
+      /(^|[^fm])fN/i.test(type) ||
+      /(^|[^fm])mS([ie]|\b)/i.test(type) ||
       false
     },
     // prettier-ignore
     testTails: { test: (type: string) => 
       /^F[FM?](?![ie])/i.test(type) ||
-      /mN/i.test(type) ||
-      /fS([ie]|\b)/i.test(type) ||
+      /(^|[^fm])mN/i.test(type) ||
+      /(^|[^fm])fS([ie]|\b)/i.test(type) ||
       false
     },
   },
@@ -118,16 +118,16 @@ export const NamedCOINS = {
     ...ParsableCoinDefault,
     // prettier-ignore
     testHeads: { test: (type: string) => 
-      /f[DTF]i/i.test(type) ||
-      /m[DTF]e/i.test(type) ||
       /^[FM?]M/i.test(type) ||
+      /(^|[^fm])f[DTF]i/i.test(type) ||
+      /(^|[^fm])m[DTF]e/i.test(type) ||
       false
     },
     // prettier-ignore
     testTails: { test: (type: string) => 
-      /m[DTF]i/i.test(type) ||
-      /f[DTF]e/i.test(type) ||
       /^[FM?]F(?![ie])/i.test(type) ||
+      /(^|[^fm])m[DTF]i/i.test(type) ||
+      /(^|[^fm])f[DTF]e/i.test(type) ||
       false
     },
   },
@@ -189,8 +189,8 @@ export const NamedCOINS = {
     heads: "A2 E",
     tails: "I A2",
     ...ParsableCoinDefault,
-    testHeads: /-([SP]B|[CB]P)/i,
-    testTails: /-([SP]C|[CB]S)/i,
+    testHeads: /(-|[xie])([SP]B|[CB]P)/i,
+    testTails: /(-|[xie])([SP]C|[CB]S)/i,
   },
   /** @deprecated Use coin coinInAct instead */
   coinA3ie: {

@@ -9,6 +9,18 @@ describe("COINS", () => {
     expect(COINS).toBeDefined()
   })
 })
+
+describe("parseCoinText", () => {
+  it("exists", () => {
+    expect(parseCoinText).toBeDefined()
+  })
+  it("matches", () => {
+    expect(parseCoinText("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111111111"`)
+    expect(parseCoinText("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111101100"`)
+    expect(parseCoinText("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"110010000"`)
+  })
+})
+
 describe("NamedCOINS", () => {
   it("exists", () => {
     expect(NamedCOINS).toBeDefined()
@@ -23,10 +35,16 @@ describe("NamedCOINS", () => {
       it("parses standard types", () => {
         const type = "FF-Fe/Se-PC/B(S)"
         for (const [name, coin] of Object.entries(NamedCOINS)) {
+          if (coin.index === -1) continue
           if (coin.parse(type) === null) {
             throw new Error(`${name} parser fails on ${type}`)
           }
           expect(coin.parse("FF-Fe/Se-PC/B(S)")).not.toBeNull()
+          expect(coin.parse("ff-fe/se-pc/b(s)")).not.toBeNull()
+          expect(coin.parse("fFe/fSe-PCB")).not.toBeNull()
+          expect(coin.parse("FFFeSePCBS")).not.toBeNull()
+          expect(coin.parse("FFFeSePCB")).not.toBeNull()
+          expect(coin.parse("fftinecsp")).not.toBeNull()
         }
       })
       it("parses minimal types", () => {
