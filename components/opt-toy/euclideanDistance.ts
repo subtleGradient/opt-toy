@@ -1,4 +1,5 @@
 export const euclideanDistance = (aaa: number[], bbb: number[]) => {
+  if (!(aaa && bbb)) return NaN;
   return Math.sqrt(euclideanDistanceSquared(aaa, bbb))
 }
 

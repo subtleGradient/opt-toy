@@ -1,4 +1,6 @@
-export type BoolMaybe = 0 | 1 | true | false | undefined | null;
+import { OPT512 } from "./OPT512"
+
+export type BoolMaybe = 0 | 1 | true | false | undefined | null
 
 type OPT512Type = [
   boolean,
@@ -9,8 +11,8 @@ type OPT512Type = [
   boolean,
   boolean,
   boolean,
-  boolean
-];
+  boolean,
+]
 
 export type OPT512Maybe = [
   BoolMaybe,
@@ -21,8 +23,8 @@ export type OPT512Maybe = [
   BoolMaybe,
   BoolMaybe,
   BoolMaybe,
-  BoolMaybe
-];
+  BoolMaybe,
+]
 
 export const BLANK_TYPE: OPT512Maybe = [
   null,
@@ -34,165 +36,287 @@ export const BLANK_TYPE: OPT512Maybe = [
   null,
   null,
   null,
-];
+]
 
-class Coin {
-  testHeads: RegExp;
-  testTails: RegExp;
-  defaultCoinParseMethod(type: string) {
-    const isHeads = this.testHeads.test(type);
-    const isTails = this.testTails.test(type);
-    return isHeads === true ? true : isTails === true ? false : null;
-  }
+type RegExpish = {
+  test: (type: string) => boolean
 }
+
+const ParsableCoinDefault = {
+  testHeads: /./ as RegExpish,
+  testTails: /./ as RegExpish,
+  parse(type: string) {
+    const isHeads = this.testHeads.test(type)
+    const isTails = this.testTails.test(type)
+    if (isHeads && isTails) return null
+    return isHeads ? true : isTails ? false : null
+  },
+}
+
+type ParsableCoinType = typeof ParsableCoinDefault
+
+export interface Coin extends ParsableCoinType {
+  index: number
+  short: string
+  title: string
+  description: string
+  heads: string
+  tails: string
+  headsDetail: string
+  tailsDetail: string
+  clean?: (type: string) => string
+}
+
+export const extractAnimalsFromOP512 = (type: string) =>
+  String(type)
+    .trim()
+    .toUpperCase()
+    .replace(/[^a-z?(/]/gi, "")
+    .replace(/.*?([PBCS?(/]+)$/g, "$1")
+    .replace(/^([PBCS])[/]([PBCS]+)$/g, "$1?$2")
+    .replace(/^([PBCS])[(]([PBCS])$/g, "$1??$2")
+    .replace(/^([PBCS])([PBCS?])[(]([PBCS])$/g, "$1$2?$3")
+    .replace(/[(/]/g, "")
 
 export const NamedCOINS = {
   coinSfm: {
     index: -1,
     short: "coinSfm",
-    description: "Sensory Modality",
-    heads: "S masculine",
-    tails: "feminine S",
-    clean: type =>
-      type
-        .replace(/\?\?-/, "")
-        .replace(
-          /([fm][fm])[-]*([DTFOSN])?/i,
-          (_, FM, S1S2) =>
-            `${FM.toUpperCase()}${S1S2 == null ? "" : `-${S1S2}`}`
-        ),
-    testHeads: /^M[FM]|mS|fN/,
-    testTails: /^F[FM]|fS|mN/,
-    parse: Coin.prototype.defaultCoinParseMethod,
+    title: "Masculine",
+    description: "Info",
+    heads: "mS",
+    tails: "mN",
+    headsDetail: "masculine Sensory and feminine iNtuition",
+    tailsDetail: "masculine iNtuition and feminine Sensory",
+    ...ParsableCoinDefault,
+    // prettier-ignore
+    testHeads: { test: (type: string) => 
+      /^M[FM?](?![ie])/i.test(type) ||
+      /(^|[^fm])fN/i.test(type) ||
+      /(^|[^fm])mS([ie]|\b)/i.test(type) ||
+      false
+    },
+    // prettier-ignore
+    testTails: { test: (type: string) => 
+      /^F[FM?](?![ie])/i.test(type) ||
+      /(^|[^fm])mN/i.test(type) ||
+      /(^|[^fm])fS([ie]|\b)/i.test(type) ||
+      false
+    },
   },
   coinDefm: {
     index: -1,
     short: "coinDefm",
-    description: "Extroverted Decider Modality",
-    heads: "De masculine",
-    tails: "feminine De",
-    clean: type =>
-      type.replace(
-        /([fm])([DTFOSN][xei])/i,
-        (_, fm, De) => `${fm.toLowerCase()}${De}`
-      ),
-    testHeads: /^[FM]M|m[DTF]e|f[DTF]i/,
-    testTails: /^[FM]F|f[DTF]e|m[DTF]i/,
-    parse: Coin.prototype.defaultCoinParseMethod,
+    title: "Masculine",
+    description: "Energy",
+    heads: "mDe",
+    tails: "mDi",
+    headsDetail:
+      "masculine Extroverted Decider function (either mFe or mTe) and feminine Di (either fFi or fTi)",
+    tailsDetail:
+      "masculine Introverted Decider function (either mFi or mTi) and feminine De (either fFe or fTe)",
+    ...ParsableCoinDefault,
+    // prettier-ignore
+    testHeads: { test: (type: string) => 
+      /^[FM?]M/i.test(type) ||
+      /(^|[^fm])f[DTF]i/i.test(type) ||
+      /(^|[^fm])m[DTF]e/i.test(type) ||
+      false
+    },
+    // prettier-ignore
+    testTails: { test: (type: string) => 
+      /^[FM?]F(?![ie])/i.test(type) ||
+      /(^|[^fm])m[DTF]i/i.test(type) ||
+      /(^|[^fm])f[DTF]e/i.test(type) ||
+      false
+    },
   },
   coinOD: {
     index: -1,
     short: "coinOD",
-    description: "OD",
-    heads: "D+OO Decider",
-    tails: "Observer O+DD",
-    clean: type =>
+    title: "",
+    description: "Polarity",
+    heads: "Energy",
+    tails: "Info",
+    headsDetail: `Polar Energy — aka "Single Decider" and "Double Observer"`,
+    tailsDetail: `Polar Info — aka "Single Observer" and "Double Decider"`,
+    clean: (type) =>
       type
+        .replace(/[?()/-]/g, "")
+        .replace(/[fm]?([DTFOSN][xei])[fm]?([DTFOSN][ei])/g, "$1/$2")
         .replace(
-          /([fm]?)([DTF]|[OSN])([xei])/gi,
-          (_, fm0 = "", F1 = "", f2 = "") =>
-            `${fm0.toLowerCase()}${F1.toUpperCase()}${f2.toLowerCase()}`
+          /^.*([ODFTNS])([xie])([ODFTNS])([xie]).*$/gi,
+          (_, f1od, f1xie, f2od, f2xie) =>
+            `${f1od.toUpperCase()}${f1xie.toLowerCase()}/${f2od.toUpperCase()}${f2xie.toLowerCase()}`,
         )
-        .replace(/([DTFOSN][xei])([DTFOSN][ei])/g, "$1/$2"),
-    testHeads: /(^|-)[mf]?[DTF][xei]|[mf]?[DTF][xei]\//i,
-    testTails: /(^|-)[mf]?[OSN][xei]|[mf]?[OSN][xei]\//i,
-    parse: Coin.prototype.defaultCoinParseMethod,
+        .replace(/^(?![DTF][xie]\/[OSN][xie]|[OSN][xie]\/[DTF][xie]).*$/, ""),
+    ...ParsableCoinDefault,
+    testHeads: /^([mf?][mf?]-?)?[mf]?[DTF][xei]/i,
+    testTails: /^([mf?][mf?]-?)?[mf]?[OSN][xei]/i,
   },
   coinDiDe: {
     index: -1,
     short: "coinDiDe",
-    description: "Savior Decider Focus",
-    heads: "De Tribe",
-    tails: "Identity Di",
+    title: "Direction",
+    description: "Energy",
+    heads: "De",
+    headsDetail: "Energy directed Extrovertedly to Connections",
+    tails: "Di",
+    tailsDetail: "Energy directed Introvertedly to Significance",
+    ...ParsableCoinDefault,
     testHeads: /[mf]?[DTF]e/i,
     testTails: /[mf]?[DTF]i/i,
-    parse: Coin.prototype.defaultCoinParseMethod,
   },
   coinOiOe: {
     index: -1,
     short: "coinOiOe",
-    description: "Savior Observer Focus",
-    heads: "Oe Gather",
-    tails: "Organize Oi",
+    title: "Direction",
+    description: "Info",
+    heads: "Oe",
+    headsDetail: "Info directed Extrovertedly to Gather new",
+    tails: "Oi",
+    tailsDetail: "Info directed Introvertedly to Organize old",
+    ...ParsableCoinDefault,
     testHeads: /[mf]?[OSN]e/i,
     testTails: /[mf]?[OSN]i/i,
-    parse: Coin.prototype.defaultCoinParseMethod,
   },
+  /** @deprecated Use coin coinEnAct instead */
   coinA2ie: {
     index: -1,
     short: "coinA2ie",
+    title: "",
     description: "S2 Animal Focus",
-    heads: "A2 Extroverted",
-    tails: "Introverted A2",
-    clean: type =>
-      type
-        .replace("-??/?(?)", "")
-        .replace("?/?(?)", "")
-        .replace("/?(?)", "")
-        .replace(/[(][PBCS]$/, "")
-        .replace(
-          /([DTFOSN][xie]\/[DTFOSN][xie])-?([PBCS]{1,2})[/]?([PBCS]?)[(]?([PBCS]?)[)]?/i,
-          (_, S1S2, A1A2, A3, A4) =>
-            `${S1S2}-${A1A2.toUpperCase()}${!A3 ? "" : `/${A3.toUpperCase()}`}${
-              !A4 ? "" : `(${A4.toUpperCase()})`
-            }`
-        ),
-    testHeads: /-([SP]B|[CB]P)/i,
-    testTails: /-([SP]C|[CB]S)/i,
-    parse: Coin.prototype.defaultCoinParseMethod,
+    heads: "A2 E",
+    tails: "I A2",
+    ...ParsableCoinDefault,
+    testHeads: /(-|[xie])([SP]B|[CB]P)/i,
+    testTails: /(-|[xie])([SP]C|[CB]S)/i,
   },
+  /** @deprecated Use coin coinInAct instead */
   coinA3ie: {
     index: -1,
     short: "coinA3ie",
+    title: "",
     description: "Activated Demon Animal Focus",
-    heads: "A3 Extroverted",
-    tails: "Introverted A3",
+    heads: "A3 E",
+    tails: "I A3",
+    ...ParsableCoinDefault,
     testHeads: /[PB]{2}\/C|[CS]{2}\/P|[CP]{2}\/B|[SB]{2}\/P/,
     testTails: /[PB]{2}\/S|[CS]{2}\/B|[CP]{2}\/S|[SB]{2}\/C/,
-    parse: Coin.prototype.defaultCoinParseMethod,
   },
-  // { // Info / Energy isn't a core coin. It's more of an insight
-  //   short: "coinA3ie",
-  //   index: 4,
-  //   description: "Animal Focus",
-  //   heads: "Info",
-  //   tails: "Energy",
-  //   testHeads: /SC\/B|SB\/C|CS\/B|CP\/B|BS\/C|BP\/C|PC\/B|PB\/C/,
-  //   testTails: /SC\/P|SB\/P|CS\/P|CP\/S|BS\/P|BP\/S|PC\/S|PB\/S/,
-  //   parse: defaultCoinParseMethod
-  // },
+  coinEnAct: {
+    index: -1,
+    short: "coinEnAct",
+    title: "Activation",
+    description: "Energy",
+    heads: "EE",
+    tails: "II",
+    headsDetail: `Activated Double Extroverted Energy (Play)`,
+    tailsDetail: `Activated Double Introverted Energy (Sleep)`,
+    ...ParsableCoinDefault,
+    testHeads: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(PBC|PCB|P[CB?][CB?]S)/.test(animals) || // Play first & Sleep last
+          /^(SBP|SCP|S[?]P|SC[?]B|SB[?]C)/.test(animals) || // Sleep with activated Play
+          /^(BP)/.test(animals) || // Blast Play
+          /^(CP)/.test(animals) || // Consume Play
+          false
+        )
+      },
+    } as RegExpish,
+    testTails: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(SBC|SCB|S[CB?][CB?]P)/.test(animals) || // Sleep first & Play last
+          /^(PBS|PCS|P[?]S|PC[?]B|PB[?]C)/.test(animals) || // Play with activated Sleep
+          /^(BS)/.test(animals) || // Blast Sleep
+          /^(CS)/.test(animals) || // Consume Sleep
+          false
+        )
+      },
+    } as RegExpish,
+  },
+  coinInAct: {
+    index: -1,
+    short: "coinInAct",
+    title: "Activation",
+    description: "Info",
+    heads: "Oi De",
+    tails: "Oe Di",
+    headsDetail: `Activated Extroverted Info (Blast)`,
+    tailsDetail: `Activated Introverted Info (Consume)`,
+    ...ParsableCoinDefault,
+    testHeads: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(BPS|BSP|B[SP?][SP?]C)/.test(animals) || // Blast first & Consume last
+          /^(CPB|CSB|C[?]B|CP[?]S|CS[?]P)/.test(animals) || // Consume with activated Blast
+          /^(PB)/.test(animals) || // Plast Blast
+          /^(SB)/.test(animals) || // Sonsume Blast
+          false
+        )
+      },
+    } as RegExpish,
+    testTails: {
+      test: (type: string) => {
+        const animals = extractAnimalsFromOP512(type)
+        return (
+          /^(CPS|CSP|C[SP?][SP?]B)/.test(animals) || // Consume first & Blast last
+          /^(BSC|BPC|B[?]C|BS[?]P|BP[?]S)/.test(animals) || // Blast with activated Consume
+          /^(PC)/.test(animals) || // Plast Consume
+          /^(SC)/.test(animals) || // Sonsume Consume
+          false
+        )
+      },
+    } as RegExpish,
+  },
   coinFT: {
     index: -1,
     short: "coinFT",
-    description: "Savior Decider Letter",
-    heads: "Thinking",
-    tails: "Feeling",
-    testHeads: /T[xei]/,
-    testTails: /F[xei]/,
-    parse: Coin.prototype.defaultCoinParseMethod,
+    title: "Style",
+    description: "Energy",
+    heads: "T > F",
+    tails: "F > T",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?T[xei]/i,
+    testTails: /[mf]?F[xei]/i,
   },
   coinNS: {
     index: -1,
     short: "coinNS",
-    description: "Savior Observer Letter",
-    heads: "Sensing",
-    tails: "iNtuition",
-    testHeads: /S[xei]/,
-    testTails: /N[xei]/,
-    parse: Coin.prototype.defaultCoinParseMethod,
+    title: "Style",
+    description: "Info",
+    heads: "S > N",
+    tails: "N > S",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?S[xei]/i,
+    testTails: /[mf]?N[xei]/i,
   },
-};
-let COIN_INDEX = -1;
-export const COINS = [];
-COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD;
-COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe;
-COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe;
-COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT;
-COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS;
-COINS[(NamedCOINS.coinA2ie.index = ++COIN_INDEX)] = NamedCOINS.coinA2ie;
-COINS[(NamedCOINS.coinA3ie.index = ++COIN_INDEX)] = NamedCOINS.coinA3ie;
-COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm;
-COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm;
+}
+let COIN_INDEX = -1
+export const COINS: Coin[] = []
+COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
+
+COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
+COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
+
+COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
+COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
+
+COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
+COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
+
+COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
+COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+
 /*
 Introvert / Femmine:    Observers, Sleep, Consume, Feeling, Intuition
 Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
@@ -202,7 +326,7 @@ Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
 
 const numberToType = (number: number): OPT512Type => {
   if (number < 0 || number > 511)
-    throw new RangeError("expected a number between 0 and 511");
+    throw new RangeError("expected a number between 0 and 511")
   const [c0, c1, c2, c3, c4, c5, c6, c7, c8] = (
     Math.min(Math.max(number, 0), 511) + 0b1000000000
   )
@@ -210,27 +334,23 @@ const numberToType = (number: number): OPT512Type => {
     .split("")
     .slice(1)
     .map(Number)
-    .map(Boolean);
-  return [c0, c1, c2, c3, c4, c5, c6, c7, c8];
-};
+    .map(Boolean)
+  return [c0, c1, c2, c3, c4, c5, c6, c7, c8]
+}
 
 const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
   .join(";")
   .split(";")
-  .map((_, index) => numberToType(index));
+  .map((_, index) => numberToType(index))
 
-export const isBool = (value: BoolMaybe) => value === true || value === false;
+export const isBool = (value: BoolMaybe) => value === true || value === false
 
-const cleanerCoins = COINS.filter(COIN => typeof COIN.clean === "function");
-export const cleanCoinText = (value:string = ''):string =>
-  cleanerCoins.reduce((vvv, { clean }) => clean(vvv), value);
+export const cleanCoinText = (text: string = ""): string =>
+  OPT512.fromCoinText(text).OPSCode
 
-const parserCoins = COINS.filter(COIN => typeof COIN.parse === "function");
+const parserCoins = COINS.filter((COIN) => typeof COIN.parse === "function")
 export const parseCoinText = (type: string): OPT512Maybe =>
-  parserCoins.reduce(
-    (opTypeArray, COIN) => {
-      opTypeArray[COIN.index] = COIN.parse(type);
-      return opTypeArray;
-    },
-    BLANK_TYPE.slice(0) as OPT512Maybe
-  );
+  parserCoins.reduce((opTypeArray, COIN) => {
+    opTypeArray[COIN.index] = COIN.parse(type)
+    return opTypeArray
+  }, BLANK_TYPE.slice(0) as OPT512Maybe)
