@@ -274,6 +274,7 @@ export const NamedCOINS = {
       },
     } as RegExpish,
   },
+  /** @deprecated use coinTie and coinDiDe instead */
   coinFT: {
     index: -1,
     short: "coinFT",
@@ -287,6 +288,7 @@ export const NamedCOINS = {
     testHeads: /[mf]?T[xei]/i,
     testTails: /[mf]?F[xei]/i,
   },
+  /** @deprecated use coinSie and coinOiOe instead */
   coinNS: {
     index: -1,
     short: "coinNS",
@@ -300,22 +302,62 @@ export const NamedCOINS = {
     testHeads: /[mf]?S[xei]/i,
     testTails: /[mf]?N[xei]/i,
   },
+  coinTie: {
+    index: -1,
+    short: "coinTie",
+    title: "Focus",
+    description: "Energy",
+    heads: "Fi/Te",
+    tails: "Ti/Fe",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?(Fi|Te)/i,
+    testTails: /[mf]?(Fe|Ti)/i,
+  },
+  coinSie: {
+    index: -1,
+    short: "coinSie",
+    title: "Focus",
+    description: "Info",
+    heads: "Ni/Se",
+    tails: "Si/Ne",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?(Ni|Se)/i,
+    testTails: /[mf]?(Ne|Si)/i,
+  },
 }
 let COIN_INDEX = -1
-export const COINS: Coin[] = []
-COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
+type Coins9 = [Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin]
 
+/** @deprecated use COINS_NEXT instead */
+export const COINS: Coins9 = [, , , , , , , , ,]
+COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
 COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
 COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
-
 COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
 COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
-
 COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
 COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
-
 COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+
+NamedCOINS.coinSie.index = NamedCOINS.coinNS.index
+NamedCOINS.coinTie.index = NamedCOINS.coinFT.index
+
+export const COINS_NEXT: Coins9 = [
+  NamedCOINS.coinOD,
+  NamedCOINS.coinOiOe,
+  NamedCOINS.coinDiDe,
+  NamedCOINS.coinSie,
+  NamedCOINS.coinTie,
+  NamedCOINS.coinInAct,
+  NamedCOINS.coinEnAct,
+  NamedCOINS.coinSfm,
+  NamedCOINS.coinDefm,
+]
 
 /*
 Introvert / Femmine:    Observers, Sleep, Consume, Feeling, Intuition

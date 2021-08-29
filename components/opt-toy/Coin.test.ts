@@ -1,8 +1,7 @@
-import { describe, it, expect, test } from "@jest/globals"
-import { Coin, COINS, NamedCOINS, parseCoinText } from "./Coin"
-import { OPT512 } from "./OPT512"
+import { describe, expect, it } from "@jest/globals"
+import { COINS, NamedCOINS, parseCoinText } from "./Coin"
 
-const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm } = NamedCOINS
+const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm, coinTie, coinSie } = NamedCOINS
 
 describe("COINS", () => {
   it("exists", () => {
@@ -229,6 +228,85 @@ describe("NamedCOINS", () => {
       })
     })
   })
+
+  describe("coinTie", () => {
+    describe("parse function", () => {
+      it("parses as edge", () => {
+        expect(coinTie.parse("?F-De/Se")).toBe(null)
+        expect(coinTie.parse("F?-De/Se")).toBe(null)
+        expect(coinTie.parse("FF-De/Se")).toBe(null)
+        expect(coinTie.parse("De/Se")).toBe(null)
+        expect(coinTie.parse("Se/De")).toBe(null)
+        expect(coinTie.parse("fDe")).toBe(null)
+        expect(coinTie.parse("mDe")).toBe(null)
+        expect(coinTie.parse("Di/Se")).toBe(null)
+        expect(coinTie.parse("Se/Di")).toBe(null)
+        expect(coinTie.parse("fDi")).toBe(null)
+        expect(coinTie.parse("mDi")).toBe(null)
+      })
+      it("parses as heads", () => {
+        expect(coinTie.parse("Te/Se")).toBe(true)
+        expect(coinTie.parse("Se/Te")).toBe(true)
+        expect(coinTie.parse("fTe")).toBe(true)
+        expect(coinTie.parse("mTe")).toBe(true)
+        expect(coinTie.parse("Fi/Se")).toBe(true)
+        expect(coinTie.parse("Se/Fi")).toBe(true)
+        expect(coinTie.parse("fFi")).toBe(true)
+        expect(coinTie.parse("mFi")).toBe(true)
+      })
+      it("parses as tails", () => {
+        expect(coinTie.parse("Fe/Se")).toBe(false)
+        expect(coinTie.parse("Se/Fe")).toBe(false)
+        expect(coinTie.parse("fFe")).toBe(false)
+        expect(coinTie.parse("mFe")).toBe(false)
+        expect(coinTie.parse("Ti/Se")).toBe(false)
+        expect(coinTie.parse("Se/Ti")).toBe(false)
+        expect(coinTie.parse("fTi")).toBe(false)
+        expect(coinTie.parse("mTi")).toBe(false)
+      })
+    })
+  })
+
+  describe("coinSie", () => {
+    describe("parse function", () => {
+      it("parses as edge", () => {
+        expect(coinSie.parse("?F-Oe/Dx")).toBe(null)
+        expect(coinSie.parse("F?-Oe/Dx")).toBe(null)
+        expect(coinSie.parse("FF-Oe/Dx")).toBe(null)
+        expect(coinSie.parse("Oe/Dx")).toBe(null)
+        expect(coinSie.parse("Dx/Oe")).toBe(null)
+        expect(coinSie.parse("fOe")).toBe(null)
+        expect(coinSie.parse("mOe")).toBe(null)
+        expect(coinSie.parse("Oi/Dx")).toBe(null)
+        expect(coinSie.parse("Dx/Oi")).toBe(null)
+        expect(coinSie.parse("fOi")).toBe(null)
+        expect(coinSie.parse("mOi")).toBe(null)
+      })
+      it("parses as heads", () => {
+        expect(coinSie.parse("Se/Dx")).toBe(true)
+        expect(coinSie.parse("Dx/Se")).toBe(true)
+        expect(coinSie.parse("fSe")).toBe(true)
+        expect(coinSie.parse("mSe")).toBe(true)
+        expect(coinSie.parse("Ni/Dx")).toBe(true)
+        expect(coinSie.parse("Dx/Ni")).toBe(true)
+        expect(coinSie.parse("fNi")).toBe(true)
+        expect(coinSie.parse("mNi")).toBe(true)
+        expect(coinSie.parse("ni")).toBe(true)
+      })
+      it("parses as tails", () => {
+        expect(coinSie.parse("Ne/Dx")).toBe(false)
+        expect(coinSie.parse("Dx/Ne")).toBe(false)
+        expect(coinSie.parse("fNe")).toBe(false)
+        expect(coinSie.parse("mNe")).toBe(false)
+        expect(coinSie.parse("Si/Dx")).toBe(false)
+        expect(coinSie.parse("Dx/Si")).toBe(false)
+        expect(coinSie.parse("fSi")).toBe(false)
+        expect(coinSie.parse("mSi")).toBe(false)
+        expect(coinSie.parse("si")).toBe(false)
+      })
+    })
+  })
+
   describe("coinOiOe", () => {
     describe("parse function", () => {
       it("parses as null", () => {
