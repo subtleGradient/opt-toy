@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals"
-import { COINS, NamedCOINS, parseCoinText } from "./Coin"
+import { COINS, NamedCOINS, parseCoinText, parseTypeTextWithCoins } from "./Coin"
 
 const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm, coinTie, coinSie } = NamedCOINS
 
@@ -17,6 +17,17 @@ describe("parseCoinText", () => {
     expect(parseCoinText("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111111111"`)
     expect(parseCoinText("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111101100"`)
     expect(parseCoinText("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"110010000"`)
+  })
+})
+
+describe("parseTypeTextWithCoins", () => {
+  it("exists", () => {
+    expect(parseTypeTextWithCoins).toBeDefined()
+  })
+  it("matches", () => {
+    expect(parseTypeTextWithCoins("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111111111"`)
+    expect(parseTypeTextWithCoins("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111101100"`)
+    expect(parseTypeTextWithCoins("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"110000000"`)
   })
 })
 

@@ -390,9 +390,20 @@ export const isBool = (value: BoolMaybe) => value === true || value === false
 export const cleanCoinText = (text: string = ""): string =>
   OPT512.fromCoinText(text).OPSCode
 
-const parserCoins = COINS.filter((COIN) => typeof COIN.parse === "function")
+const parserCoinsOld = COINS.filter((coin) => typeof coin.parse === "function")
+const parserCoinsNext = COINS_NEXT.filter(
+  (coin) => typeof coin.parse === "function",
+)
+
+/** @deprecated use parseTypeTextWithCoins(type, parserCoinsOld) instead */
 export const parseCoinText = (type: string): OPT512Maybe =>
-  parserCoins.reduce((opTypeArray, COIN) => {
-    opTypeArray[COIN.index] = COIN.parse(type)
+  parseTypeTextWithCoins(type, parserCoinsOld)
+
+export const parseTypeTextWithCoins = (
+  type: string,
+  coins = parserCoinsNext,
+): OPT512Maybe =>
+  coins.reduce((opTypeArray, coin) => {
+    opTypeArray[coin.index] = coin.parse(type)
     return opTypeArray
   }, BLANK_TYPE.slice(0) as OPT512Maybe)
