@@ -3,7 +3,6 @@ import {
   NamedCOINS,
   BoolMaybe,
   isBool,
-  cleanCoinText,
   BLANK_TYPE,
   parseCoinText,
   extractAnimalsFromOP512,
@@ -15,12 +14,14 @@ import {
   euclideanDistanceSquared,
 } from "./euclideanDistance"
 
+export const cleanCoinText = (text: string = ""): string =>
+  OPT512.fromCoinText(text).OPSCode
+
 export {
   // OPT512Maybe,
   NamedCOINS,
   // BoolMaybe,
   isBool,
-  cleanCoinText,
   BLANK_TYPE,
   parseCoinText,
 }
