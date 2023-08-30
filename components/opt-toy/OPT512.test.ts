@@ -1,7 +1,7 @@
 import { describe, it, expect, test } from "@jest/globals"
 import { extractAnimalsFromOP512 } from "./Coin"
 import { ActivationsToAnimalsString, FocusCodes, maybeBoolToIndex, NamedCOINS, OPT512, parseCoinText } from "./OPT512"
-const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm } = NamedCOINS
+const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm, coinSocialEnergy, coinSocialInfo } = NamedCOINS
 
 const uniq = (item: unknown, index: number, items: unknown[]): boolean => items.indexOf(item) === index
 // import { OPT512 } from "./OPT512"
@@ -247,15 +247,18 @@ describe("OPT512", () => {
           expect(type.type[coinSfm.index]).toEqual(coinSfm.parse(type.toString()))
           expect(type.type[coinDefm.index]).toEqual(coinDefm.parse(type.toString()))
 
-          expect(clone.type[coinOD.index]).toEqual(coinOD.parse(clone.toString()))
-          expect(clone.type[coinDiDe.index]).toEqual(coinDiDe.parse(clone.toString()))
-          expect(clone.type[coinOiOe.index]).toEqual(coinOiOe.parse(clone.toString()))
-          expect(clone.type[coinFT.index]).toEqual(coinFT.parse(clone.toString()))
-          expect(clone.type[coinNS.index]).toEqual(coinNS.parse(clone.toString()))
-          expect(clone.type[coinEnAct.index]).toEqual(coinEnAct.parse(clone.toString()))
-          expect(clone.type[coinInAct.index]).toEqual(coinInAct.parse(clone.toString()))
-          expect(clone.type[coinSfm.index]).toEqual(coinSfm.parse(clone.toString()))
-          expect(clone.type[coinDefm.index]).toEqual(coinDefm.parse(clone.toString()))
+          const cloneString = clone.toString()
+          expect(clone.type[coinOD.index]).toEqual(coinOD.parse(cloneString))
+          expect(clone.type[coinDiDe.index]).toEqual(coinDiDe.parse(cloneString))
+          expect(clone.type[coinOiOe.index]).toEqual(coinOiOe.parse(cloneString))
+          expect(clone.type[coinFT.index]).toEqual(coinFT.parse(cloneString))
+          expect(clone.type[coinNS.index]).toEqual(coinNS.parse(cloneString))
+          expect(clone.type[coinEnAct.index]).toEqual(coinEnAct.parse(cloneString))
+          expect(clone.type[coinInAct.index]).toEqual(coinInAct.parse(cloneString))
+          expect(clone.type[coinSfm.index]).toEqual(coinSfm.parse(cloneString))
+          expect(clone.type[coinDefm.index]).toEqual(coinDefm.parse(cloneString))
+          expect(clone.type[coinSocialEnergy.index]).toEqual(coinSocialEnergy.parse(cloneString))
+          expect(clone.type[coinSocialInfo.index]).toEqual(coinSocialInfo.parse(cloneString))
 
           expect("" + type + clone.type[coinOD.index]).toEqual("" + type + type.type[coinOD.index])
           expect("" + type + clone.type[coinDiDe.index]).toEqual("" + type + type.type[coinDiDe.index])
@@ -266,6 +269,8 @@ describe("OPT512", () => {
           expect("" + type + clone.type[coinInAct.index]).toEqual("" + type + type.type[coinInAct.index])
           expect("" + type + clone.type[coinSfm.index]).toEqual("" + type + type.type[coinSfm.index])
           expect("" + type + clone.type[coinDefm.index]).toEqual("" + type + type.type[coinDefm.index])
+          expect("" + type + clone.type[coinSocialEnergy.index]).toEqual("" + type + type.type[coinSocialEnergy.index])
+          expect("" + type + clone.type[coinSocialInfo.index]).toEqual("" + type + type.type[coinSocialInfo.index])
 
           expect(clone.type).toEqual(type.type)
         }

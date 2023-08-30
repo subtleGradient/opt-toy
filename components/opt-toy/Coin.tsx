@@ -162,7 +162,7 @@ export const NamedCOINS = {
   coinDiDe: {
     index: -1,
     short: "coinDiDe",
-    title: "Direction",
+    title: "Focus",
     description: "Energy",
     heads: "De",
     headsDetail: "Energy directed Extrovertedly to Connections",
@@ -175,7 +175,7 @@ export const NamedCOINS = {
   coinOiOe: {
     index: -1,
     short: "coinOiOe",
-    title: "Direction",
+    title: "Focus",
     description: "Info",
     heads: "Oe",
     headsDetail: "Info directed Extrovertedly to Gather new",
@@ -343,8 +343,8 @@ export const NamedCOINS = {
     tails: "Friends",
     headsDetail: ``,
     tailsDetail: ``,
-    testHeads: /\#[13]/i,
-    testTails: /\#[24]/i,
+    testHeads: /\#?[13]\b/i,
+    testTails: /\#?[24]\b/i,
   },
   coinSocialInfo: {
     ...ParsableCoinDefault,
@@ -356,8 +356,8 @@ export const NamedCOINS = {
     tails: "Specialization",
     headsDetail: ``,
     tailsDetail: ``,
-    testHeads: /\#[12]/i,
-    testTails: /\#[34]/i,
+    testHeads: /\#?[12]\b/i,
+    testTails: /\#?[34]\b/i,
   },
 }
 let COIN_INDEX = -1
@@ -378,18 +378,16 @@ type Coins11 = [
 /** @deprecated use COINS_NEXT instead */
 export const COINS: Coins11 = [, , , , , , , , , , ,]
 COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
-COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
 COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
-COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
+COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
 COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
-COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
+COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
 COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
-COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
+COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
-COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] =
-  NamedCOINS.coinSocialInfo
-COINS[(NamedCOINS.coinSocialEnergy.index = ++COIN_INDEX)] =
-  NamedCOINS.coinSocialEnergy
+COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
+COINS[(NamedCOINS.coinSocialEnergy.index = ++COIN_INDEX)] = NamedCOINS.coinSocialEnergy
+COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] = NamedCOINS.coinSocialInfo
 
 NamedCOINS.coinSie.index = NamedCOINS.coinNS.index
 NamedCOINS.coinTie.index = NamedCOINS.coinFT.index

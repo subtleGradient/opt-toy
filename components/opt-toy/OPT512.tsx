@@ -243,7 +243,10 @@ export class OPT512 {
   get NF() { return this.getAnimalByLetters("NF") } // prettier-ignore
 
   constructor(public type: OPT512Maybe) {
-    this.type = (type || BLANK_TYPE).slice(0) as OPT512Maybe
+    this.type = BLANK_TYPE.slice(0) as OPT512Maybe
+    for (const key in type) {
+      this.type[key] = type[key]
+    }
   }
   toJSON() { return this.type } // prettier-ignore
   static fromJSON(type: OPT512Maybe) { return new OPT512(type) } // prettier-ignore
@@ -514,7 +517,25 @@ export class OPT512 {
 
   private get activationStack() { return `${this.A1} ${this.energyActivation}Energy ${this.infoActivation}Info`  } // prettier-ignore
   private get animalString(): any { return ActivationsToAnimalsString[this.activationStack] ?? "?"  } // prettier-ignore
-  private get animalLetters(): any { return extractAnimalsFromOP512(this.animalString)  } // prettier-ignore
+  private get animalLetters(): any { return extractAnimalsFromOP512(this.animalString) } // prettier-ignore
+
+  private get socialNumber(): SocialNumber {
+    const socialI = this.type[NamedCOINS.coinSocialInfo.index]
+    const socialE = this.type[NamedCOINS.coinSocialEnergy.index]
+    return (
+      {
+        "10": "1/2",
+        "-10": "3/4",
+        "01": "1/3",
+        "0-1": "2/4",
+
+        "11": 1,
+        "1-1": 2,
+        "-11": 3,
+        "-1-1": 4,
+      }[`${sideToDistance(socialI)}${sideToDistance(socialE)}`] || "?"
+    )
+  }
 
   get animalCodes(): [OPAnimalType, OPAnimalType, OPAnimalType, OPAnimalType] { return this.animalLetters.split("")  } // prettier-ignore
 
@@ -527,8 +548,8 @@ export class OPT512 {
   valueOf() { return this.toString()  } // prettier-ignore
 
   get OPSCode(): string {
-    const { sexString, S1, S2, animalString } = this
-    return `${sexString}${S1}/${S2}-${animalString}`
+    const { sexString, S1, S2, animalString, socialNumber } = this
+    return `${sexString}${S1}/${S2}-${animalString}#${socialNumber}`
   }
   private get sexString() {
     const { fmS, fmDe } = this
@@ -935,3 +956,5 @@ export const sideToDistance = (side: number | boolean): number =>
     : typeof side === "number"
     ? [0, -1, 1][side + 1] || 0
     : 0
+
+type SocialNumber = 1 | 2 | 3 | 4 | "?" | "1/2" | "3/4" | "1/3" | "2/4"

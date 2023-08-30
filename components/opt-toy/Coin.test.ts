@@ -14,9 +14,13 @@ describe("parseCoinText", () => {
     expect(parseCoinText).toBeDefined()
   })
   it("matches", () => {
-    expect(parseCoinText("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111111111"`)
-    expect(parseCoinText("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111101100"`)
-    expect(parseCoinText("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"110010000"`)
+    expect(parseCoinText("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11111111100"`)
+    expect(parseCoinText("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
+    expect(parseCoinText("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"11001000000"`)
+    expect(parseCoinText("fffesepbc#1").map(Number).join("")).toMatchInlineSnapshot(`"11110110011"`)
+    expect(parseCoinText("fffesepbc#2").map(Number).join("")).toMatchInlineSnapshot(`"11110110010"`)
+    expect(parseCoinText("fffesepbc#3").map(Number).join("")).toMatchInlineSnapshot(`"11110110001"`)
+    expect(parseCoinText("fffesepbc#4").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
   })
 })
 
@@ -25,9 +29,13 @@ describe("parseTypeTextWithCoins", () => {
     expect(parseTypeTextWithCoins).toBeDefined()
   })
   it("matches", () => {
-    expect(parseTypeTextWithCoins("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111111111"`)
-    expect(parseTypeTextWithCoins("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"111101100"`)
-    expect(parseTypeTextWithCoins("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"110000000"`)
+    expect(parseTypeTextWithCoins("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11111111100"`)
+    expect(parseTypeTextWithCoins("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
+    expect(parseTypeTextWithCoins("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"11000000000"`)
+    expect(parseTypeTextWithCoins("fffesepbc#1").map(Number).join("")).toMatchInlineSnapshot(`"11110110011"`)
+    expect(parseTypeTextWithCoins("fffesepbc#2").map(Number).join("")).toMatchInlineSnapshot(`"11110110010"`)
+    expect(parseTypeTextWithCoins("fffesepbc#3").map(Number).join("")).toMatchInlineSnapshot(`"11110110001"`)
+    expect(parseTypeTextWithCoins("fffesepbc#4").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
   })
 })
 
@@ -43,23 +51,23 @@ describe("NamedCOINS", () => {
         }
       })
       it("parses standard types", () => {
-        const type = "FF-Fe/Se-PC/B(S)"
+        const type = "FF-Fe/Se-PC/B(S)#1"
         for (const [name, coin] of Object.entries(NamedCOINS)) {
           if (coin.index === -1) continue
           if (coin.parse(type) === null) {
             throw new Error(`${name} parser fails on ${type}`)
           }
-          expect(coin.parse("FF-Fe/Se-PC/B(S)")).not.toBeNull()
-          expect(coin.parse("ff-fe/se-pc/b(s)")).not.toBeNull()
-          expect(coin.parse("fFe/fSe-PCB")).not.toBeNull()
-          expect(coin.parse("FFFeSePCBS")).not.toBeNull()
-          expect(coin.parse("FFFeSePCB")).not.toBeNull()
-          expect(coin.parse("fftinecsp")).not.toBeNull()
+          expect(coin.parse("FF-Fe/Se-PC/B(S)#1")).not.toBeNull()
+          expect(coin.parse("ff-fe/se-pc/b(s)#1")).not.toBeNull()
+          expect(coin.parse("fFe/fSe-PCB 1")).not.toBeNull()
+          expect(coin.parse("FFFeSePCBS1")).not.toBeNull()
+          expect(coin.parse("FFFeSePCB1")).not.toBeNull()
+          expect(coin.parse("fftinecsp1")).not.toBeNull()
         }
       })
       it("parses minimal types", () => {
         for (const [name, coin] of Object.entries(NamedCOINS)) {
-          expect(coin.parse("FF-Fe/Se-PC/B")).not.toBeNull()
+          expect(coin.parse("FF-Fe/Se-PC/B#1")).not.toBeNull()
         }
       })
     })
