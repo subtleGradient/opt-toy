@@ -10,6 +10,8 @@ type OPT512Type = [
   boolean,
   boolean,
   boolean,
+  boolean,
+  boolean,
 ]
 
 export type OPT512Maybe = [
@@ -22,9 +24,13 @@ export type OPT512Maybe = [
   BoolMaybe,
   BoolMaybe,
   BoolMaybe,
+  BoolMaybe,
+  BoolMaybe,
 ]
 
 export const BLANK_TYPE: OPT512Maybe = [
+  null,
+  null,
   null,
   null,
   null,
@@ -56,93 +62,112 @@ type ParsableCoinType = typeof ParsableCoinDefault
 export interface Coin extends ParsableCoinType {
   index: number
   short: string
+  title: string
   description: string
   heads: string
   tails: string
+  headsDetail: string
+  tailsDetail: string
   clean?: (type: string) => string
 }
 
 export const extractAnimalsFromOP512 = (type: string) =>
-  type
+  String(type)
     .trim()
     .toUpperCase()
     .replace(/[^a-z?(/]/gi, "")
     .replace(/.*?([PBCS?(/]+)$/g, "$1")
-    .replace(/^([PBCS])[/]([PBCS])$/g, "$1?$2")
+    .replace(/^([PBCS])[/]([PBCS]+)$/g, "$1?$2")
     .replace(/^([PBCS])[(]([PBCS])$/g, "$1??$2")
+    .replace(/^([PBCS])([PBCS?])[(]([PBCS])$/g, "$1$2?$3")
     .replace(/[(/]/g, "")
 
 export const NamedCOINS = {
   coinSfm: {
     index: -1,
     short: "coinSfm",
-    description: "Info Modality",
-    heads: "masculine S",
-    tails: "N masculine",
+    title: "Masculine",
+    description: "Info",
+    heads: "mS",
+    tails: "mN",
+    headsDetail: "masculine Sensory and feminine iNtuition",
+    tailsDetail: "masculine iNtuition and feminine Sensory",
     ...ParsableCoinDefault,
     // prettier-ignore
     testHeads: { test: (type: string) => 
       /^M[FM?](?![ie])/i.test(type) ||
-      /fN/i.test(type) ||
-      /mS([ie]|\b)/i.test(type) ||
+      /(^|[^fm])fN/i.test(type) ||
+      /(^|[^fm])mS([ie]|\b)/i.test(type) ||
       false
     },
     // prettier-ignore
     testTails: { test: (type: string) => 
       /^F[FM?](?![ie])/i.test(type) ||
-      /mN/i.test(type) ||
-      /fS([ie]|\b)/i.test(type) ||
+      /(^|[^fm])mN/i.test(type) ||
+      /(^|[^fm])fS([ie]|\b)/i.test(type) ||
       false
     },
   },
   coinDefm: {
     index: -1,
     short: "coinDefm",
-    description: "Masculine Energy Modality",
-    heads: "masculine De",
-    tails: "Di masculine",
+    title: "Masculine",
+    description: "Energy",
+    heads: "mDe",
+    tails: "mDi",
+    headsDetail:
+      "masculine Extroverted Decider function (either mFe or mTe) and feminine Di (either fFi or fTi)",
+    tailsDetail:
+      "masculine Introverted Decider function (either mFi or mTi) and feminine De (either fFe or fTe)",
     ...ParsableCoinDefault,
     // prettier-ignore
     testHeads: { test: (type: string) => 
-      /f[DTF]i/i.test(type) ||
-      /m[DTF]e/i.test(type) ||
       /^[FM?]M/i.test(type) ||
+      /(^|[^fm])f[DTF]i/i.test(type) ||
+      /(^|[^fm])m[DTF]e/i.test(type) ||
       false
     },
     // prettier-ignore
     testTails: { test: (type: string) => 
-      /m[DTF]i/i.test(type) ||
-      /f[DTF]e/i.test(type) ||
       /^[FM?]F(?![ie])/i.test(type) ||
+      /(^|[^fm])m[DTF]i/i.test(type) ||
+      /(^|[^fm])f[DTF]e/i.test(type) ||
       false
     },
   },
   coinOD: {
     index: -1,
     short: "coinOD",
-    description: "OD",
-    heads: "Energy polar",
-    tails: "polar Info",
+    title: "",
+    description: "Polarity",
+    heads: "(OO) Decider",
+
+    tails: "Observer (DD)",
+    headsDetail: `Polar Energy — aka "Single Decider" and "Double Observer"`,
+    tailsDetail: `Polar Info — aka "Single Observer" and "Double Decider"`,
     clean: (type) =>
       type
         .replace(/[?()/-]/g, "")
         .replace(/[fm]?([DTFOSN][xei])[fm]?([DTFOSN][ei])/g, "$1/$2")
         .replace(
           /^.*([ODFTNS])([xie])([ODFTNS])([xie]).*$/gi,
-          (_, f1od, f1xie, f2od, f2xie) =>
+          (_: any, f1od: string, f1xie: string, f2od: string, f2xie: string) =>
             `${f1od.toUpperCase()}${f1xie.toLowerCase()}/${f2od.toUpperCase()}${f2xie.toLowerCase()}`,
         )
         .replace(/^(?![DTF][xie]\/[OSN][xie]|[OSN][xie]\/[DTF][xie]).*$/, ""),
     ...ParsableCoinDefault,
-    testHeads: /(^|-)[mf]?[DTF][xei]|[mf]?[DTF][xei]\//i,
-    testTails: /(^|-)[mf]?[OSN][xei]|[mf]?[OSN][xei]\//i,
+    testHeads: /^([mf?][mf?]-?)?[mf]?[DTF][xei]/i,
+    testTails: /^([mf?][mf?]-?)?[mf]?[OSN][xei]/i,
   },
   coinDiDe: {
     index: -1,
     short: "coinDiDe",
-    description: "Savior Decider Focus",
-    heads: "De Tribe",
-    tails: "Identity Di",
+    title: "Focus",
+    description: "Energy",
+    heads: "De",
+    headsDetail: "Energy directed Extrovertedly to Connections",
+    tails: "Di",
+    tailsDetail: "Energy directed Introvertedly to Significance",
     ...ParsableCoinDefault,
     testHeads: /[mf]?[DTF]e/i,
     testTails: /[mf]?[DTF]i/i,
@@ -150,9 +175,12 @@ export const NamedCOINS = {
   coinOiOe: {
     index: -1,
     short: "coinOiOe",
-    description: "Savior Observer Focus",
-    heads: "Oe Gather",
-    tails: "Organize Oi",
+    title: "Focus",
+    description: "Info",
+    heads: "Oe",
+    headsDetail: "Info directed Extrovertedly to Gather new",
+    tails: "Oi",
+    tailsDetail: "Info directed Introvertedly to Organize old",
     ...ParsableCoinDefault,
     testHeads: /[mf]?[OSN]e/i,
     testTails: /[mf]?[OSN]i/i,
@@ -161,20 +189,22 @@ export const NamedCOINS = {
   coinA2ie: {
     index: -1,
     short: "coinA2ie",
+    title: "",
     description: "S2 Animal Focus",
-    heads: "A2 Extroverted",
-    tails: "Introverted A2",
+    heads: "A2 E",
+    tails: "I A2",
     ...ParsableCoinDefault,
-    testHeads: /-([SP]B|[CB]P)/i,
-    testTails: /-([SP]C|[CB]S)/i,
+    testHeads: /(-|[xie])([SP]B|[CB]P)/i,
+    testTails: /(-|[xie])([SP]C|[CB]S)/i,
   },
   /** @deprecated Use coin coinInAct instead */
   coinA3ie: {
     index: -1,
     short: "coinA3ie",
+    title: "",
     description: "Activated Demon Animal Focus",
-    heads: "A3 Extroverted",
-    tails: "Introverted A3",
+    heads: "A3 E",
+    tails: "I A3",
     ...ParsableCoinDefault,
     testHeads: /[PB]{2}\/C|[CS]{2}\/P|[CP]{2}\/B|[SB]{2}\/P/,
     testTails: /[PB]{2}\/S|[CS]{2}\/B|[CP]{2}\/S|[SB]{2}\/C/,
@@ -182,9 +212,12 @@ export const NamedCOINS = {
   coinEnAct: {
     index: -1,
     short: "coinEnAct",
-    description: "Energy Activation",
-    heads: "Extroverted Energy",
-    tails: "Energy Introverted",
+    title: "Activation",
+    description: "Energy",
+    tails: "more Sleep",
+    heads: "Play more",
+    headsDetail: `Activated Double Extroverted Energy (Play)`,
+    tailsDetail: `Activated Double Introverted Energy (Sleep)`,
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -214,9 +247,12 @@ export const NamedCOINS = {
   coinInAct: {
     index: -1,
     short: "coinInAct",
-    description: "Info Activation",
-    heads: "Extroverted Info",
-    tails: "Info Introverted",
+    title: "Activation",
+    description: "Info",
+    tails: "more Consume",
+    heads: "Blast more",
+    headsDetail: `Activated Extroverted Info (Blast)`,
+    tailsDetail: `Activated Introverted Info (Consume)`,
     ...ParsableCoinDefault,
     testHeads: {
       test: (type: string) => {
@@ -243,29 +279,104 @@ export const NamedCOINS = {
       },
     } as RegExpish,
   },
+  /** @deprecated use coinTie and coinDiDe instead */
   coinFT: {
     index: -1,
     short: "coinFT",
-    description: "Savior Decider Letter",
-    heads: "Thinking",
-    tails: "Feeling",
+    title: "Style",
+    description: "Energy",
+    heads: "T",
+    tails: "F",
+    headsDetail: ``,
+    tailsDetail: ``,
     ...ParsableCoinDefault,
-    testHeads: /T[xei]/,
-    testTails: /F[xei]/,
+    testHeads: /[mf]?T[xei]/i,
+    testTails: /[mf]?F[xei]/i,
   },
+  /** @deprecated use coinSie and coinOiOe instead */
   coinNS: {
     index: -1,
     short: "coinNS",
-    description: "Savior Observer Letter",
-    heads: "Sensing",
-    tails: "iNtuition",
+    title: "Style",
+    description: "Info",
+    heads: "S",
+    tails: "N",
+    headsDetail: ``,
+    tailsDetail: ``,
     ...ParsableCoinDefault,
-    testHeads: /S[xei]/,
-    testTails: /N[xei]/,
+    testHeads: /[mf]?S[xei]/i,
+    testTails: /[mf]?N[xei]/i,
+  },
+  coinTie: {
+    index: -1,
+    short: "coinTie",
+    title: "Focus",
+    description: "Energy",
+    heads: "Fi/Te",
+    tails: "Ti/Fe",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?(Fi|Te)/i,
+    testTails: /[mf]?(Fe|Ti)/i,
+  },
+  coinSie: {
+    index: -1,
+    short: "coinSie",
+    title: "Focus",
+    description: "Info",
+    heads: "Ni/Se",
+    tails: "Si/Ne",
+    headsDetail: ``,
+    tailsDetail: ``,
+    ...ParsableCoinDefault,
+    testHeads: /[mf]?(Ni|Se)/i,
+    testTails: /[mf]?(Ne|Si)/i,
+  },
+  coinSocialEnergy: {
+    ...ParsableCoinDefault,
+    index: -1,
+    short: "coinSocialEnergy",
+    title: "Social",
+    description: "Social Energy",
+    heads: "Flex",
+    tails: "Friends",
+    headsDetail: ``,
+    tailsDetail: ``,
+    testHeads: /\#?[13](\/[13])?\b/i,
+    testTails: /\#?[24](\/[24])?\b/i,
+  },
+  coinSocialInfo: {
+    ...ParsableCoinDefault,
+    index: -1,
+    short: "coinSocialInfo",
+    title: "Social",
+    description: "Social Info",
+    heads: "Responsibility",
+    tails: "Specialization",
+    headsDetail: ``,
+    tailsDetail: ``,
+    testHeads: /\#?[12](\/[12])?\b/i,
+    testTails: /\#?[34](\/[34])?\b/i,
   },
 }
 let COIN_INDEX = -1
-export const COINS: Coin[] = []
+type Coins11 = [
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+]
+
+/** @deprecated use COINS_NEXT instead */
+export const COINS: Coins11 = [, , , , , , , , , , ,]
 COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
 COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
 COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
@@ -273,8 +384,28 @@ COINS[(NamedCOINS.coinFT.index = ++COIN_INDEX)] = NamedCOINS.coinFT
 COINS[(NamedCOINS.coinNS.index = ++COIN_INDEX)] = NamedCOINS.coinNS
 COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
 COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
-COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
+COINS[(NamedCOINS.coinSocialEnergy.index = ++COIN_INDEX)] = NamedCOINS.coinSocialEnergy
+COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] = NamedCOINS.coinSocialInfo
+
+NamedCOINS.coinSie.index = NamedCOINS.coinNS.index
+NamedCOINS.coinTie.index = NamedCOINS.coinFT.index
+
+export const COINS_NEXT: Coins11 = [
+  NamedCOINS.coinOD,
+  NamedCOINS.coinOiOe,
+  NamedCOINS.coinDiDe,
+  NamedCOINS.coinSie,
+  NamedCOINS.coinTie,
+  NamedCOINS.coinInAct,
+  NamedCOINS.coinEnAct,
+  NamedCOINS.coinSfm,
+  NamedCOINS.coinDefm,
+  NamedCOINS.coinSocialInfo,
+  NamedCOINS.coinSocialEnergy,
+]
+
 /*
 Introvert / Femmine:    Observers, Sleep, Consume, Feeling, Intuition
 Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
@@ -283,17 +414,17 @@ Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
  */
 
 const numberToType = (number: number): OPT512Type => {
-  if (number < 0 || number > 511)
-    throw new RangeError("expected a number between 0 and 511")
-  const [c0, c1, c2, c3, c4, c5, c6, c7, c8] = (
-    Math.min(Math.max(number, 0), 511) + 0b1000000000
+  // if (number < 0 || number > 511)
+  //   throw new RangeError("expected a number between 0 and 511")
+  const [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11] = (
+    Math.min(Math.max(number, 0), 511) + 0b100000000000
   )
     .toString(2)
     .split("")
     .slice(1)
     .map(Number)
     .map(Boolean)
-  return [c0, c1, c2, c3, c4, c5, c6, c7, c8]
+  return [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11]
 }
 
 const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
@@ -303,22 +434,20 @@ const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
 
 export const isBool = (value: BoolMaybe) => value === true || value === false
 
-export const cleanCoinText = (value: string = ""): string => {
-  return value
-  // const [fmS, fmDe, od, animals] = [
-  //   NamedCOINS.coinSfm.clean(value),
-  //   NamedCOINS.coinDefm.clean(value),
-  //   NamedCOINS.coinOD.clean(value),
-  //   NamedCOINS.coinEnAct.clean(value),
-  // ]
-  // return `${fmS}${fmDe}${fmS && fmDe ? "-" : ""}${od}${
-  //   animals ? "-" : ""
-  // }${animals}`
-}
+const parserCoinsOld = COINS.filter((coin) => typeof coin.parse === "function")
+const parserCoinsNext = COINS_NEXT.filter(
+  (coin) => typeof coin.parse === "function",
+)
 
-const parserCoins = COINS.filter((COIN) => typeof COIN.parse === "function")
+/** @deprecated use `parseTypeTextWithCoins(type, parserCoinsOld)` instead */
 export const parseCoinText = (type: string): OPT512Maybe =>
-  parserCoins.reduce((opTypeArray, COIN) => {
-    opTypeArray[COIN.index] = COIN.parse(type)
+  parseTypeTextWithCoins(type, parserCoinsOld)
+
+export const parseTypeTextWithCoins = (
+  type: string,
+  coins = parserCoinsNext,
+): OPT512Maybe =>
+  coins.reduce((opTypeArray, coin) => {
+    opTypeArray[coin.index] = coin.parse(type)
     return opTypeArray
   }, BLANK_TYPE.slice(0) as OPT512Maybe)

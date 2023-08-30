@@ -1,10 +1,11 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { useState } from "react"
 import { betweenRootStylesX, betweenX } from "./between"
 import { KnownTypes, SelectedTypes } from "./KnownTypes"
 import { useQueryDataKey } from "./ParsedQuery"
 import { TypeThing, TypeThingProps } from "./TypeThing"
 import { GlobalDefs } from "./OPBubbles4"
+import { isSSR } from "../../util/constants"
 
 let UID = -1 // user as a unique key for each type
 const getNextUID = () => ++UID
@@ -182,15 +183,57 @@ const DragableTypeThing: FC<
   )
 }
 
+function useLocationHash() {
+  const [renderId, setRenderId] = useState(-1)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const handleHashChange = () => setRenderId((n) => n + 1)
+    window.addEventListener("hashchange", handleHashChange, false)
+    return () =>
+      window.removeEventListener("hashchange", handleHashChange, false)
+  }, [])
+  const { hash } = location
+  return hash
+}
+
+const Settings: FC<{
+  showOPTable: boolean
+  setShowOPTable: (show: ["0" | "1"]) => unknown
+}> = ({ showOPTable, setShowOPTable }) => {
+  const hash = useLocationHash()
+  return (
+    <div className="settings">
+      <style jsx>{`
+        .settings {
+          padding: 1rem;
+          background: #ddd;
+          display: flex;
+        }
+      `}</style>
+      <label>
+        <input
+          type="checkbox"
+          checked={showOPTable}
+          onChange={({ target: { checked } }) =>
+            void setShowOPTable(!checked ? ["0"] : ["1"])
+          }
+        />
+        show OP table?
+      </label>
+      <Spacer />
+      <div className="old">
+        <a href={`https://opt-toy-h8kz9h0ex.vercel.app/${hash}`}>
+          Open in previous version of opt-toy
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function OptToyApp() {
-  const {
-    setOPTypeTextAtIndex,
-    typeIDs,
-    typeIDInsertBefore,
-    types,
-    addType,
-  } = useStuff()
-  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
+  const { setOPTypeTextAtIndex, typeIDs, typeIDInsertBefore, types, addType } =
+    useStuff()
+  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", ["1"])
   const showKnown = showKnowns.length > 0
   const [showSettings, setShowSettings] = useState(false)
   const [[showOPTableQueryValue], setShowOPTable] = useQueryDataKey(
@@ -198,6 +241,12 @@ export default function OptToyApp() {
     [],
   )
   const showOPTable = showOPTableQueryValue === "1"
+
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  if (!isClient) return null
 
   return (
     <SelectedTypes.Provider value={types}>
@@ -246,18 +295,10 @@ export default function OptToyApp() {
 
         <div className="settings">
           {showSettings && (
-            <div>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={showOPTable}
-                  onChange={({ target: { checked } }) =>
-                    void setShowOPTable(!checked ? ["0"] : ["1"])
-                  }
-                />
-                show OP table?
-              </label>
-            </div>
+            <Settings
+              setShowOPTable={setShowOPTable}
+              showOPTable={showOPTable}
+            ></Settings>
           )}
         </div>
 
@@ -265,27 +306,28 @@ export default function OptToyApp() {
           {showKnown && <KnownTypes addType={addType} />}
         </div>
 
-        <div
-          className="all-the-TypeThings"
-          style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
-        >
-          {types.map((defaultType, index) => (
-            <DragableTypeThing
-              key={typeIDs[index]}
-              tID={typeIDs[index]}
-              onDropOnto={typeIDInsertBefore}
-              {...{
-                onClose: () => void setOPTypeTextAtIndex(index, null),
-                onChangeText: (opTypeText: any) =>
-                  void setOPTypeTextAtIndex(index, opTypeText),
-                selected: types.length === 1,
-                defaultType,
-                showOPTable,
-              }}
-            />
-          ))}
-        </div>
-        
+        {!isSSR && (
+          <div
+            className="all-the-TypeThings"
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            {types.map((defaultType, index) => (
+              <DragableTypeThing
+                key={typeIDs[index]}
+                tID={typeIDs[index]}
+                onDropOnto={typeIDInsertBefore}
+                {...{
+                  onClose: () => void setOPTypeTextAtIndex(index, null),
+                  onChangeText: (opTypeText: any) =>
+                    void setOPTypeTextAtIndex(index, opTypeText),
+                  selected: types.length === 1,
+                  defaultType,
+                  showOPTable,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </SelectedTypes.Provider>
   )
