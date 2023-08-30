@@ -1,5 +1,5 @@
-import * as React from "react";
-import { SFC } from "react";
+import * as React from "react"
+import { FC, PropsWithChildren } from "react"
 
 export const bubbleTextStyle = {
   fontFamily: `Roboto, "HelveticaNeue", "Helvetica Neue", Helvetica, sans-serif`,
@@ -7,15 +7,12 @@ export const bubbleTextStyle = {
   fontSize: 64,
   // transform: "translateY(3px)",
   // letterSpacing: -2.5,
-};
+}
 
-export const BubbleText: SFC<{ prefix?: string; style?: object }> = ({
-  prefix,
-  children,
-  style,
-  ...props
-}) => {
-  if (prefix === "?") prefix = "";
+export const BubbleText: FC<
+  PropsWithChildren<{ prefix?: string; style?: object }>
+> = ({ prefix, children, style, ...props }) => {
+  if (prefix === "?") prefix = ""
   return (
     <text
       x={128 / 2}
@@ -27,5 +24,5 @@ export const BubbleText: SFC<{ prefix?: string; style?: object }> = ({
       {prefix && <tspan style={{ fontSize: "50%" }}>{prefix}</tspan>}
       {String(children).replace("x", "")}
     </text>
-  );
-};
+  )
+}
