@@ -233,7 +233,7 @@ const Settings: FC<{
 export default function OptToyApp() {
   const { setOPTypeTextAtIndex, typeIDs, typeIDInsertBefore, types, addType } =
     useStuff()
-  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", [])
+  const [showKnowns, setShowKnown] = useQueryDataKey("showKnown", ["1"])
   const showKnown = showKnowns.length > 0
   const [showSettings, setShowSettings] = useState(false)
   const [[showOPTableQueryValue], setShowOPTable] = useQueryDataKey(
@@ -241,6 +241,12 @@ export default function OptToyApp() {
     [],
   )
   const showOPTable = showOPTableQueryValue === "1"
+
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  if (!isClient) return null
 
   return (
     <SelectedTypes.Provider value={types}>
