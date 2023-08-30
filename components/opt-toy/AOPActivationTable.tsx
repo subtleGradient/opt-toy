@@ -149,7 +149,9 @@ const AnimalColumn: FC<{
       } index${index}`}
     >
       {showSex && (
-        <span className="part sex">{(Ox?.sex + Dx?.sex).toUpperCase()}</span>
+        <span className="part sex">
+          {String(Ox?.sex ?? "" + Dx?.sex ?? "").toUpperCase()}
+        </span>
       )}
       <span>
         {Ox?.code}
