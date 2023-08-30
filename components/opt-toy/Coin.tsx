@@ -134,8 +134,9 @@ export const NamedCOINS = {
     short: "coinOD",
     title: "",
     description: "Polarity",
-    heads: "Energy",
-    tails: "Info",
+    heads: "(OO) Decider",
+    
+    tails: "Observer (DD)",
     headsDetail: `Polar Energy — aka "Single Decider" and "Double Observer"`,
     tailsDetail: `Polar Info — aka "Single Observer" and "Double Decider"`,
     clean: (type) =>
@@ -144,7 +145,7 @@ export const NamedCOINS = {
         .replace(/[fm]?([DTFOSN][xei])[fm]?([DTFOSN][ei])/g, "$1/$2")
         .replace(
           /^.*([ODFTNS])([xie])([ODFTNS])([xie]).*$/gi,
-          (_, f1od, f1xie, f2od, f2xie) =>
+          (_: any, f1od: string, f1xie: string, f2od: string, f2xie: string) =>
             `${f1od.toUpperCase()}${f1xie.toLowerCase()}/${f2od.toUpperCase()}${f2xie.toLowerCase()}`,
         )
         .replace(/^(?![DTF][xie]\/[OSN][xie]|[OSN][xie]\/[DTF][xie]).*$/, ""),
@@ -207,8 +208,8 @@ export const NamedCOINS = {
     short: "coinEnAct",
     title: "Activation",
     description: "Energy",
-    heads: "EE",
-    tails: "II",
+    tails: "more Sleep",
+    heads: "Play more",
     headsDetail: `Activated Double Extroverted Energy (Play)`,
     tailsDetail: `Activated Double Introverted Energy (Sleep)`,
     ...ParsableCoinDefault,
@@ -242,8 +243,8 @@ export const NamedCOINS = {
     short: "coinInAct",
     title: "Activation",
     description: "Info",
-    heads: "Oi De",
-    tails: "Oe Di",
+    tails: "more Consume",
+    heads: "Blast more",
     headsDetail: `Activated Extroverted Info (Blast)`,
     tailsDetail: `Activated Introverted Info (Consume)`,
     ...ParsableCoinDefault,
@@ -278,8 +279,8 @@ export const NamedCOINS = {
     short: "coinFT",
     title: "Style",
     description: "Energy",
-    heads: "T > F",
-    tails: "F > T",
+    heads: "T",
+    tails: "F",
     headsDetail: ``,
     tailsDetail: ``,
     ...ParsableCoinDefault,
@@ -292,8 +293,8 @@ export const NamedCOINS = {
     short: "coinNS",
     title: "Style",
     description: "Info",
-    heads: "S > N",
-    tails: "N > S",
+    heads: "S",
+    tails: "N",
     headsDetail: ``,
     tailsDetail: ``,
     ...ParsableCoinDefault,
@@ -326,12 +327,38 @@ export const NamedCOINS = {
     testHeads: /[mf]?(Ni|Se)/i,
     testTails: /[mf]?(Ne|Si)/i,
   },
+  coinSocialEnergy: {
+    ...ParsableCoinDefault,
+    index: -1,
+    short: "coinSocialEnergy",
+    title: "Social",
+    description: "Social Energy",
+    heads: "Flex",
+    tails: "Friends",
+    headsDetail: ``,
+    tailsDetail: ``,
+    testHeads: /\#[13]/i,
+    testTails: /\#[24]/i,
+  },
+  coinSocialInfo: {
+    ...ParsableCoinDefault,
+    index: -1,
+    short: "coinSocialInfo",
+    title: "Social",
+    description: "Social Info",
+    heads: "Responsibility",
+    tails: "Specialization",
+    headsDetail: ``,
+    tailsDetail: ``,
+    testHeads: /\#[24]/i,
+    testTails: /\#[13]/i,
+  },
 }
 let COIN_INDEX = -1
-type Coins9 = [Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin]
+type Coins11 = [Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin]
 
 /** @deprecated use COINS_NEXT instead */
-export const COINS: Coins9 = [, , , , , , , , ,]
+export const COINS: Coins11 = [, , , , , , , , , , ,]
 COINS[(NamedCOINS.coinOD.index = ++COIN_INDEX)] = NamedCOINS.coinOD
 COINS[(NamedCOINS.coinOiOe.index = ++COIN_INDEX)] = NamedCOINS.coinOiOe
 COINS[(NamedCOINS.coinDiDe.index = ++COIN_INDEX)] = NamedCOINS.coinDiDe
@@ -341,11 +368,14 @@ COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
 COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
 COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+COINS[(NamedCOINS.coinSocialEnergy.index = ++COIN_INDEX)] =
+  NamedCOINS.coinSocialEnergy
+COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] = NamedCOINS.coinSocialInfo
 
 NamedCOINS.coinSie.index = NamedCOINS.coinNS.index
 NamedCOINS.coinTie.index = NamedCOINS.coinFT.index
 
-export const COINS_NEXT: Coins9 = [
+export const COINS_NEXT: Coins11 = [
   NamedCOINS.coinOD,
   NamedCOINS.coinOiOe,
   NamedCOINS.coinDiDe,
@@ -355,6 +385,8 @@ export const COINS_NEXT: Coins9 = [
   NamedCOINS.coinEnAct,
   NamedCOINS.coinSfm,
   NamedCOINS.coinDefm,
+  NamedCOINS.coinSocialEnergy,
+  NamedCOINS.coinSocialInfo,
 ]
 
 /*
