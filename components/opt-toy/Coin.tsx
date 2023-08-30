@@ -343,8 +343,8 @@ export const NamedCOINS = {
     tails: "Friends",
     headsDetail: ``,
     tailsDetail: ``,
-    testHeads: /\#?[13]\b/i,
-    testTails: /\#?[24]\b/i,
+    testHeads: /\#?[13](\/[13])?\b/i,
+    testTails: /\#?[24](\/[24])?\b/i,
   },
   coinSocialInfo: {
     ...ParsableCoinDefault,
@@ -356,8 +356,8 @@ export const NamedCOINS = {
     tails: "Specialization",
     headsDetail: ``,
     tailsDetail: ``,
-    testHeads: /\#?[12]\b/i,
-    testTails: /\#?[34]\b/i,
+    testHeads: /\#?[12](\/[12])?\b/i,
+    testTails: /\#?[34](\/[34])?\b/i,
   },
 }
 let COIN_INDEX = -1
