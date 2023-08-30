@@ -10,6 +10,8 @@ type OPT512Type = [
   boolean,
   boolean,
   boolean,
+  boolean,
+  boolean,
 ]
 
 export type OPT512Maybe = [
@@ -22,9 +24,13 @@ export type OPT512Maybe = [
   BoolMaybe,
   BoolMaybe,
   BoolMaybe,
+  BoolMaybe,
+  BoolMaybe,
 ]
 
 export const BLANK_TYPE: OPT512Maybe = [
+  null,
+  null,
   null,
   null,
   null,
@@ -135,7 +141,7 @@ export const NamedCOINS = {
     title: "",
     description: "Polarity",
     heads: "(OO) Decider",
-    
+
     tails: "Observer (DD)",
     headsDetail: `Polar Energy — aka "Single Decider" and "Double Observer"`,
     tailsDetail: `Polar Info — aka "Single Observer" and "Double Decider"`,
@@ -350,12 +356,24 @@ export const NamedCOINS = {
     tails: "Specialization",
     headsDetail: ``,
     tailsDetail: ``,
-    testHeads: /\#[24]/i,
-    testTails: /\#[13]/i,
+    testHeads: /\#[12]/i,
+    testTails: /\#[34]/i,
   },
 }
 let COIN_INDEX = -1
-type Coins11 = [Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin, Coin]
+type Coins11 = [
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+  Coin,
+]
 
 /** @deprecated use COINS_NEXT instead */
 export const COINS: Coins11 = [, , , , , , , , , , ,]
@@ -368,9 +386,10 @@ COINS[(NamedCOINS.coinInAct.index = ++COIN_INDEX)] = NamedCOINS.coinInAct
 COINS[(NamedCOINS.coinEnAct.index = ++COIN_INDEX)] = NamedCOINS.coinEnAct
 COINS[(NamedCOINS.coinSfm.index = ++COIN_INDEX)] = NamedCOINS.coinSfm
 COINS[(NamedCOINS.coinDefm.index = ++COIN_INDEX)] = NamedCOINS.coinDefm
+COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] =
+  NamedCOINS.coinSocialInfo
 COINS[(NamedCOINS.coinSocialEnergy.index = ++COIN_INDEX)] =
   NamedCOINS.coinSocialEnergy
-COINS[(NamedCOINS.coinSocialInfo.index = ++COIN_INDEX)] = NamedCOINS.coinSocialInfo
 
 NamedCOINS.coinSie.index = NamedCOINS.coinNS.index
 NamedCOINS.coinTie.index = NamedCOINS.coinFT.index
@@ -385,8 +404,8 @@ export const COINS_NEXT: Coins11 = [
   NamedCOINS.coinEnAct,
   NamedCOINS.coinSfm,
   NamedCOINS.coinDefm,
-  NamedCOINS.coinSocialEnergy,
   NamedCOINS.coinSocialInfo,
+  NamedCOINS.coinSocialEnergy,
 ]
 
 /*
@@ -397,17 +416,17 @@ Extrovert / Masculine:  Deciders, Play, Blast, Thinking, Sensing
  */
 
 const numberToType = (number: number): OPT512Type => {
-  if (number < 0 || number > 511)
-    throw new RangeError("expected a number between 0 and 511")
-  const [c0, c1, c2, c3, c4, c5, c6, c7, c8] = (
-    Math.min(Math.max(number, 0), 511) + 0b1000000000
+  // if (number < 0 || number > 511)
+  //   throw new RangeError("expected a number between 0 and 511")
+  const [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11] = (
+    Math.min(Math.max(number, 0), 511) + 0b100000000000
   )
     .toString(2)
     .split("")
     .slice(1)
     .map(Number)
     .map(Boolean)
-  return [c0, c1, c2, c3, c4, c5, c6, c7, c8]
+  return [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11]
 }
 
 const ALL_POSSIBLE_TYPES: OPT512Type[] = Array(512)
