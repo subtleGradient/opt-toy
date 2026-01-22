@@ -1,20 +1,25 @@
-import React, { useRef, FC, forwardRef } from "react"
+import React, { useEffect, useRef, useState, FC, forwardRef } from "react"
 import { Defs } from "./OPBubbles4"
 import { SVG_OP_Bubble, SVG_OP_Bubble_border } from "./SVG_OP_Bubble"
 import { bubbleTextStyle } from "./SVG_OP_BubbleText"
 import { OPFunctionType, OPT512 } from "./OPT512"
 import { download } from "../../util/download"
 import { renderToStaticMarkup } from "react-dom/server"
-import { isSSR } from "../../util/constants"
 
 export const OPTGraph = forwardRef<
   SVGSVGElement,
   { opType: OPT512 } & React.SVGProps<SVGSVGElement>
 >(({ opType, ...props }, svgRef0) => {
-  if (isSSR) {
+  const [isHydrated, setIsHydrated] = useState(false)
+  const svgRef = useRef<SVGSVGElement>()
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  if (!isHydrated) {
     return null
   }
-  const svgRef = useRef<SVGSVGElement>()
   const { opFunctions } = opType
   const opAnimals = {
     Play: { strength: opType.PlayIndex, text: "Play" },
