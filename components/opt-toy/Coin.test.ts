@@ -1,7 +1,24 @@
-import { describe, expect, it } from "@jest/globals"
-import { COINS, NamedCOINS, parseCoinText, parseTypeTextWithCoins } from "./Coin"
+import { describe, expect, it } from "bun:test"
+import {
+  COINS,
+  NamedCOINS,
+  parseCoinText,
+  parseTypeTextWithCoins,
+} from "./Coin"
 
-const { coinOD, coinDiDe, coinOiOe, coinFT, coinNS, coinEnAct, coinInAct, coinSfm, coinDefm, coinTie, coinSie } = NamedCOINS
+const {
+  coinOD,
+  coinDiDe,
+  coinOiOe,
+  coinFT,
+  coinNS,
+  coinEnAct,
+  coinInAct,
+  coinSfm,
+  coinDefm,
+  coinTie,
+  coinSie,
+} = NamedCOINS
 
 describe("COINS", () => {
   it("exists", () => {
@@ -14,13 +31,27 @@ describe("parseCoinText", () => {
     expect(parseCoinText).toBeDefined()
   })
   it("matches", () => {
-    expect(parseCoinText("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11111111100"`)
-    expect(parseCoinText("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
-    expect(parseCoinText("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"11001000000"`)
-    expect(parseCoinText("fffesepbc#1").map(Number).join("")).toMatchInlineSnapshot(`"11110110011"`)
-    expect(parseCoinText("fffesepbc#2").map(Number).join("")).toMatchInlineSnapshot(`"11110110010"`)
-    expect(parseCoinText("fffesepbc#3").map(Number).join("")).toMatchInlineSnapshot(`"11110110001"`)
-    expect(parseCoinText("fffesepbc#4").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
+    expect(
+      parseCoinText("mmtesepbc").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11111111100"`)
+    expect(
+      parseCoinText("fffesepbc").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110000"`)
+    expect(
+      parseCoinText("fftinecsp").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11001000000"`)
+    expect(
+      parseCoinText("fffesepbc#1").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110011"`)
+    expect(
+      parseCoinText("fffesepbc#2").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110010"`)
+    expect(
+      parseCoinText("fffesepbc#3").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110001"`)
+    expect(
+      parseCoinText("fffesepbc#4").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110000"`)
   })
 })
 
@@ -29,13 +60,27 @@ describe("parseTypeTextWithCoins", () => {
     expect(parseTypeTextWithCoins).toBeDefined()
   })
   it("matches", () => {
-    expect(parseTypeTextWithCoins("mmtesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11111111100"`)
-    expect(parseTypeTextWithCoins("fffesepbc").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
-    expect(parseTypeTextWithCoins("fftinecsp").map(Number).join("")).toMatchInlineSnapshot(`"11000000000"`)
-    expect(parseTypeTextWithCoins("fffesepbc#1").map(Number).join("")).toMatchInlineSnapshot(`"11110110011"`)
-    expect(parseTypeTextWithCoins("fffesepbc#2").map(Number).join("")).toMatchInlineSnapshot(`"11110110010"`)
-    expect(parseTypeTextWithCoins("fffesepbc#3").map(Number).join("")).toMatchInlineSnapshot(`"11110110001"`)
-    expect(parseTypeTextWithCoins("fffesepbc#4").map(Number).join("")).toMatchInlineSnapshot(`"11110110000"`)
+    expect(
+      parseTypeTextWithCoins("mmtesepbc").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11111111100"`)
+    expect(
+      parseTypeTextWithCoins("fffesepbc").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110000"`)
+    expect(
+      parseTypeTextWithCoins("fftinecsp").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11000000000"`)
+    expect(
+      parseTypeTextWithCoins("fffesepbc#1").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110011"`)
+    expect(
+      parseTypeTextWithCoins("fffesepbc#2").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110010"`)
+    expect(
+      parseTypeTextWithCoins("fffesepbc#3").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110001"`)
+    expect(
+      parseTypeTextWithCoins("fffesepbc#4").map(Number).join(""),
+    ).toMatchInlineSnapshot(`"11110110000"`)
   })
 })
 
